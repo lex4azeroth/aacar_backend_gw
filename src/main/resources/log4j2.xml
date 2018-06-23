@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Configuration status="OFF">
+    <properties>
+        <property name="logPath">./logs/</property>
+    </properties>
+
+    <Appenders>
+        <Console name="console_out_appender" target="SYSTEM_OUT" ignoreExceptions="false">
+            <PatternLayout pattern="%d [%t] %-5p %c - %m%n"/>
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+        
+        <Console name="console_err_appender" target="SYSTEM_ERR">
+            <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d [%t] %-5p %c - %m%n"/>
+        </Console>
+        
+        <RollingFile name="infoLog" fileName="${logPath}/apigatewayservice.log"
+                     filePattern="${logPath}/apigateway_service-%d{yyyy-MM-dd}.log" append="true" immediateFlush="true">
+            <PatternLayout pattern="%d [%t] %-5p %c - %m%n" />
+            
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+            <Filters>
+                <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingFile>
+
+        <RollingFile name="errorLog" fileName="${logPath}/apigatewayservice_error.log"
+                     filePattern="${logPath}/apigateway_service_error-%d{yyyy-MM-dd}.log" append="true" immediateFlush="true">
+            <PatternLayout pattern="%d [%t] %-5p %c - %m%n" />
+            
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+            <DefaultRolloverStrategy max="30"/>
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <AsyncLogger name="org.springframework" level="INFO" additivity="false">
+            <AppenderRef ref="infoLog" />
+            <AppenderRef ref="errorLog" />
+        </AsyncLogger>
+        <AsyncLogger name="com.carrefour.cn" level="INFO" additivity="false">
+            <AppenderRef ref="infoLog" />
+            <AppenderRef ref="errorLog" />
+        </AsyncLogger>
+        <root level="INFO">
+            <AppenderRef ref="console_out_appender" />
+            <AppenderRef ref="console_err_appender" />
+        </root>
+    </Loggers>
+</Configuration>
