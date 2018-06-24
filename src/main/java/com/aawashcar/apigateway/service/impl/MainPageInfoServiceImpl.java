@@ -1,5 +1,8 @@
 package com.aawashcar.apigateway.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +17,9 @@ import com.aawashcar.apigateway.entity.User;
 import com.aawashcar.apigateway.entity.VehicleCategory;
 import com.aawashcar.apigateway.entity.VehicleType;
 import com.aawashcar.apigateway.entity.WashCarService;
+import com.aawashcar.apigateway.model.DistrictModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
+import com.aawashcar.apigateway.model.ResidentialQuarterModel;
 import com.aawashcar.apigateway.service.MainPageInfoService;
 import com.aawashcar.apigateway.util.EntityMapper;
 
@@ -79,4 +84,37 @@ public class MainPageInfoServiceImpl implements MainPageInfoService {
 		return EntityMapper.buildDefaultMainPageInfo(vehicleCategories, vehicleTypes, services, city, district, province, resiQuarter);
 	}
 
+	@Override
+	public List<DistrictModel> listDistricts(int provinceId, int cityId) {
+		String url = opsUrlPrefix + "location/district/listall/" + String.valueOf(provinceId) + "/" + String.valueOf(cityId);
+		ResponseEntity<District[]> districtResponseEntity = restTemplate.getForEntity(url, District[].class);
+		District[] districts = districtResponseEntity.getBody();
+		int size = districts.length;
+		List<DistrictModel> districtModels = new ArrayList<>();
+		for (int index = 0; index < size; index++) {
+			districtModels.add(EntityMapper.convertDistrictToModel(districts[index]));
+		}
+		
+		return districtModels;
+	}
+
+	@Override
+	public List<ResidentialQuarterModel> listResidentialQuarters(int provinceId, int cityId, int districtId) {
+		String url = opsUrlPrefix + "location/residentialquarter/listall/" + String.valueOf(provinceId) + "/" + String.valueOf(cityId) + "/" + String.valueOf(districtId);
+		ResponseEntity<ResidentialQuarter[]> residentialQuarterResponseEntity = restTemplate.getForEntity(url, ResidentialQuarter[].class);
+		ResidentialQuarter[] residentialQuarters = residentialQuarterResponseEntity.getBody();
+		int size = residentialQuarters.length;
+		List<ResidentialQuarterModel> residentialQuarterModels = new ArrayList<>();
+		for (int index = 0; index < size; index++) {
+			residentialQuarterModels.add(EntityMapper.convertResidentialQuarterToModel(residentialQuarters[index]));
+		}
+		
+		return residentialQuarterModels;
+	}
+
+	@Override
+	public double getPrice(int typeId, int categoryId, int serviceId) {
+		String url = opsUrlPrefix + "pricing/price/" + String.valueOf(typeId) + "/" + String.valueOf(categoryId) + "/" + String.valueOf(serviceId);
+		return restTemplate.getForObject(url, double.class);
+	}
 }
