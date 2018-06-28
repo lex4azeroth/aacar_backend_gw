@@ -5,16 +5,19 @@ import java.util.List;
 
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.District;
+import com.aawashcar.apigateway.entity.Order;
 import com.aawashcar.apigateway.entity.Province;
 import com.aawashcar.apigateway.entity.ResidentialQuarter;
-import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.entity.User;
+import com.aawashcar.apigateway.entity.Vehicle;
 import com.aawashcar.apigateway.entity.VehicleCategory;
 import com.aawashcar.apigateway.entity.VehicleType;
+import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.model.CityModel;
 import com.aawashcar.apigateway.model.DefaultAddressModel;
 import com.aawashcar.apigateway.model.DistrictModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
+import com.aawashcar.apigateway.model.OrderModel;
 import com.aawashcar.apigateway.model.ProvinceModel;
 import com.aawashcar.apigateway.model.ResidentialQuarterModel;
 import com.aawashcar.apigateway.model.ServiceModel;
@@ -108,9 +111,60 @@ public class EntityMapper {
 		return serviceModels;
 	}
 
-	public static MainPageInfo buildMainPageInfo(User user) {
+	public static MainPageInfo buildMainPageInfo(User user, Order order, VehicleCategory[] categories,
+	                                             VehicleType[] types,
+	                                             WashCarService[] services,
+	                                             City city,
+	                                             District district,
+	                                             Province province,
+	                                             ResidentialQuarter resiQuart, 
+	                                             Vehicle vehicle) {
 		MainPageInfo mainPageInfo = new MainPageInfo();
 		mainPageInfo.setUser(convertUserToModel(user));
+		mainPageInfo.setBookedTime(order.getBookTime());
+		mainPageInfo.setServices(convertServiceToModel(services));
+		mainPageInfo.setVehicleCategories(convertVehicleCategoryToModel(categories));
+		mainPageInfo.setVehicleTypes(convertVehicleTypeToModel(types));
+		int size = mainPageInfo.getServices().size();
+		for (int index = 0; index < size; index++) {
+			ServiceModel serviceModel = mainPageInfo.getServices().get(index);
+			if (serviceModel.getId() == order.getServiceId()) {
+				serviceModel.setDefault(true);
+				break;
+			}
+		}
+		
+		size = mainPageInfo.getVehicleCategories().size();
+		for (int index = 0; index < size; index++) {
+			VehicleCategoryModel vehicleCategoryModel = mainPageInfo.getVehicleCategories().get(index);
+			if (vehicleCategoryModel.getId() == vehicle.getCategoryId()) {
+				vehicleCategoryModel.setDefault(true);
+				break;
+			}
+		}
+		
+		size = mainPageInfo.getVehicleTypes().size();
+		for (int index = 0; index < size; index++) {
+			VehicleTypeModel vehicleTypeModel = mainPageInfo.getVehicleTypes().get(index);
+			if (vehicleTypeModel.getId() == vehicle.getTypeId()) {
+				vehicleTypeModel.setDefault(true);
+				break;
+			}
+		}
+		
+		mainPageInfo.setLicense(vehicle.getLicense());
+		mainPageInfo.setColor(vehicle.getColor());
+		
+		DefaultAddressModel defaultAddress = new DefaultAddressModel();
+		defaultAddress.setCity(convertCityToModel(city));
+		defaultAddress.setDistrict(convertDistrictToModel(district));
+		defaultAddress.setProvicne(convertProvinceToModel(province));
+		defaultAddress.setResidentialQuarter(convertResidentialQuarterToModel(resiQuart));
+		defaultAddress.setDetailLocation(order.getDetailLocation());
+
+		mainPageInfo.setDefaultAddress(defaultAddress);
+		
+		
 		return mainPageInfo;
 	}
 
@@ -124,6 +178,7 @@ public class EntityMapper {
 	                                                    ResidentialQuarter resiQuart) {
 		MainPageInfo mainPageInfo = new MainPageInfo();
 		mainPageInfo.setColor("");
+		mainPageInfo.setLicense("");
 		mainPageInfo.setBookedTime(null);
 		mainPageInfo.setUser(new UserModel());
 		mainPageInfo.setVehicleCategories(convertVehicleCategoryToModel(categories));
@@ -139,5 +194,18 @@ public class EntityMapper {
 
 		mainPageInfo.setDefaultAddress(defaultAddress);
 		return mainPageInfo;
+	}
+
+	public static void convertOrderModelToOrder(OrderModel model, Order order) {
+		order.setBookTime(model.getBookTime());
+		order.setOrderTime(model.getOrderTime());;
+		order.setCityId(model.getCityId());
+		order.setCountyId(1); // 默认为1，上海
+		order.setDetailLocation(model.getDetailLocation());
+		order.setDistrictId(model.getDistrictId());
+		order.setPrice(model.getPrice());
+		order.setProvinceId(model.getProvinceId());
+		order.setResiQuartId(model.getResidentialQuarterId());
+		order.setServiceId(model.getServiceId());
 	}
 }

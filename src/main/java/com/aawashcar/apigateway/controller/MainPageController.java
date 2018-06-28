@@ -3,14 +3,18 @@ package com.aawashcar.apigateway.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aawashcar.apigateway.model.DistrictModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
+import com.aawashcar.apigateway.model.OrderIdModel;
+import com.aawashcar.apigateway.model.OrderModel;
 import com.aawashcar.apigateway.model.PriceModel;
 import com.aawashcar.apigateway.model.ResidentialQuarterModel;
 import com.aawashcar.apigateway.service.MainPageInfoService;
@@ -56,5 +60,13 @@ public class MainPageController {
 		priceModel.setPrice(price);
 		
 		return priceModel;
+	}
+	
+	@RequestMapping(value="order", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
+	public OrderIdModel newOrder(@RequestBody OrderModel orderModel) {
+		int orderId = service.newOrder(orderModel);
+		OrderIdModel orderIdModel = new OrderIdModel();
+		orderIdModel.setOrderId(orderId);
+		return orderIdModel;
 	}
 }

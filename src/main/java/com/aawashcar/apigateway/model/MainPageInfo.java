@@ -17,6 +17,8 @@ public class MainPageInfo {
 	private Timestamp bookedTime;
 
 	private DefaultAddressModel defaultAddress;
+	
+	private String license;
 
 	public List<VehicleTypeModel> getVehicleTypes() {
 		return vehicleTypes;
@@ -72,5 +74,13 @@ public class MainPageInfo {
 
 	public void setDefaultAddress(DefaultAddressModel defaultAddress) {
 		this.defaultAddress = defaultAddress;
+	}
+
+	public String getLicense() {
+		return license;
+	}
+
+	public void setLicense(String license) {
+		this.license = license;
 	}
 }
