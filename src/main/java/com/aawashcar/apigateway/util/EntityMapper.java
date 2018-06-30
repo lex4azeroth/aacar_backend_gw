@@ -6,6 +6,7 @@ import java.util.List;
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.District;
 import com.aawashcar.apigateway.entity.Order;
+import com.aawashcar.apigateway.entity.Promotion;
 import com.aawashcar.apigateway.entity.Province;
 import com.aawashcar.apigateway.entity.ResidentialQuarter;
 import com.aawashcar.apigateway.entity.User;
@@ -18,6 +19,7 @@ import com.aawashcar.apigateway.model.DefaultAddressModel;
 import com.aawashcar.apigateway.model.DistrictModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.OrderModel;
+import com.aawashcar.apigateway.model.PromotionModel;
 import com.aawashcar.apigateway.model.ProvinceModel;
 import com.aawashcar.apigateway.model.ResidentialQuarterModel;
 import com.aawashcar.apigateway.model.ServiceModel;
@@ -111,13 +113,30 @@ public class EntityMapper {
 		return serviceModels;
 	}
 
+	public static List<PromotionModel> converPromotionToModel(Promotion[] promotions) {
+		List<PromotionModel> promotionModels = new ArrayList<>();
+		int size = promotions.length;
+		for (int index = 0; index < size; index++) {
+			PromotionModel model = new PromotionModel();
+			Promotion promotion = promotions[index];
+			model.setId(promotion.getId());
+			model.setDescription(promotion.getDescription());
+			model.setDuration(promotion.getDuration());
+			model.setName(promotion.getName());
+			model.setPrice(promotion.getPrice());
+			promotionModels.add(model);
+		}
+
+		return promotionModels;
+	}
+
 	public static MainPageInfo buildMainPageInfo(User user, Order order, VehicleCategory[] categories,
 	                                             VehicleType[] types,
 	                                             WashCarService[] services,
 	                                             City city,
 	                                             District district,
 	                                             Province province,
-	                                             ResidentialQuarter resiQuart, 
+	                                             ResidentialQuarter resiQuart,
 	                                             Vehicle vehicle) {
 		MainPageInfo mainPageInfo = new MainPageInfo();
 		mainPageInfo.setUser(convertUserToModel(user));
@@ -133,7 +152,7 @@ public class EntityMapper {
 				break;
 			}
 		}
-		
+
 		size = mainPageInfo.getVehicleCategories().size();
 		for (int index = 0; index < size; index++) {
 			VehicleCategoryModel vehicleCategoryModel = mainPageInfo.getVehicleCategories().get(index);
@@ -142,7 +161,7 @@ public class EntityMapper {
 				break;
 			}
 		}
-		
+
 		size = mainPageInfo.getVehicleTypes().size();
 		for (int index = 0; index < size; index++) {
 			VehicleTypeModel vehicleTypeModel = mainPageInfo.getVehicleTypes().get(index);
@@ -151,10 +170,10 @@ public class EntityMapper {
 				break;
 			}
 		}
-		
+
 		mainPageInfo.setLicense(vehicle.getLicense());
 		mainPageInfo.setColor(vehicle.getColor());
-		
+
 		DefaultAddressModel defaultAddress = new DefaultAddressModel();
 		defaultAddress.setCity(convertCityToModel(city));
 		defaultAddress.setDistrict(convertDistrictToModel(district));
@@ -163,8 +182,7 @@ public class EntityMapper {
 		defaultAddress.setDetailLocation(order.getDetailLocation());
 
 		mainPageInfo.setDefaultAddress(defaultAddress);
-		
-		
+
 		return mainPageInfo;
 	}
 
