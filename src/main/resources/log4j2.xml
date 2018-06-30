@@ -50,7 +50,11 @@
             <AppenderRef ref="infoLog" />
             <AppenderRef ref="errorLog" />
         </AsyncLogger>
-        <AsyncLogger name="com.carrefour.cn" level="INFO" additivity="false">
+        <AsyncLogger name="com.aawashcar.apigateway" level="INFO" additivity="false">
+            <AppenderRef ref="infoLog" />
+            <AppenderRef ref="errorLog" />
+        </AsyncLogger>
+        <AsyncLogger name="com.mysql.jdbc" level="INFO" additivity="false">
             <AppenderRef ref="infoLog" />
             <AppenderRef ref="errorLog" />
         </AsyncLogger>
