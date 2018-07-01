@@ -1,9 +1,12 @@
 package com.aawashcar.apigateway.util;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import com.aawashcar.apigateway.entity.City;
+import com.aawashcar.apigateway.entity.Coupon;
 import com.aawashcar.apigateway.entity.District;
 import com.aawashcar.apigateway.entity.Order;
 import com.aawashcar.apigateway.entity.Promotion;
@@ -18,6 +21,8 @@ import com.aawashcar.apigateway.model.CityModel;
 import com.aawashcar.apigateway.model.DefaultAddressModel;
 import com.aawashcar.apigateway.model.DistrictModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
+import com.aawashcar.apigateway.model.MyCouponModel;
+import com.aawashcar.apigateway.model.MyPromotionModel;
 import com.aawashcar.apigateway.model.OrderModel;
 import com.aawashcar.apigateway.model.PromotionModel;
 import com.aawashcar.apigateway.model.ProvinceModel;
@@ -64,6 +69,51 @@ public class EntityMapper {
 		}
 
 		return types;
+	}
+	
+	public static List<MyPromotionModel> convertPromotionsToMyModel(Promotion[] promotions) {
+		List<MyPromotionModel> myPromotions = new ArrayList<>();
+		int size = promotions.length;
+		for (int index = 0; index < size; index++) {
+			MyPromotionModel model = new MyPromotionModel();
+			Promotion promotion = promotions[index];
+			model.setDescription(promotion.getDescription());
+			model.setDuration(promotion.getDuration());
+			model.setId(promotion.getId());
+			model.setName(promotion.getName());
+			model.setPrice(promotion.getPrice());
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(promotion.getCreatedTime());
+			calendar.add(Calendar.MONTH, promotion.getDuration());
+			model.setValidatedTime(new Timestamp(calendar.getTimeInMillis()));
+			
+			myPromotions.add(model);
+		}
+		
+		return myPromotions;
+	}
+	
+	public static List<MyCouponModel> convertCouponsToMyModel(Coupon[] coupons) {
+		List<MyCouponModel> myCoupons = new ArrayList<>();
+		int size = coupons.length;
+		for (int index = 0; index < size; index++) {
+			MyCouponModel model = new MyCouponModel();
+			Coupon coupon = coupons[index];
+			model.setDescription(coupon.getDescription());
+			model.setDuration(coupon.getDuration());
+			model.setId(coupon.getId());
+			model.setName(coupon.getName());
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(coupon.getCreatedTime());
+			calendar.add(Calendar.MONTH, coupon.getDuration());
+			model.setValidatedTime(new Timestamp(calendar.getTimeInMillis()));
+			
+			myCoupons.add(model);
+		}
+		
+		return myCoupons;
 	}
 
 	public static CityModel convertCityToModel(City city) {
