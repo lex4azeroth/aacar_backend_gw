@@ -1,16 +1,16 @@
 package com.aawashcar.apigateway.controller;
 
-import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,13 +25,18 @@ public class AppController {
 	private RestTemplate restTemplate;
 
 	@RequestMapping(value = "getOpenId", method = RequestMethod.GET)
-	public String getOpenId(HttpServletRequest request) {
-		Map<String, String[]> parameterMap = request.getParameterMap();
-		String appId = MapUtils.getString(parameterMap, "appid");
-		String secret = MapUtils.getString(parameterMap, "secret");
-		String jsCode = MapUtils.getString(parameterMap, "js_code");
-		String grantType = MapUtils.getString(parameterMap, "grant_type");
-		String url = MessageFormat.format(weixinUrl, appId, secret, jsCode, grantType);
-		return restTemplate.getForObject(url, String.class);
+	public String getOpenId(@RequestParam("appid") String appId,
+	                        @RequestParam("secret") String secret,
+	                        @RequestParam("js_code") String jsCode,
+	                        @RequestParam("grant_type") String grantType) {
+		Map<String, Object> urlVariables = new HashMap<>();
+		urlVariables.put("appId", appId);
+		urlVariables.put("secret", secret);
+		urlVariables.put("jsCode", jsCode);
+		urlVariables.put("grantType", grantType);
+
+		ResponseEntity<String> response =
+		                restTemplate.exchange(weixinUrl, HttpMethod.GET, null, String.class, urlVariables);
+		return response.getBody();
 	}
 }
