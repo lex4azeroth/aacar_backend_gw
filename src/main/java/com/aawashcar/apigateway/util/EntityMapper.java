@@ -9,6 +9,7 @@ import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
 import com.aawashcar.apigateway.entity.District;
 import com.aawashcar.apigateway.entity.Order;
+import com.aawashcar.apigateway.entity.OrderSummary;
 import com.aawashcar.apigateway.entity.Promotion;
 import com.aawashcar.apigateway.entity.Province;
 import com.aawashcar.apigateway.entity.ResidentialQuarter;
@@ -24,6 +25,7 @@ import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.MyCouponModel;
 import com.aawashcar.apigateway.model.MyPromotionModel;
 import com.aawashcar.apigateway.model.OrderModel;
+import com.aawashcar.apigateway.model.OrderSummaryModel;
 import com.aawashcar.apigateway.model.PromotionModel;
 import com.aawashcar.apigateway.model.ProvinceModel;
 import com.aawashcar.apigateway.model.ResidentialQuarterModel;
@@ -92,6 +94,28 @@ public class EntityMapper {
 		}
 		
 		return myPromotions;
+	}
+	
+	public static List<OrderSummaryModel> convertOrderSummarysToMyModel(OrderSummary[] orderSummarys) {
+		List<OrderSummaryModel> orderSummaryModels = new ArrayList<>();
+		int size = orderSummarys.length;
+		for (int index = 0; index < size; index++) {
+			OrderSummaryModel model = new OrderSummaryModel();
+			OrderSummary orderSummary = orderSummarys[index];
+			model.setAddress(orderSummary.getDetailLocation());
+			model.setBookTime(orderSummary.getBookTime());
+			model.setCompletedTime(orderSummary.getCompletedTime());
+			model.setDiscountedPrice(orderSummary.getDiscountedPrice());
+			model.setId(orderSummary.getId());
+			model.setOrderTime(orderSummary.getOrderTime());
+			model.setPrice(orderSummary.getPrice());
+			model.setRemarks(orderSummary.getRemarks());
+			model.setStatus(orderSummary.getOrderStatus());
+			
+			orderSummaryModels.add(model);
+		}
+		
+		return orderSummaryModels;
 	}
 	
 	public static List<MyCouponModel> convertCouponsToMyModel(Coupon[] coupons) {
