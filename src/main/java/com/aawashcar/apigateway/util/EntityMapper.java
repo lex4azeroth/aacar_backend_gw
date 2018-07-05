@@ -8,6 +8,7 @@ import java.util.List;
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
 import com.aawashcar.apigateway.entity.District;
+import com.aawashcar.apigateway.entity.MiniAuthEntity;
 import com.aawashcar.apigateway.entity.Order;
 import com.aawashcar.apigateway.entity.OrderSummary;
 import com.aawashcar.apigateway.entity.Promotion;
@@ -22,6 +23,7 @@ import com.aawashcar.apigateway.model.CityModel;
 import com.aawashcar.apigateway.model.DefaultAddressModel;
 import com.aawashcar.apigateway.model.DistrictModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
+import com.aawashcar.apigateway.model.MiniAuthModel;
 import com.aawashcar.apigateway.model.MyCouponModel;
 import com.aawashcar.apigateway.model.MyPromotionModel;
 import com.aawashcar.apigateway.model.OrderModel;
@@ -164,6 +166,16 @@ public class EntityMapper {
 		return model;
 	}
 
+	public static MiniAuthModel convertMiniAuthToModel(MiniAuthEntity miniAuth) {
+		MiniAuthModel model = new MiniAuthModel();
+		model.setAppid(miniAuth.getAppId());
+		model.setId(miniAuth.getId());
+		model.setName(miniAuth.getName());
+		model.setSecret(miniAuth.getSecret());
+
+		return model;
+	}
+	
 	public static ResidentialQuarterModel convertResidentialQuarterToModel(ResidentialQuarter resiQuarter) {
 		ResidentialQuarterModel model = new ResidentialQuarterModel();
 		model.setId(resiQuarter.getResiQuatId());

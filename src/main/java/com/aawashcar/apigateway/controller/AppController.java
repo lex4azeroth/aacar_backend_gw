@@ -8,11 +8,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
+
+import com.aawashcar.apigateway.entity.MiniAuthEntity;
+import com.aawashcar.apigateway.model.MiniAuthModel;
+import com.aawashcar.apigateway.util.EntityMapper;
 
 @RequestMapping("app/")
 @ResponseBody
@@ -20,6 +25,9 @@ import org.springframework.web.client.RestTemplate;
 public class AppController {
 	@Value("${weixin.openid.url.get}")
 	private String weixinUrl;
+
+	@Value("${mcw.service.ops.url.prefix}")
+	private String opsUrlPrefix;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -38,5 +46,13 @@ public class AppController {
 		ResponseEntity<String> response =
 		                restTemplate.exchange(weixinUrl, HttpMethod.GET, null, String.class, urlVariables);
 		return response.getBody();
+	}
+
+	@RequestMapping(value = "authpair/{appname}", method = RequestMethod.GET)
+	public MiniAuthModel getOpenId(@PathVariable("name") String appName) {
+		String url = opsUrlPrefix + "miniauth/authpair/" + appName;
+		MiniAuthEntity response =
+		                restTemplate.getForObject(url, MiniAuthEntity.class);
+		return EntityMapper.convertMiniAuthToModel(response);
 	}
 }
