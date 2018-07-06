@@ -31,12 +31,17 @@ public class AppController {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
+	
 	@RequestMapping(value = "getOpenId", method = RequestMethod.GET)
-	public String getOpenId(@RequestParam("appid") String appId,
-	                        @RequestParam("secret") String secret,
+	public String getOpenId(@RequestParam("name") String name,
 	                        @RequestParam("js_code") String jsCode,
 	                        @RequestParam("grant_type") String grantType) {
+		
+		MiniAuthEntity miniAuth = getMiniAuth(name);
+		
+		String appId = miniAuth.getAppId();
+		String secret = miniAuth.getSecret();
+		
 		Map<String, Object> urlVariables = new HashMap<>();
 		urlVariables.put("appId", appId);
 		urlVariables.put("secret", secret);
@@ -48,11 +53,10 @@ public class AppController {
 		return response.getBody();
 	}
 
-	@RequestMapping(value = "authpair/{appname}", method = RequestMethod.GET)
-	public MiniAuthModel getOpenId(@PathVariable("name") String appName) {
+	private MiniAuthEntity getMiniAuth(String appName) {
 		String url = opsUrlPrefix + "miniauth/authpair/" + appName;
 		MiniAuthEntity response =
 		                restTemplate.getForObject(url, MiniAuthEntity.class);
-		return EntityMapper.convertMiniAuthToModel(response);
+		return response;
 	}
 }
