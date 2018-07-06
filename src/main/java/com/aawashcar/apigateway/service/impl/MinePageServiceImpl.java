@@ -28,27 +28,27 @@ public class MinePageServiceImpl implements MinePageService {
 	private String crmUrlPrefix;
 
 	@Override
-	public List<MyPromotionModel> listMyPromotionModels(String uuid) {
+	public List<MyPromotionModel> listMyPromotionModels(String validId) {
 		String url = "%s/promotion/mylist/%s";
-		url = String.format(url, promUrlPrefix, getUserIdByUuid(uuid));
+		url = String.format(url, promUrlPrefix, getUserIdByOpenId(validId));
 		ResponseEntity<Promotion[]> promotionResponseEntity = restTemplate.getForEntity(url, Promotion[].class);
 		Promotion[] myPromotions = promotionResponseEntity.getBody();
 		return EntityMapper.convertPromotionsToMyModel(myPromotions);
 	}
 
 	@Override
-	public List<MyCouponModel> listMyCouponModels(String uuid) {
+	public List<MyCouponModel> listMyCouponModels(String validId) {
 		String url = "%s/coupon/mylist/%s";
-		url = String.format(url, promUrlPrefix, getUserIdByUuid(uuid));
+		url = String.format(url, promUrlPrefix, getUserIdByOpenId(validId));
 		ResponseEntity<Coupon[]> couponResponseEntity = restTemplate.getForEntity(url, Coupon[].class);
 		Coupon[] myCoupons = couponResponseEntity.getBody();
 		return EntityMapper.convertCouponsToMyModel(myCoupons);
 	}
 	
-	private int getUserIdByUuid(String uuid) {
+	private int getUserIdByOpenId(String openId) {
 		String url = "%s/user/%s";
 
-		url = String.format(url, crmUrlPrefix, uuid);
+		url = String.format(url, crmUrlPrefix, openId);
 		User user = restTemplate.getForObject(url, User.class);
 		int userId = user.getId();
 		

@@ -6,5 +6,5 @@ import com.aawashcar.apigateway.model.OrderSummaryModel;
 
 public interface OrderPageService {
 
-	List<OrderSummaryModel> myOrderSummaryList(String uuid, int size);
+	List<OrderSummaryModel> myOrderSummaryList(String id, int size);
 }

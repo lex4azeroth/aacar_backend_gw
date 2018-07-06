@@ -9,7 +9,7 @@ import com.aawashcar.apigateway.model.ResidentialQuarterModel;
 
 public interface MainPageInfoService {
 	
-	MainPageInfo getMainPageInfo(String uuid);
+	MainPageInfo getMainPageInfo(String validId);
 	
 	List<DistrictModel> listDistricts(int provinceId, int cityId);
 	

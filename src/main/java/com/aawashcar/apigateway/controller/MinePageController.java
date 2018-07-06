@@ -20,13 +20,13 @@ public class MinePageController {
 	@Autowired
 	private MinePageService service;
 
-	@RequestMapping(value = "promotionlist/{uuid}", method = RequestMethod.GET)
-	public List<MyPromotionModel> promtionList(@PathVariable("uuid") String uuid) {
-		return service.listMyPromotionModels(uuid);
+	@RequestMapping(value = "promotionlist/{openid}", method = RequestMethod.GET)
+	public List<MyPromotionModel> promtionList(@PathVariable("openid") String openId) {
+		return service.listMyPromotionModels(openId);
 	}
 	
-	@RequestMapping(value = "couponlist/{uuid}", method = RequestMethod.GET)
-	public List<MyCouponModel> couponList(@PathVariable("uuid") String uuid) {
-		return service.listMyCouponModels(uuid);
+	@RequestMapping(value = "couponlist/{openid}", method = RequestMethod.GET)
+	public List<MyCouponModel> couponList(@PathVariable("openid") String openId) {
+		return service.listMyCouponModels(openId);
 	}
 }

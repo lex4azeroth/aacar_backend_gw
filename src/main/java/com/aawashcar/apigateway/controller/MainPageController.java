@@ -27,9 +27,9 @@ public class MainPageController {
 	@Autowired
 	private MainPageInfoService service;
 
-	@RequestMapping(value = "pageinfo/{uuid}", method = RequestMethod.GET)
-	public MainPageInfo mainPageInfo(@PathVariable("uuid") String uuid) {
-		return service.getMainPageInfo(uuid);
+	@RequestMapping(value = "pageinfo/{validid}", method = RequestMethod.GET)
+	public MainPageInfo mainPageInfo(@PathVariable("validid") String validId) {
+		return service.getMainPageInfo(validId);
 	}
 
 	@RequestMapping(value = "district/{provinceId}/{cityId}", method = RequestMethod.GET)

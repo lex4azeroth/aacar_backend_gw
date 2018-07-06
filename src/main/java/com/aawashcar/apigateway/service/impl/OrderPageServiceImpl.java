@@ -31,10 +31,10 @@ public class OrderPageServiceImpl implements OrderPageService {
 	private String opsUrlPrefix;
 
 	@Override
-	public List<OrderSummaryModel> myOrderSummaryList(String uuid, int limit) {
+	public List<OrderSummaryModel> myOrderSummaryList(String id, int limit) {
 		String url = "%s/user/%s";
 
-		url = String.format(url, crmUrlPrefix, uuid);
+		url = String.format(url, crmUrlPrefix, id);
 		User user = restTemplate.getForObject(url, User.class);
 
 		int userId = user.getId();
@@ -57,7 +57,7 @@ public class OrderPageServiceImpl implements OrderPageService {
 			return orderSummaryModels;
 		}
 		else {
-			throw new RuntimeException(String.format("UUID %s does not exist", uuid));
+			throw new RuntimeException(String.format("Id %s does not exist", id));
 		}
 	}
 }

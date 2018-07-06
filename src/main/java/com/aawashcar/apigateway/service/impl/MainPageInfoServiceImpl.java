@@ -48,10 +48,10 @@ public class MainPageInfoServiceImpl implements MainPageInfoService {
 //	private String promUrlPrefix;
 
 	@Override
-	public MainPageInfo getMainPageInfo(String uuid) {
+	public MainPageInfo getMainPageInfo(String validId) {
 		String url = "%s/user/%s";
 
-		url = String.format(url, crmUrlPrefix, uuid);
+		url = String.format(url, crmUrlPrefix, validId);
 		User user = restTemplate.getForObject(url, User.class);
 		
 		VehicleCategory[] vehicleCategories = null;

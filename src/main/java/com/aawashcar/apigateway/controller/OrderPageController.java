@@ -20,11 +20,11 @@ public class OrderPageController {
 	@Autowired
 	private OrderPageService orderPageService;
 
-	@RequestMapping(value = "mylist/{openid}/{size}", method = RequestMethod.GET)
-	public List<OrderSummaryModel> myOrderSummaries(@PathVariable("openid") String openId,
+	@RequestMapping(value = "mylist/{id}/{size}", method = RequestMethod.GET)
+	public List<OrderSummaryModel> myOrderSummaries(@PathVariable("id") String id,
 	                                                @PathVariable("size") int size) {
 
-		return orderPageService.myOrderSummaryList(openId, size);
+		return orderPageService.myOrderSummaryList(id, size);
 
 	}
 }
