@@ -26,6 +26,7 @@ import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.MiniAuthModel;
 import com.aawashcar.apigateway.model.MyCouponModel;
 import com.aawashcar.apigateway.model.MyPromotionModel;
+import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.OrderModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
 import com.aawashcar.apigateway.model.PromotionModel;
@@ -104,6 +105,7 @@ public class EntityMapper {
 		for (int index = 0; index < size; index++) {
 			OrderSummaryModel model = new OrderSummaryModel();
 			OrderSummary orderSummary = orderSummarys[index];
+			model.setOrderNumber(orderSummary.getOrderNumber());
 			model.setAddress(orderSummary.getDetailLocation());
 			model.setBookTime(orderSummary.getBookTime());
 			model.setCompletedTime(orderSummary.getCompletedTime());
@@ -298,6 +300,56 @@ public class EntityMapper {
 
 		mainPageInfo.setDefaultAddress(defaultAddress);
 		return mainPageInfo;
+	}
+	
+	public static OrderDetailModel buildOrderDetailInfo(
+	                                                    Order order, 
+	                                                    String serviceName, 
+	                                                    String color, 
+	                                                    VehicleCategory vehicleCategory, 
+	                                                    VehicleType vehicleType, 
+	                                                    Province province, 
+	                                                    City city, 
+	                                                    District district, 
+	                                                    ResidentialQuarter residentialQuarter, 
+	                                                    Coupon[] coupons, 
+	                                                    Promotion[] promotions) {
+		OrderDetailModel model = new OrderDetailModel();
+		model.setAdress(order.getDetailLocation());
+		model.setBookTime(order.getBookTime());
+		model.setColor(color);
+		
+		model.setCoupons(convertCouponsToMyModel(coupons));
+		
+		DefaultAddressModel defaultAddressModel = new DefaultAddressModel();
+		defaultAddressModel.setCity(convertCityToModel(city));
+		defaultAddressModel.setDetailLocation(order.getDetailLocation());
+		defaultAddressModel.setDistrict(convertDistrictToModel(district));
+		defaultAddressModel.setProvicne(convertProvinceToModel(province));
+		defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
+		model.setDefalutAddress(defaultAddressModel);
+		
+		model.setOrderId(order.getId());
+		model.setOrderNumber(order.getOrderNumber());
+		
+		model.setPromotions(convertPromotionsToMyModel(promotions));
+		
+		model.setRemarks(order.getRemarks());
+		model.setServiceName(serviceName);
+		model.setStatus(OrderStatusCode.getStatusName(order.getStatusCode()));
+		VehicleCategoryModel vehicleCategoryModel = new VehicleCategoryModel();
+		vehicleCategoryModel.setDefault(true);
+		vehicleCategoryModel.setId(vehicleCategory.getId());
+		vehicleCategoryModel.setName(vehicleCategory.getName());
+		model.setVehicleCategory(vehicleCategoryModel);
+		
+		VehicleTypeModel vehicleTypeModel = new VehicleTypeModel();
+		vehicleTypeModel.setDefault(true);
+		vehicleTypeModel.setId(vehicleType.getId());
+		vehicleTypeModel.setName(vehicleType.getName());
+		model.setVehicleType(vehicleTypeModel);
+		
+		return model;
 	}
 
 	public static void convertOrderModelToOrder(OrderModel model, Order order) {

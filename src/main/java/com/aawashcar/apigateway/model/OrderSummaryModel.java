@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 public class OrderSummaryModel {
 	private int id;
+	private String orderNumber;
 	private String serviceName;
 	private Timestamp bookTime;
 	private Timestamp orderTime;
@@ -92,6 +93,14 @@ public class OrderSummaryModel {
 
 	public void setOrderTime(Timestamp orderTime) {
 		this.orderTime = orderTime;
+	}
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 
 }

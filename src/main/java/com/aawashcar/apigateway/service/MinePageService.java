@@ -7,7 +7,7 @@ import com.aawashcar.apigateway.model.MyPromotionModel;
 
 public interface MinePageService {
 
-	List<MyPromotionModel> listMyPromotionModels(String uuid);
+	List<MyPromotionModel> listMyPromotionModels(String validId);
 	
-	List<MyCouponModel> listMyCouponModels(String uuid);
+	List<MyCouponModel> listMyCouponModels(String validId);
 }
