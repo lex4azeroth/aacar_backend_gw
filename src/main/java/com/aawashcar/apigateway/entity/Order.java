@@ -21,6 +21,7 @@ public class Order extends BaseEntity {
 	private int cityId;
 	private int districtId;
 	private int resiQuartId;
+	private int locationId;
 
 	public String getOrderNumber() {
 		return orderNumber;
@@ -164,6 +165,14 @@ public class Order extends BaseEntity {
 
 	public void setOrderTime(Timestamp orderTime) {
 		this.orderTime = orderTime;
+	}
+
+	public int getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(int locationId) {
+		this.locationId = locationId;
 	}
 
 }

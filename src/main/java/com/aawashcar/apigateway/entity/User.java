@@ -3,6 +3,7 @@ package com.aawashcar.apigateway.entity;
 import java.sql.Timestamp;
 
 public class User extends BaseEntity {
+	private int workerId;
 	private String nickName;
 	private String firstName;
 	private String lastName;
@@ -128,5 +129,13 @@ public class User extends BaseEntity {
 
 	public void setCityId(int cityId) {
 		this.cityId = cityId;
+	}
+
+	public int getWorkerId() {
+		return workerId;
+	}
+
+	public void setWorkerId(int workerId) {
+		this.workerId = workerId;
 	}
 }
