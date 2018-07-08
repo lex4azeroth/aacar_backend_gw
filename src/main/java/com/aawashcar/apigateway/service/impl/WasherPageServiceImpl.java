@@ -2,6 +2,8 @@ package com.aawashcar.apigateway.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -10,7 +12,10 @@ import com.aawashcar.apigateway.entity.Order;
 import com.aawashcar.apigateway.entity.User;
 import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.entity.Worker;
+import com.aawashcar.apigateway.entity.WorkerRemark;
 import com.aawashcar.apigateway.model.AssignedOrder;
+import com.aawashcar.apigateway.model.WasherActionModel;
+import com.aawashcar.apigateway.model.WasherActionResponse;
 import com.aawashcar.apigateway.model.WasherInfo;
 import com.aawashcar.apigateway.model.WasherMainPageInfo;
 import com.aawashcar.apigateway.service.WasherPageService;
@@ -107,6 +112,48 @@ public class WasherPageServiceImpl implements WasherPageService {
 
 		return user;
 	}
-	
-	
+
+	@Override
+	public WasherActionResponse takeOrder(WasherActionModel model) {
+		// {orderid}/{remarksid}/{workerid}
+		int workerId = isWorker(model.getValidId());
+		String url = opsUrlPrefix + "worker/takeorder/%s/%s/%s";
+		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
+		ResponseEntity<Integer> response = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
+		
+		WasherActionResponse actionResponse = new WasherActionResponse();
+		actionResponse.setStatus(response.getBody());
+		return actionResponse;
+	}
+
+	@Override
+	public WasherActionResponse rejectOrder(WasherActionModel model) {
+		int workerId = isWorker(model.getValidId());
+		String url = opsUrlPrefix + "worker/rejectorder/%s/%s/%s";
+		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
+		ResponseEntity<Integer> response = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
+		
+		WasherActionResponse actionResponse = new WasherActionResponse();
+		actionResponse.setStatus(response.getBody());
+		return actionResponse;
+	}
+
+	@Override
+	public WasherActionResponse completeOrder(WasherActionModel model) {
+		int workerId = isWorker(model.getValidId());
+		String url = opsUrlPrefix + "worker/completeorder/%s/%s/%s";
+		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
+		ResponseEntity<Integer> response = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
+		
+		WasherActionResponse actionResponse = new WasherActionResponse();
+		actionResponse.setStatus(response.getBody());
+		return actionResponse;
+	}
+
+	@Override
+	public WorkerRemark[] listRemarks() {
+		String url = opsUrlPrefix + "worker/remarks/listall";
+		ResponseEntity<WorkerRemark[]> workeRemarkResponseEntity = restTemplate.getForEntity(url, WorkerRemark[].class);
+		return (WorkerRemark[]) workeRemarkResponseEntity.getBody();
+	}
 }
