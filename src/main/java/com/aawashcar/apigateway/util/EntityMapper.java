@@ -82,6 +82,9 @@ public class EntityMapper {
 		for (int index = 0; index < size; index++) {
 			MyPromotionModel model = new MyPromotionModel();
 			Promotion promotion = promotions[index];
+			if (promotion == null) {
+				continue;
+			}
 			model.setDescription(promotion.getDescription());
 			model.setDuration(promotion.getDuration());
 			model.setId(promotion.getId());
@@ -128,6 +131,9 @@ public class EntityMapper {
 		for (int index = 0; index < size; index++) {
 			MyCouponModel model = new MyCouponModel();
 			Coupon coupon = coupons[index];
+			if (coupon == null) {
+				continue;
+			}
 			model.setDescription(coupon.getDescription());
 			model.setDuration(coupon.getDuration());
 			model.setId(coupon.getId());
@@ -336,7 +342,8 @@ public class EntityMapper {
 		
 		model.setRemarks(order.getRemarks());
 		model.setServiceName(serviceName);
-		model.setStatus(OrderStatusCode.getStatusName(order.getStatusCode()));
+		model.setStatus(order.getStatus());
+		model.setStatusCode(order.getStatusCode());
 		VehicleCategoryModel vehicleCategoryModel = new VehicleCategoryModel();
 		vehicleCategoryModel.setDefault(true);
 		vehicleCategoryModel.setId(vehicleCategory.getId());
@@ -348,6 +355,9 @@ public class EntityMapper {
 		vehicleTypeModel.setId(vehicleType.getId());
 		vehicleTypeModel.setName(vehicleType.getName());
 		model.setVehicleType(vehicleTypeModel);
+		
+		model.setPrice(order.getPrice());
+		model.setDiscountedPrice(order.getDiscountedPrice());
 		
 		return model;
 	}

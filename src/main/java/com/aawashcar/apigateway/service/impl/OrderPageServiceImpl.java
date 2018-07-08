@@ -2,11 +2,8 @@ package com.aawashcar.apigateway.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
@@ -27,22 +24,7 @@ import com.aawashcar.apigateway.service.OrderPageService;
 import com.aawashcar.apigateway.util.EntityMapper;
 
 @Service()
-public class OrderPageServiceImpl implements OrderPageService {
-
-	@Autowired
-	private RestTemplate restTemplate;
-
-	@Value("${mcw.service.oms.url.prefix}")
-	private String omsUrlPrefix;
-
-	@Value("${mcw.service.crm.url.prefix}")
-	private String crmUrlPrefix;
-
-	@Value("${mcw.service.ops.url.prefix}")
-	private String opsUrlPrefix;
-
-	@Value("${mcw.service.prom.url.prefix}")
-	private String promUrlPrefix;
+public class OrderPageServiceImpl extends BaseService implements OrderPageService {
 
 	@Override
 	public List<OrderSummaryModel> myOrderSummaryList(String validId, int limit) {

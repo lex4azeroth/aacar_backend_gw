@@ -1,40 +1,36 @@
 package com.aawashcar.apigateway.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import com.aawashcar.apigateway.entity.City;
+import com.aawashcar.apigateway.entity.Coupon;
+import com.aawashcar.apigateway.entity.District;
 import com.aawashcar.apigateway.entity.Location;
 import com.aawashcar.apigateway.entity.Order;
+import com.aawashcar.apigateway.entity.Promotion;
+import com.aawashcar.apigateway.entity.Province;
+import com.aawashcar.apigateway.entity.ResidentialQuarter;
 import com.aawashcar.apigateway.entity.User;
+import com.aawashcar.apigateway.entity.Vehicle;
+import com.aawashcar.apigateway.entity.VehicleCategory;
+import com.aawashcar.apigateway.entity.VehicleType;
 import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.entity.Worker;
 import com.aawashcar.apigateway.entity.WorkerRemark;
 import com.aawashcar.apigateway.model.AssignedOrder;
+import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.WasherActionModel;
 import com.aawashcar.apigateway.model.WasherActionResponse;
 import com.aawashcar.apigateway.model.WasherInfo;
 import com.aawashcar.apigateway.model.WasherMainPageInfo;
 import com.aawashcar.apigateway.service.WasherPageService;
+import com.aawashcar.apigateway.util.EntityMapper;
 import com.aawashcar.apigateway.util.OrderStatusCode;
 
 @Service()
-public class WasherPageServiceImpl implements WasherPageService {
-
-	@Value("${mcw.service.crm.url.prefix}")
-	private String crmUrlPrefix;
-	
-	@Value("${mcw.service.oms.url.prefix}")
-	private String omsUrlPrefix;
-
-	@Value("${mcw.service.ops.url.prefix}")
-	private String opsUrlPrefix;
-	
-	@Autowired
-	private RestTemplate restTemplate;
+public class WasherPageServiceImpl extends BaseService implements WasherPageService {
 	
 	@Override
 	public WasherMainPageInfo login(String validId) {
@@ -113,6 +109,68 @@ public class WasherPageServiceImpl implements WasherPageService {
 
 		return user;
 	}
+	
+	@Override
+	public OrderDetailModel orderDetail(int orderId) {
+
+		City city = null;
+		District district = null;
+		Province province = null;
+		ResidentialQuarter resiQuarter = null;
+		VehicleCategory vehicleCategory = null;
+		VehicleType vehicleType = null;
+		WashCarService washCarService = null;
+
+
+			// get order by order id;
+			String url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
+			Order order = restTemplate.getForObject(url, Order.class);
+
+			url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
+			washCarService = restTemplate.getForObject(url, WashCarService.class);
+
+			url = opsUrlPrefix + "vehicle/vehiclecategory/" + String.valueOf(order.getVehicleId());
+			vehicleCategory = restTemplate.getForObject(url, VehicleCategory.class);
+
+			url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
+			vehicleType = restTemplate.getForObject(url, VehicleType.class);
+
+			url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
+			province = restTemplate.getForObject(url, Province.class);
+
+			url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
+			city = restTemplate.getForObject(url, City.class);
+
+			url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
+			district = restTemplate.getForObject(url, District.class);
+
+			url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
+			resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+
+			url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
+			Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
+			
+			url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
+			Promotion promotion = restTemplate.getForObject(url, Promotion.class);
+			Promotion[] promotions = {promotion};
+
+			url = promUrlPrefix + "coupon/" + String.valueOf(order.getCountyId());
+			Coupon coupon = restTemplate.getForObject(url, Coupon.class);
+			Coupon[] coupons = {coupon};
+
+			return EntityMapper.buildOrderDetailInfo(
+			                                         order,
+			                                         washCarService.getName(),
+			                                         vehicle.getColor(),
+			                                         vehicleCategory,
+			                                         vehicleType,
+			                                         province,
+			                                         city,
+			                                         district,
+			                                         resiQuarter,
+			                                         coupons,
+			                                         promotions);
+	}
 
 	@Override
 	public WasherActionResponse takeOrder(WasherActionModel model) {
@@ -154,6 +212,27 @@ public class WasherPageServiceImpl implements WasherPageService {
 	@Override
 	public WorkerRemark[] listRemarks() {
 		String url = opsUrlPrefix + "worker/remarks/listall";
+		ResponseEntity<WorkerRemark[]> workeRemarkResponseEntity = restTemplate.getForEntity(url, WorkerRemark[].class);
+		return (WorkerRemark[]) workeRemarkResponseEntity.getBody();
+	}
+
+	@Override
+	public WorkerRemark[] listAccpetRemarks() {
+		String url = opsUrlPrefix + "worker/remarks/accept/list";
+		ResponseEntity<WorkerRemark[]> workeRemarkResponseEntity = restTemplate.getForEntity(url, WorkerRemark[].class);
+		return (WorkerRemark[]) workeRemarkResponseEntity.getBody();
+	}
+
+	@Override
+	public WorkerRemark[] listRejectRemarks() {
+		String url = opsUrlPrefix + "worker/remarks/reject/list";
+		ResponseEntity<WorkerRemark[]> workeRemarkResponseEntity = restTemplate.getForEntity(url, WorkerRemark[].class);
+		return (WorkerRemark[]) workeRemarkResponseEntity.getBody();
+	}
+
+	@Override
+	public WorkerRemark[] listCompleteRemarks() {
+		String url = opsUrlPrefix + "worker/remarks/complete/list";
 		ResponseEntity<WorkerRemark[]> workeRemarkResponseEntity = restTemplate.getForEntity(url, WorkerRemark[].class);
 		return (WorkerRemark[]) workeRemarkResponseEntity.getBody();
 	}

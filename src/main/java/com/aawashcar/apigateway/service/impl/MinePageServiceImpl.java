@@ -2,11 +2,8 @@ package com.aawashcar.apigateway.service.impl;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.aawashcar.apigateway.entity.Coupon;
 import com.aawashcar.apigateway.entity.Promotion;
@@ -17,15 +14,7 @@ import com.aawashcar.apigateway.service.MinePageService;
 import com.aawashcar.apigateway.util.EntityMapper;
 
 @Service()
-public class MinePageServiceImpl implements MinePageService {
-	@Autowired
-	private RestTemplate restTemplate;
-
-	@Value("${mcw.service.prom.url.prefix}")
-	private String promUrlPrefix;
-	
-	@Value("${mcw.service.crm.url.prefix}")
-	private String crmUrlPrefix;
+public class MinePageServiceImpl extends BaseService implements MinePageService {
 
 	@Override
 	public List<MyPromotionModel> listMyPromotionModels(String validId) {

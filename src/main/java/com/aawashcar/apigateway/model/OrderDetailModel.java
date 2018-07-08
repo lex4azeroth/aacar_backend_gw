@@ -13,10 +13,13 @@ public class OrderDetailModel {
 	private String color;
 	private String adress;
 	private String status;
+	private int statusCode;
 	private DefaultAddressModel defalutAddress;
 	private String remarks;
 	private List<MyCouponModel> coupons;
 	private List<MyPromotionModel> promotions;
+	private double price;
+	private double discountedPrice;
 
 	public int getOrderId() {
 		return orderId;
@@ -120,5 +123,29 @@ public class OrderDetailModel {
 
 	public void setPromotions(List<MyPromotionModel> promotions) {
 		this.promotions = promotions;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	public double getDiscountedPrice() {
+		return discountedPrice;
+	}
+
+	public void setDiscountedPrice(double discountedPrice) {
+		this.discountedPrice = discountedPrice;
+	}
+
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public void setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
 	}
 }

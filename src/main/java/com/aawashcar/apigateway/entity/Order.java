@@ -12,6 +12,7 @@ public class Order extends BaseEntity {
 	private Timestamp orderTime;
 	private Timestamp completedTime;
 	private int statusCode;
+	private String status;
 	private String remarks;
 	private double price;
 	private boolean invoiceStatus;
@@ -22,7 +23,9 @@ public class Order extends BaseEntity {
 	private int districtId;
 	private int resiQuartId;
 	private int locationId;
-
+	private int couponId;
+	private int promotionId;
+	
 	public String getOrderNumber() {
 		return orderNumber;
 	}
@@ -173,6 +176,30 @@ public class Order extends BaseEntity {
 
 	public void setLocationId(int locationId) {
 		this.locationId = locationId;
+	}
+
+	public int getCouponId() {
+		return couponId;
+	}
+
+	public void setCouponId(int couponId) {
+		this.couponId = couponId;
+	}
+
+	public int getPromotionId() {
+		return promotionId;
+	}
+
+	public void setPromotionId(int promotionId) {
+		this.promotionId = promotionId;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }
