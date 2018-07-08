@@ -86,6 +86,7 @@ public class WasherPageServiceImpl implements WasherPageService {
 				assignedOrder.setOrderNumber(order.getOrderNumber());
 				assignedOrder.setRemarks(order.getRemarks());
 				assignedOrder.setStatus(OrderStatusCode.getStatusName(order.getStatusCode()));
+				assignedOrder.setStatusCode(order.getStatusCode());
 				
 				washerMainPageInfo.setAssignedOrder(assignedOrder);
 			}

@@ -11,6 +11,7 @@ public class AssignedOrder {
 	private Timestamp bookTime;
 	private String address;
 	private String status;
+	private int statusCode;
 	private String customerPhone;
 	private String customerFirstName;
 	private String customerLastName;
@@ -121,6 +122,14 @@ public class AssignedOrder {
 
 	public void setLatitude(BigDecimal latitude) {
 		this.latitude = latitude;
+	}
+
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public void setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
 	}
 
 }
