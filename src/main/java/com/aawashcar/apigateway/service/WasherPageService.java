@@ -14,6 +14,8 @@ public interface WasherPageService {
 	
 	WasherActionResponse rejectOrder(WasherActionModel model);
 	
+	WasherActionResponse arrivedOrder(WasherActionModel model);
+	
 	WasherActionResponse completeOrder(WasherActionModel model);
 	
 	WorkerRemark[] listRemarks();

@@ -174,14 +174,17 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 
 	@Override
 	public WasherActionResponse takeOrder(WasherActionModel model) {
-		// {orderid}/{remarksid}/{workerid}
 		int workerId = isWorker(model.getValidId());
 		String url = opsUrlPrefix + "worker/takeorder/%s/%s/%s";
 		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
-		ResponseEntity<Integer> response = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
+		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
 		
 		WasherActionResponse actionResponse = new WasherActionResponse();
-		actionResponse.setStatus(response.getBody());
+		
+		int statusCode = codeResponse.getBody().intValue();
+		actionResponse.setStatusCode(statusCode);
+		actionResponse.setStatus(getStatusName(statusCode));
+		
 		return actionResponse;
 	}
 
@@ -190,10 +193,30 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		int workerId = isWorker(model.getValidId());
 		String url = opsUrlPrefix + "worker/rejectorder/%s/%s/%s";
 		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
-		ResponseEntity<Integer> response = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
+		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
 		
 		WasherActionResponse actionResponse = new WasherActionResponse();
-		actionResponse.setStatus(response.getBody());
+		
+		int statusCode = codeResponse.getBody().intValue();
+		actionResponse.setStatusCode(statusCode);
+		actionResponse.setStatus(getStatusName(statusCode));
+		
+		return actionResponse;
+	}
+	
+	@Override
+	public WasherActionResponse arrivedOrder(WasherActionModel model) {
+		int workerId = isWorker(model.getValidId());
+		String url = opsUrlPrefix + "worker/arrivedorder/%s/%s/%s";
+		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
+		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
+		
+		WasherActionResponse actionResponse = new WasherActionResponse();
+		
+		int statusCode = codeResponse.getBody().intValue();
+		actionResponse.setStatusCode(statusCode);
+		actionResponse.setStatus(getStatusName(statusCode));
+		
 		return actionResponse;
 	}
 
@@ -202,11 +225,21 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		int workerId = isWorker(model.getValidId());
 		String url = opsUrlPrefix + "worker/completeorder/%s/%s/%s";
 		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
-		ResponseEntity<Integer> response = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
+		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
 		
 		WasherActionResponse actionResponse = new WasherActionResponse();
-		actionResponse.setStatus(response.getBody());
+
+		int statusCode = codeResponse.getBody().intValue();
+		actionResponse.setStatusCode(statusCode);
+		actionResponse.setStatus(getStatusName(statusCode));
+		
 		return actionResponse;
+	}
+	
+	private String getStatusName(int code) {
+		String url = omsUrlPrefix + "order/status/" + String.valueOf(code);
+		ResponseEntity<String> valueResponse = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+		return valueResponse.getBody();
 	}
 
 	@Override

@@ -39,6 +39,11 @@ public class WasherPageController {
 		return service.rejectOrder(actionModel);
 	}
 	
+	@RequestMapping(value="main/arrivedorder", method = RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE)
+	public WasherActionResponse arrivedOrder(@RequestBody WasherActionModel actionModel) {
+		return service.arrivedOrder(actionModel);
+	}
+	
 	@RequestMapping(value="main/completeorder", method = RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public WasherActionResponse completeOrder(@RequestBody WasherActionModel actionModel) {
 		return service.completeOrder(actionModel);
