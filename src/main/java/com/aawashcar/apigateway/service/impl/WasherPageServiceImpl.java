@@ -17,6 +17,7 @@ import com.aawashcar.apigateway.entity.Vehicle;
 import com.aawashcar.apigateway.entity.VehicleCategory;
 import com.aawashcar.apigateway.entity.VehicleType;
 import com.aawashcar.apigateway.entity.WashCarService;
+import com.aawashcar.apigateway.entity.WasherOrderSummary;
 import com.aawashcar.apigateway.entity.Worker;
 import com.aawashcar.apigateway.entity.WorkerRemark;
 import com.aawashcar.apigateway.model.AssignedOrder;
@@ -268,5 +269,14 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		String url = opsUrlPrefix + "worker/remarks/complete/list";
 		ResponseEntity<WorkerRemark[]> workeRemarkResponseEntity = restTemplate.getForEntity(url, WorkerRemark[].class);
 		return (WorkerRemark[]) workeRemarkResponseEntity.getBody();
+	}
+
+	@Override
+	public WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int size) {
+		int workerId = isWorker(validId);
+		String url = opsUrlPrefix + "worker/orders/completedorderlist/" + String.valueOf(workerId)  + "/" + String.valueOf(size);
+		ResponseEntity<WasherOrderSummary[]> orderSummaryResponseEntity = 
+						restTemplate.getForEntity(url, WasherOrderSummary[].class);
+		return (WasherOrderSummary[]) orderSummaryResponseEntity.getBody();
 	}
 }

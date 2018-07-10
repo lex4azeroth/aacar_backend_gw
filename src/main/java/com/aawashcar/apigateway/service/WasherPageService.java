@@ -1,5 +1,6 @@
 package com.aawashcar.apigateway.service;
 
+import com.aawashcar.apigateway.entity.WasherOrderSummary;
 import com.aawashcar.apigateway.entity.WorkerRemark;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.WasherActionModel;
@@ -27,4 +28,6 @@ public interface WasherPageService {
 	WorkerRemark[] listCompleteRemarks();
 	
 	OrderDetailModel orderDetail(int orderId);
+	
+	WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int status);
 }

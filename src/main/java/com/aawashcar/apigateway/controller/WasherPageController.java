@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.aawashcar.apigateway.entity.WasherOrderSummary;
 import com.aawashcar.apigateway.entity.WorkerRemark;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.WasherActionModel;
@@ -73,4 +74,11 @@ public class WasherPageController {
 	public OrderDetailModel getOrderDetail(@PathVariable("id") int id) {
 		return service.orderDetail(id);
 	}
+	
+	@RequestMapping(value="order/completedlist/{validid}/{size}", method = RequestMethod.GET)
+	public WasherOrderSummary[] listCompletedOrderSummary(@PathVariable("validid") String validId, 
+	                                                      @PathVariable("size") int size) {
+		return service.listWasherCompletedOrderSummary(validId, size)	;
+	}
+	
 }
