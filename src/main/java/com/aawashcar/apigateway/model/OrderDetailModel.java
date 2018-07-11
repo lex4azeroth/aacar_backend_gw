@@ -7,7 +7,7 @@ public class OrderDetailModel {
 	private int orderId;
 	private String orderNumber;
 	private String serviceName;
-	private Timestamp bookTime;
+	private String bookTime;
 	private VehicleTypeModel vehicleType;
 	private VehicleCategoryModel vehicleCategory;
 	private String color;
@@ -45,11 +45,11 @@ public class OrderDetailModel {
 		this.serviceName = serviceName;
 	}
 
-	public Timestamp getBookTime() {
+	public String getBookTime() {
 		return bookTime;
 	}
 
-	public void setBookTime(Timestamp bookTime) {
+	public void setBookTime(String bookTime) {
 		this.bookTime = bookTime;
 	}
 

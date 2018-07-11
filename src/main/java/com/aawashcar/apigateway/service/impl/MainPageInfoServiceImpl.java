@@ -20,6 +20,7 @@ import com.aawashcar.apigateway.entity.VehicleCategory;
 import com.aawashcar.apigateway.entity.VehicleType;
 import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.model.DistrictModel;
+import com.aawashcar.apigateway.model.DistrictOnlyModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.OrderModel;
 import com.aawashcar.apigateway.model.ResidentialQuarterModel;
@@ -100,15 +101,15 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 	}
 
 	@Override
-	public List<DistrictModel> listDistricts(int provinceId, int cityId) {
+	public List<DistrictOnlyModel> listDistrictsOnly(int provinceId, int cityId) {
 		String url = opsUrlPrefix + "location/district/listall/" + String.valueOf(provinceId) + "/" +
 		             String.valueOf(cityId);
 		ResponseEntity<District[]> districtResponseEntity = restTemplate.getForEntity(url, District[].class);
 		District[] districts = districtResponseEntity.getBody();
 		int size = districts.length;
-		List<DistrictModel> districtModels = new ArrayList<>();
+		List<DistrictOnlyModel> districtModels = new ArrayList<>();
 		for (int index = 0; index < size; index++) {
-			districtModels.add(EntityMapper.convertDistrictToModel(districts[index]));
+			districtModels.add(EntityMapper.convertDistrictOnlyToModel(districts[index]));
 		}
 
 		return districtModels;
@@ -142,18 +143,19 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 		// 1. get user id or create new user url: user/uuid-test-2049/12312344423
 		String url = "%s/user/%s";
 
-		url = String.format(url, crmUrlPrefix, orderModel.getUuid());
+		url = String.format(url, crmUrlPrefix, orderModel.getValidId());
 		User user = restTemplate.getForObject(url, User.class);
 		int userId = user.getId();
 
 		if (userId <= 0) {
-			url = crmUrlPrefix + "user/" + orderModel.getUuid() + "/" + orderModel.getPhoneNumber();
+			url = crmUrlPrefix + "user/" + orderModel.getValidId() + "/" + orderModel.getPhoneNumber();
 			userId = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));
 		}
 		else {
 			// double check the phoneNumber in User and OrderModel are identical
 			if (!user.getPhoneNumber().equals(orderModel.getPhoneNumber())) {
-				throw new RuntimeException();
+//				throw new RuntimeException();
+				return -1;
 			}
 		}
 

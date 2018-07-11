@@ -4,7 +4,7 @@ public class DefaultAddressModel {
 	private CityModel city;
 	private ProvinceModel provicne;
 	private DistrictModel district;
-	private ResidentialQuarterModel residentialQuarter;
+//	private ResidentialQuarterModel residentialQuarter;
 	private String detailLocation;
 
 	public CityModel getCity() {
@@ -31,13 +31,13 @@ public class DefaultAddressModel {
 		this.district = district;
 	}
 
-	public ResidentialQuarterModel getResidentialQuarter() {
-		return residentialQuarter;
-	}
-
-	public void setResidentialQuarter(ResidentialQuarterModel residentialQuarter) {
-		this.residentialQuarter = residentialQuarter;
-	}
+//	public ResidentialQuarterModel getResidentialQuarter() {
+//		return residentialQuarter;
+//	}
+//
+//	public void setResidentialQuarter(ResidentialQuarterModel residentialQuarter) {
+//		this.residentialQuarter = residentialQuarter;
+//	}
 
 	public String getDetailLocation() {
 		return detailLocation;

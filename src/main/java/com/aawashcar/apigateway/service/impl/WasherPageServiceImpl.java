@@ -61,7 +61,7 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 				
 				AssignedOrder assignedOrder = new AssignedOrder();
 				assignedOrder.setAddress(order.getDetailLocation());
-				assignedOrder.setBookTime(order.getBookTime());
+				assignedOrder.setBookTime(EntityMapper.formatTimestamp(order.getBookTime()));
 				
 				url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
 				User user = restTemplate.getForObject(url, User.class);

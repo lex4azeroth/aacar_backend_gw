@@ -1,8 +1,10 @@
 package com.aawashcar.apigateway.util;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.aawashcar.apigateway.entity.City;
@@ -22,6 +24,7 @@ import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.model.CityModel;
 import com.aawashcar.apigateway.model.DefaultAddressModel;
 import com.aawashcar.apigateway.model.DistrictModel;
+import com.aawashcar.apigateway.model.DistrictOnlyModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.MiniAuthModel;
 import com.aawashcar.apigateway.model.MyCouponModel;
@@ -38,6 +41,13 @@ import com.aawashcar.apigateway.model.VehicleCategoryModel;
 import com.aawashcar.apigateway.model.VehicleTypeModel;
 
 public class EntityMapper {
+	
+	public static final SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	public static String formatTimestamp(Timestamp timestamp) {
+//		sdf.format(Calendar.getInstance().new Date(timestamp.getTime())
+		return sdf.format(timestamp);
+	}
 
 	public static UserModel convertUserToModel(User user) {
 		UserModel userModel = new UserModel();
@@ -94,7 +104,7 @@ public class EntityMapper {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(promotion.getCreatedTime());
 			calendar.add(Calendar.MONTH, promotion.getDuration());
-			model.setValidatedTime(new Timestamp(calendar.getTimeInMillis()));
+			model.setValidatedTime(formatTimestamp(new Timestamp(calendar.getTimeInMillis())));
 			
 			myPromotions.add(model);
 		}
@@ -110,11 +120,11 @@ public class EntityMapper {
 			OrderSummary orderSummary = orderSummarys[index];
 			model.setOrderNumber(orderSummary.getOrderNumber());
 			model.setAddress(orderSummary.getDetailLocation());
-			model.setBookTime(orderSummary.getBookTime());
-			model.setCompletedTime(orderSummary.getCompletedTime());
+			model.setBookTime(formatTimestamp(orderSummary.getBookTime()));
+			model.setCompletedTime(formatTimestamp(orderSummary.getCompletedTime()));
 			model.setDiscountedPrice(orderSummary.getDiscountedPrice());
 			model.setId(orderSummary.getId());
-			model.setOrderTime(orderSummary.getOrderTime());
+			model.setOrderTime(formatTimestamp(orderSummary.getOrderTime()));
 			model.setPrice(orderSummary.getPrice());
 			model.setRemarks(orderSummary.getRemarks());
 			model.setStatus(orderSummary.getOrderStatus());
@@ -142,7 +152,7 @@ public class EntityMapper {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(coupon.getCreatedTime());
 			calendar.add(Calendar.MONTH, coupon.getDuration());
-			model.setValidatedTime(new Timestamp(calendar.getTimeInMillis()));
+			model.setValidatedTime(formatTimestamp(new Timestamp(calendar.getTimeInMillis())));
 			
 			myCoupons.add(model);
 		}
@@ -158,8 +168,18 @@ public class EntityMapper {
 		return model;
 	}
 
-	public static DistrictModel convertDistrictToModel(District district) {
+	public static DistrictModel convertDistrictToModel(District district, 
+	                                                   ResidentialQuarterModel resiQuarterModel) {
 		DistrictModel model = new DistrictModel();
+		model.setId(district.getDistrictId());
+		model.setName(district.getName());
+		model.setResiQuarterModel(resiQuarterModel);
+
+		return model;
+	}
+	
+	public static DistrictOnlyModel convertDistrictOnlyToModel(District district) {
+		DistrictOnlyModel model = new DistrictOnlyModel();
 		model.setId(district.getDistrictId());
 		model.setName(district.getName());
 
@@ -234,7 +254,7 @@ public class EntityMapper {
 	                                             Vehicle vehicle) {
 		MainPageInfo mainPageInfo = new MainPageInfo();
 		mainPageInfo.setUser(convertUserToModel(user));
-		mainPageInfo.setBookedTime(order.getBookTime());
+		mainPageInfo.setBookedTime(formatTimestamp(order.getBookTime()));
 		mainPageInfo.setServices(convertServiceToModel(services));
 		mainPageInfo.setVehicleCategories(convertVehicleCategoryToModel(categories));
 		mainPageInfo.setVehicleTypes(convertVehicleTypeToModel(types));
@@ -270,9 +290,9 @@ public class EntityMapper {
 
 		DefaultAddressModel defaultAddress = new DefaultAddressModel();
 		defaultAddress.setCity(convertCityToModel(city));
-		defaultAddress.setDistrict(convertDistrictToModel(district));
+		defaultAddress.setDistrict(convertDistrictToModel(district, convertResidentialQuarterToModel(resiQuart)));
 		defaultAddress.setProvicne(convertProvinceToModel(province));
-		defaultAddress.setResidentialQuarter(convertResidentialQuarterToModel(resiQuart));
+//		defaultAddress.setResidentialQuarter(convertResidentialQuarterToModel(resiQuart));
 		defaultAddress.setDetailLocation(order.getDetailLocation());
 
 		mainPageInfo.setDefaultAddress(defaultAddress);
@@ -299,9 +319,9 @@ public class EntityMapper {
 
 		DefaultAddressModel defaultAddress = new DefaultAddressModel();
 		defaultAddress.setCity(convertCityToModel(city));
-		defaultAddress.setDistrict(convertDistrictToModel(district));
+		defaultAddress.setDistrict(convertDistrictToModel(district, convertResidentialQuarterToModel(resiQuart)));
 		defaultAddress.setProvicne(convertProvinceToModel(province));
-		defaultAddress.setResidentialQuarter(convertResidentialQuarterToModel(resiQuart));
+//		defaultAddress.setResidentialQuarter(convertResidentialQuarterToModel(resiQuart));
 		defaultAddress.setDetailLocation("");
 
 		mainPageInfo.setDefaultAddress(defaultAddress);
@@ -322,7 +342,7 @@ public class EntityMapper {
 	                                                    Promotion[] promotions) {
 		OrderDetailModel model = new OrderDetailModel();
 		model.setAdress(order.getDetailLocation());
-		model.setBookTime(order.getBookTime());
+		model.setBookTime(formatTimestamp(order.getBookTime()));
 		model.setColor(color);
 		
 		model.setCoupons(convertCouponsToMyModel(coupons));
@@ -330,9 +350,9 @@ public class EntityMapper {
 		DefaultAddressModel defaultAddressModel = new DefaultAddressModel();
 		defaultAddressModel.setCity(convertCityToModel(city));
 		defaultAddressModel.setDetailLocation(order.getDetailLocation());
-		defaultAddressModel.setDistrict(convertDistrictToModel(district));
+		defaultAddressModel.setDistrict(convertDistrictToModel(district, convertResidentialQuarterToModel(residentialQuarter)));
 		defaultAddressModel.setProvicne(convertProvinceToModel(province));
-		defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
+//		defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
 		model.setDefalutAddress(defaultAddressModel);
 		
 		model.setOrderId(order.getId());
@@ -363,8 +383,8 @@ public class EntityMapper {
 	}
 
 	public static void convertOrderModelToOrder(OrderModel model, Order order) {
-		order.setBookTime(model.getBookTime());
-		order.setOrderTime(model.getOrderTime());;
+		order.setBookTime(Timestamp.valueOf(model.getBookTime()));
+		order.setOrderTime(Timestamp.valueOf(model.getOrderTime()));
 		order.setCityId(model.getCityId());
 		order.setCountyId(1); // 默认为1，上海
 		order.setDetailLocation(model.getDetailLocation());

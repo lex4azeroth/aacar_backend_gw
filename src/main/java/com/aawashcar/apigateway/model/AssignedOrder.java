@@ -8,7 +8,7 @@ public class AssignedOrder {
 	private int orderId;
 	private String orderNumber;
 	private String serviceName;
-	private Timestamp bookTime;
+	private String bookTime;
 	private String address;
 	private String status;
 	private int statusCode;
@@ -44,11 +44,11 @@ public class AssignedOrder {
 		this.serviceName = serviceName;
 	}
 
-	public Timestamp getBookTime() {
+	public String getBookTime() {
 		return bookTime;
 	}
 
-	public void setBookTime(Timestamp bookTime) {
+	public void setBookTime(String bookTime) {
 		this.bookTime = bookTime;
 	}
 

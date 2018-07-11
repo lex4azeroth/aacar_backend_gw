@@ -14,7 +14,7 @@ public class MainPageInfo {
 
 	private List<ServiceModel> services;
 
-	private Timestamp bookedTime;
+	private String bookedTime;
 
 	private DefaultAddressModel defaultAddress;
 	
@@ -60,11 +60,11 @@ public class MainPageInfo {
 		this.services = services;
 	}
 
-	public Timestamp getBookedTime() {
+	public String getBookedTime() {
 		return bookedTime;
 	}
 
-	public void setBookedTime(Timestamp bookedTime) {
+	public void setBookedTime(String bookedTime) {
 		this.bookedTime = bookedTime;
 	}
 

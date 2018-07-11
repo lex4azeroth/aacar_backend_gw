@@ -6,11 +6,11 @@ public class OrderSummaryModel {
 	private int id;
 	private String orderNumber;
 	private String serviceName;
-	private Timestamp bookTime;
-	private Timestamp orderTime;
+	private String bookTime;
+	private String orderTime;
 	private String address;
 	private String status;
-	private Timestamp completedTime;
+	private String completedTime;
 	private double price;
 	private double discountedPrice;
 	private String remarks;
@@ -31,11 +31,11 @@ public class OrderSummaryModel {
 		this.serviceName = serviceName;
 	}
 
-	public Timestamp getBookTime() {
+	public String getBookTime() {
 		return bookTime;
 	}
 
-	public void setBookTime(Timestamp bookTime) {
+	public void setBookTime(String bookTime) {
 		this.bookTime = bookTime;
 	}
 
@@ -55,11 +55,11 @@ public class OrderSummaryModel {
 		this.status = status;
 	}
 
-	public Timestamp getCompletedTime() {
+	public String getCompletedTime() {
 		return completedTime;
 	}
 
-	public void setCompletedTime(Timestamp completedTime) {
+	public void setCompletedTime(String completedTime) {
 		this.completedTime = completedTime;
 	}
 
@@ -87,11 +87,11 @@ public class OrderSummaryModel {
 		this.remarks = remarks;
 	}
 
-	public Timestamp getOrderTime() {
+	public String getOrderTime() {
 		return orderTime;
 	}
 
-	public void setOrderTime(Timestamp orderTime) {
+	public void setOrderTime(String orderTime) {
 		this.orderTime = orderTime;
 	}
 

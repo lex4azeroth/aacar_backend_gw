@@ -3,13 +3,13 @@ package com.aawashcar.apigateway.model;
 import java.sql.Timestamp;
 
 public class MyCouponModel extends CouponModel {
-	private Timestamp validatedTime;
+	private String validatedTime;
 
-	public Timestamp getValidatedTime() {
+	public String getValidatedTime() {
 		return validatedTime;
 	}
 
-	public void setValidatedTime(Timestamp validatedTime) {
+	public void setValidatedTime(String validatedTime) {
 		this.validatedTime = validatedTime;
 	}
 

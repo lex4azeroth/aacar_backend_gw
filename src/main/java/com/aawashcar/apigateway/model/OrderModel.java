@@ -3,14 +3,14 @@ package com.aawashcar.apigateway.model;
 import java.sql.Timestamp;
 
 public class OrderModel {
-	private String uuid;
+	private String validId;
 	private double price;
 	private int vehicleType;
 	private int vehicleCategory;
 	private String color;
 	private int serviceId;
-	private Timestamp bookTime;
-	private Timestamp orderTime;
+	private String bookTime;
+	private String orderTime;
 	private int provinceId;
 	private int cityId;
 	private int districtId;
@@ -19,12 +19,12 @@ public class OrderModel {
 	private String phoneNumber;
 	private String license;
 
-	public String getUuid() {
-		return uuid;
+	public String getValidId() {
+		return validId;
 	}
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
+	public void setValidId(String validId) {
+		this.validId = validId;
 	}
 
 	public double getPrice() {
@@ -67,19 +67,19 @@ public class OrderModel {
 		this.serviceId = serviceId;
 	}
 
-	public Timestamp getBookTime() {
+	public String getBookTime() {
 		return bookTime;
 	}
 
-	public void setBookTime(Timestamp bookTime) {
+	public void setBookTime(String bookTime) {
 		this.bookTime = bookTime;
 	}
 
-	public Timestamp getOrderTime() {
+	public String getOrderTime() {
 		return orderTime;
 	}
 
-	public void setOrderTime(Timestamp orderTime) {
+	public void setOrderTime(String orderTime) {
 		this.orderTime = orderTime;
 	}
 
