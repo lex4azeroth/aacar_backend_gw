@@ -18,7 +18,9 @@ import com.aawashcar.apigateway.entity.Vehicle;
 import com.aawashcar.apigateway.entity.VehicleCategory;
 import com.aawashcar.apigateway.entity.VehicleType;
 import com.aawashcar.apigateway.entity.WashCarService;
+import com.aawashcar.apigateway.entity.Worker;
 import com.aawashcar.apigateway.model.OrderDetailModel;
+import com.aawashcar.apigateway.model.OrderDetailWithWasherModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
 import com.aawashcar.apigateway.service.OrderPageService;
 import com.aawashcar.apigateway.util.EntityMapper;
@@ -132,5 +134,66 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		User user = restTemplate.getForObject(url, User.class);
 
 		return user;
+	}
+
+	@Override
+	public OrderDetailWithWasherModel orderDetailWithWasher(int orderId) {
+		City city = null;
+		District district = null;
+		Province province = null;
+		ResidentialQuarter resiQuarter = null;
+		VehicleCategory vehicleCategory = null;
+		VehicleType vehicleType = null;
+		WashCarService washCarService = null;
+
+		String url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
+		Order order = restTemplate.getForObject(url, Order.class);
+
+		url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
+		washCarService = restTemplate.getForObject(url, WashCarService.class);
+
+		url = opsUrlPrefix + "vehicle/vehiclecategory/" + String.valueOf(order.getVehicleId());
+		vehicleCategory = restTemplate.getForObject(url, VehicleCategory.class);
+
+		url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
+		vehicleType = restTemplate.getForObject(url, VehicleType.class);
+
+		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
+		province = restTemplate.getForObject(url, Province.class);
+
+		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
+		city = restTemplate.getForObject(url, City.class);
+
+		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
+		district = restTemplate.getForObject(url, District.class);
+
+		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
+		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+
+		url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
+		Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
+
+		url = promUrlPrefix + "coupon/" + String.valueOf(order.getCouponId());
+		Coupon coupon = restTemplate.getForObject(url, Coupon.class);
+		Coupon[] coupons = {coupon};
+
+		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
+		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
+		Promotion[] promotions = {promotion};
+		url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
+		Worker worker = restTemplate.getForObject(url, Worker.class);
+		return EntityMapper.buildOrderDetailWithWasher(
+		                                               order,
+		                                               washCarService.getName(),
+		                                               vehicle.getColor(),
+		                                               vehicleCategory,
+		                                               vehicleType,
+		                                               province,
+		                                               city,
+		                                               district,
+		                                               resiQuarter,
+		                                               coupons,
+		                                               promotions,
+		                                               worker);
 	}
 }

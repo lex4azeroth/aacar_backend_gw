@@ -34,4 +34,9 @@ public class OrderPageController {
 	                                            @PathVariable("validid") String validId) {
 		return orderPageService.myOrderDetail(id, validId);
 	}
+	
+	@RequestMapping(value = "detailwithwasher/{orderid}", method = RequestMethod.GET)
+	public OrderDetailModel myOrderDetail(@PathVariable("orderid") int id) {
+		return orderPageService.orderDetailWithWasher(id);
+	}
 }
