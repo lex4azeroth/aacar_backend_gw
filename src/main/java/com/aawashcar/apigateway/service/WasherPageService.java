@@ -30,4 +30,6 @@ public interface WasherPageService {
 	OrderDetailModel orderDetail(int orderId);
 	
 	WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int status);
+	
+	void apply(String validId, String phoneNumber);
 }

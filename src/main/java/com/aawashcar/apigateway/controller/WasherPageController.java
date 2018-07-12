@@ -25,6 +25,13 @@ public class WasherPageController {
 	@Autowired
 	private WasherPageService service;
 	
+	@RequestMapping(value="apply/{validid}/{phonenumber}", method = RequestMethod.POST)
+	public void apply(@PathVariable("validid") String validId, 
+	                  @PathVariable("phonenumber") String phoneNumber) {
+		service.apply(validId, phoneNumber);
+		
+	}
+	
 	@RequestMapping(value="main/login/{validid}", method = RequestMethod.GET)
 	public WasherMainPageInfo login(@PathVariable("validid") String validId) {
 		return service.login(validId);
@@ -78,7 +85,6 @@ public class WasherPageController {
 	@RequestMapping(value="order/completedlist/{validid}/{size}", method = RequestMethod.GET)
 	public WasherOrderSummary[] listCompletedOrderSummary(@PathVariable("validid") String validId, 
 	                                                      @PathVariable("size") int size) {
-		return service.listWasherCompletedOrderSummary(validId, size)	;
+		return service.listWasherCompletedOrderSummary(validId, size);
 	}
-	
 }

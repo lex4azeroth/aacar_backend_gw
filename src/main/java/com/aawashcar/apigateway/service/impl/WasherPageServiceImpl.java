@@ -1,8 +1,10 @@
 package com.aawashcar.apigateway.service.impl;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
@@ -20,6 +22,7 @@ import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.entity.WasherOrderSummary;
 import com.aawashcar.apigateway.entity.Worker;
 import com.aawashcar.apigateway.entity.WorkerRemark;
+import com.aawashcar.apigateway.exception.AAInnerServerError;
 import com.aawashcar.apigateway.model.AssignedOrder;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.WasherActionModel;
@@ -278,5 +281,21 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		ResponseEntity<WasherOrderSummary[]> orderSummaryResponseEntity = 
 						restTemplate.getForEntity(url, WasherOrderSummary[].class);
 		return (WasherOrderSummary[]) orderSummaryResponseEntity.getBody();
+	}
+
+	@Override
+	public void apply(String validId, String phoneNumber) {
+		// add valid id in crm_r_user_uuid
+		String url = crmUrlPrefix + "washer/apply/" + validId;
+		Integer addValidIdResponse = restTemplate.postForObject(url, null, Integer.class);
+		
+		// add phone number in ops_worker
+		url = opsUrlPrefix + "worker/apply/" + phoneNumber;
+		Integer addPhonenumberResponse = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));
+		
+		if (addValidIdResponse.intValue() != HttpStatus.OK.value() 
+						|| addPhonenumberResponse.intValue() != HttpStatus.OK.value()) {
+			throw new AAInnerServerError("申请注册洗车工失败");
+		}
 	}
 }
