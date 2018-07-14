@@ -13,4 +13,6 @@ public interface OrderPageService {
 	OrderDetailModel myOrderDetail(int orderId, String validId);
 	
 	OrderDetailWithWasherModel orderDetailWithWasher(int orderId);
+	
+	List<OrderDetailWithWasherModel> listAllOrderDetails();
 }

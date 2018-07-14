@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aawashcar.apigateway.model.OrderDetailModel;
+import com.aawashcar.apigateway.model.OrderDetailWithWasherModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
 import com.aawashcar.apigateway.service.OrderPageService;
 
@@ -36,7 +37,12 @@ public class OrderPageController {
 	}
 	
 	@RequestMapping(value = "detailwithwasher/{orderid}", method = RequestMethod.GET)
-	public OrderDetailModel myOrderDetail(@PathVariable("orderid") int id) {
+	public OrderDetailWithWasherModel myOrderDetail(@PathVariable("orderid") int id) {
 		return orderPageService.orderDetailWithWasher(id);
+	}
+	
+	@RequestMapping(value = "listall", method = RequestMethod.GET)
+	public List<OrderDetailWithWasherModel> listAll() {
+		return orderPageService.listAllOrderDetails();
 	}
 }
