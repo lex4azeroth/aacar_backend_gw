@@ -31,5 +31,5 @@ public interface WasherPageService {
 	
 	WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int status);
 	
-	void apply(String validId, String phoneNumber);
+	boolean apply(String validId, String phoneNumber);
 }

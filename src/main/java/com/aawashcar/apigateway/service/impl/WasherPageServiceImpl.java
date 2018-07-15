@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
@@ -284,7 +285,15 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 	}
 
 	@Override
-	public void apply(String validId, String phoneNumber) {
+	public boolean apply(String validId, String phoneNumber) {
+		if (StringUtils.isEmpty(validId) || StringUtils.isEmpty(phoneNumber)) {
+			return false;
+		}
+		
+		if ("null".equals(validId) || ("null").equals(phoneNumber)) {
+			return false;
+		}
+		
 		// add valid id in crm_r_user_uuid
 		String url = crmUrlPrefix + "washer/apply/" + validId;
 		Integer addValidIdResponse = restTemplate.postForObject(url, null, Integer.class);
@@ -293,9 +302,15 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		url = opsUrlPrefix + "worker/apply/" + phoneNumber;
 		Integer addPhonenumberResponse = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));
 		
-		if (addValidIdResponse.intValue() != HttpStatus.OK.value() 
-						|| addPhonenumberResponse.intValue() != HttpStatus.OK.value()) {
-			throw new AAInnerServerError("申请注册洗车工失败");
+//		if (addValidIdResponse.intValue() != HttpStatus.OK.value() 
+//						|| addPhonenumberResponse.intValue() != HttpStatus.OK.value()) {
+//			throw new AAInnerServerError("申请注册洗车工失败");
+//		}
+		
+		if (addValidIdResponse.intValue() > 0 && addPhonenumberResponse.intValue() > 0) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }

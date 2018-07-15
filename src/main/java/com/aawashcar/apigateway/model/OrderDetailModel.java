@@ -8,6 +8,8 @@ public class OrderDetailModel {
 	private String orderNumber;
 	private String serviceName;
 	private String bookTime;
+	private String completedTime;
+	private String createdTime;
 	private VehicleTypeModel vehicleType;
 	private VehicleCategoryModel vehicleCategory;
 	private String color;
@@ -147,5 +149,21 @@ public class OrderDetailModel {
 
 	public void setStatusCode(int statusCode) {
 		this.statusCode = statusCode;
+	}
+
+	public String getCompletedTime() {
+		return completedTime;
+	}
+
+	public void setCompletedTime(String completedTime) {
+		this.completedTime = completedTime;
+	}
+
+	public String getCreatedTime() {
+		return createdTime;
+	}
+
+	public void setCreatedTime(String createdTime) {
+		this.createdTime = createdTime;
 	}
 }

@@ -40,7 +40,6 @@ import com.aawashcar.apigateway.model.ServiceModel;
 import com.aawashcar.apigateway.model.UserModel;
 import com.aawashcar.apigateway.model.VehicleCategoryModel;
 import com.aawashcar.apigateway.model.VehicleTypeModel;
-import com.aawashcar.apigateway.model.WasherInfo;
 
 public class EntityMapper {
 
@@ -351,10 +350,14 @@ public class EntityMapper {
 	                                                                    ResidentialQuarter residentialQuarter,
 	                                                                    Coupon[] coupons,
 	                                                                    Promotion[] promotions,
-	                                                                    Worker worker) {
+	                                                                    Worker worker, 
+	                                                                    WashCarService washCarService, 
+	                                                                    User user) {
 		OrderDetailWithWasherModel model = new OrderDetailWithWasherModel();
 		model.setAdress(order.getDetailLocation());
-		model.setBookTime(formatTimestamp(order.getBookTime()));
+		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
+		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
+		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
 		model.setColor(color);
 
 		model.setCoupons(convertCouponsToMyModel(coupons));
@@ -392,6 +395,11 @@ public class EntityMapper {
 		model.setPrice(order.getPrice());
 		model.setDiscountedPrice(order.getDiscountedPrice());
 		model.setWasherInfo(worker);
+		
+		model.setWashCarService(washCarService);
+		
+		model.setUser(user);
+		
 		return model;
 	}
 	
@@ -410,7 +418,9 @@ public class EntityMapper {
 	                                                    Promotion[] promotions) {
 		OrderDetailModel model = new OrderDetailModel();
 		model.setAdress(order.getDetailLocation());
-		model.setBookTime(formatTimestamp(order.getBookTime()));
+		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
+		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
+		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
 		model.setColor(color);
 
 		model.setCoupons(convertCouponsToMyModel(coupons));

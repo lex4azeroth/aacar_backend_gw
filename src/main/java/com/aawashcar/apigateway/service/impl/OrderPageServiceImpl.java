@@ -183,6 +183,10 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		Promotion[] promotions = {promotion};
 		url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
 		Worker worker = restTemplate.getForObject(url, Worker.class);
+		
+		url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
+		User user = restTemplate.getForObject(url, User.class);
+		
 		return EntityMapper.buildOrderDetailWithWasher(
 		                                               order,
 		                                               washCarService.getName(),
@@ -195,7 +199,9 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		                                               resiQuarter,
 		                                               coupons,
 		                                               promotions,
-		                                               worker);
+		                                               worker, 
+		                                               washCarService, 
+		                                               user);
 	}
 
 	@Override
@@ -256,6 +262,10 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		Promotion[] promotions = {promotion};
 		url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
 		Worker worker = restTemplate.getForObject(url, Worker.class);
+		
+		url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
+		User user = restTemplate.getForObject(url, User.class);
+		
 		return EntityMapper.buildOrderDetailWithWasher(
 		                                               order,
 		                                               washCarService.getName(),
@@ -268,6 +278,8 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		                                               resiQuarter,
 		                                               coupons,
 		                                               promotions,
-		                                               worker);
+		                                               worker, 
+		                                               washCarService, 
+		                                               user);
 	}
 }

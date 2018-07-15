@@ -26,10 +26,9 @@ public class WasherPageController {
 	private WasherPageService service;
 	
 	@RequestMapping(value="apply/{validid}/{phonenumber}", method = RequestMethod.POST)
-	public void apply(@PathVariable("validid") String validId, 
+	public boolean apply(@PathVariable("validid") String validId, 
 	                  @PathVariable("phonenumber") String phoneNumber) {
-		service.apply(validId, phoneNumber);
-		
+		return service.apply(validId, phoneNumber);
 	}
 	
 	@RequestMapping(value="main/login/{validid}", method = RequestMethod.GET)
