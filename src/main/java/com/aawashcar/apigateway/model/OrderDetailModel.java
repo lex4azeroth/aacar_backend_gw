@@ -13,7 +13,7 @@ public class OrderDetailModel {
 	private VehicleTypeModel vehicleType;
 	private VehicleCategoryModel vehicleCategory;
 	private String color;
-	private String adress;
+	private String address;
 	private String status;
 	private int statusCode;
 	private DefaultAddressModel defalutAddress;
@@ -80,11 +80,11 @@ public class OrderDetailModel {
 	}
 
 	public String getAdress() {
-		return adress;
+		return address;
 	}
 
 	public void setAdress(String adress) {
-		this.adress = adress;
+		this.address = adress;
 	}
 
 	public String getStatus() {

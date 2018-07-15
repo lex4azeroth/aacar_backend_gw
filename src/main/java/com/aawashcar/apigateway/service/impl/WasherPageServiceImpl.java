@@ -299,7 +299,7 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		Integer addValidIdResponse = restTemplate.postForObject(url, null, Integer.class);
 		
 		// add phone number in ops_worker
-		url = opsUrlPrefix + "worker/apply/" + phoneNumber;
+		url = opsUrlPrefix + "worker/apply/" + phoneNumber + "/" + validId;
 		Integer addPhonenumberResponse = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));
 		
 //		if (addValidIdResponse.intValue() != HttpStatus.OK.value() 
