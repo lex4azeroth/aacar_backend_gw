@@ -1,5 +1,6 @@
 package com.aawashcar.apigateway.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aawashcar.apigateway.exception.AAInnerServerError;
+import com.aawashcar.apigateway.model.DistrictFullModel;
 import com.aawashcar.apigateway.model.DistrictOnlyModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.OrderIdModel;
@@ -34,12 +36,26 @@ public class MainPageController {
 	}
 
 	@RequestMapping(value = "district/{provinceId}/{cityId}", method = RequestMethod.GET)
-	public List<DistrictOnlyModel> listDistricts(@PathVariable(name = "provinceId") int provinceId,
+	public List<DistrictFullModel> listDistricts(@PathVariable(name = "provinceId") int provinceId,
 	                                         @PathVariable(name = "cityId") int cityId) {
 		provinceId = (provinceId <= 0) ? 1 : provinceId;
 		cityId = (cityId <= 0) ? 1 : cityId;
 
-		return service.listDistrictsOnly(provinceId, cityId);
+		List<DistrictOnlyModel> districtOnly = service.listDistrictsOnly(provinceId, cityId);
+		
+		int length = districtOnly.size();
+		List<DistrictFullModel> districts = new ArrayList<>();
+		for (int index = 0; index < length; index++) {
+			int districtId = districtOnly.get(index).getId();
+			List<ResidentialQuarterModel> resiQuarters = service.listResidentialQuarters(provinceId, cityId, districtId);
+			DistrictFullModel full = new DistrictFullModel();
+			full.setId(districtId);
+			full.setName(districtOnly.get(index).getName());
+			full.setResiQuarterModel(resiQuarters);
+			districts.add(full);
+		}
+		
+		return districts;
 	}
 
 	@RequestMapping(value = "residentialquarter/{provinceId}/{cityId}/{districtId}", method = RequestMethod.GET)

@@ -5,6 +5,7 @@ import java.util.List;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.OrderDetailWithWasherModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
+import com.aawashcar.apigateway.model.Pricing;
 
 public interface OrderPageService {
 
@@ -15,4 +16,6 @@ public interface OrderPageService {
 	OrderDetailWithWasherModel orderDetailWithWasher(int orderId);
 	
 	List<OrderDetailWithWasherModel> listAllOrderDetails();
+	
+	Pricing pricing(String validId, int orderId, int couponId, int promotionId);
 }

@@ -79,11 +79,11 @@ public class OrderDetailModel {
 		this.color = color;
 	}
 
-	public String getAdress() {
+	public String getAddress() {
 		return address;
 	}
 
-	public void setAdress(String adress) {
+	public void setAddress(String adress) {
 		this.address = adress;
 	}
 

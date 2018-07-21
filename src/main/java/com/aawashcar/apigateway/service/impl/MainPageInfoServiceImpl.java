@@ -187,11 +187,15 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 		else {
 			order.setVehicleId(vehicle.getId());
 		}
-
+		
+		// 3. add origin price
+		url = opsUrlPrefix + "wasshcarservice/service/originprice/" + String.valueOf(vehicle.getTypeId()) + "/" + String.valueOf(vehicle.getCategoryId()) + 
+				"/" + String.valueOf(orderModel.getServiceId());
+		Double originPrice = restTemplate.getForObject(url, Double.class);
+		order.setPrice(originPrice.doubleValue());
+		order.setDiscountedPrice(originPrice);
+		
 		url = omsUrlPrefix + "order/new";
-		// HttpHeaders headers = new HttpHeaders();
-		// headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-		// headers.add("Accept", MediaType.APPLICATION_JSON.toString());
 		HttpEntity<Order> postEntity = new HttpEntity<Order>(order, headers);
 		Integer orderId = restTemplate.postForObject(url, postEntity, Integer.class);
 

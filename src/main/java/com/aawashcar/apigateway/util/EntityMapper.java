@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
 import com.aawashcar.apigateway.entity.District;
@@ -47,6 +49,9 @@ public class EntityMapper {
 
 	public static String formatTimestamp(Timestamp timestamp) {
 		// sdf.format(Calendar.getInstance().new Date(timestamp.getTime())
+		if (timestamp == null) {
+			return null;
+		}
 		return sdf.format(timestamp);
 	}
 
@@ -354,7 +359,7 @@ public class EntityMapper {
 	                                                                    WashCarService washCarService, 
 	                                                                    User user) {
 		OrderDetailWithWasherModel model = new OrderDetailWithWasherModel();
-		model.setAdress(order.getDetailLocation());
+		model.setAddress(order.getDetailLocation());
 		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
 		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
 		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
@@ -417,7 +422,7 @@ public class EntityMapper {
 	                                                    Coupon[] coupons,
 	                                                    Promotion[] promotions) {
 		OrderDetailModel model = new OrderDetailModel();
-		model.setAdress(order.getDetailLocation());
+		model.setAddress(order.getDetailLocation());
 		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
 		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
 		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));

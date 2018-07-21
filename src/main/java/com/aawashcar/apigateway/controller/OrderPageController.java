@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.OrderDetailWithWasherModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
+import com.aawashcar.apigateway.model.Pricing;
 import com.aawashcar.apigateway.service.OrderPageService;
 
 @RequestMapping("order/")
@@ -44,5 +45,13 @@ public class OrderPageController {
 	@RequestMapping(value = "listall", method = RequestMethod.GET)
 	public List<OrderDetailWithWasherModel> listAll() {
 		return orderPageService.listAllOrderDetails();
+	}
+	
+	@RequestMapping(value = "pricing/{validid}/{orderid}/{couponid}/{promotionid}")
+	public Pricing pricing(@PathVariable("validid") String validId, 
+	                      @PathVariable("orderid") int orderId, 
+	                      @PathVariable("couponid") int couponId, 
+	                      @PathVariable("promotionid") int promotionId) {
+		return orderPageService.pricing(validId, orderId, couponId, promotionId);
 	}
 }

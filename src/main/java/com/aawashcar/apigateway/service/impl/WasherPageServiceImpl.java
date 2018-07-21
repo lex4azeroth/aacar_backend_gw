@@ -1,10 +1,8 @@
 package com.aawashcar.apigateway.service.impl;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.aawashcar.apigateway.entity.City;
@@ -23,7 +21,6 @@ import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.entity.WasherOrderSummary;
 import com.aawashcar.apigateway.entity.Worker;
 import com.aawashcar.apigateway.entity.WorkerRemark;
-import com.aawashcar.apigateway.exception.AAInnerServerError;
 import com.aawashcar.apigateway.model.AssignedOrder;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.WasherActionModel;
@@ -162,19 +159,40 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 			url = promUrlPrefix + "coupon/" + String.valueOf(order.getCountyId());
 			Coupon coupon = restTemplate.getForObject(url, Coupon.class);
 			Coupon[] coupons = {coupon};
-
-			return EntityMapper.buildOrderDetailInfo(
-			                                         order,
-			                                         washCarService.getName(),
-			                                         vehicle.getColor(),
-			                                         vehicleCategory,
-			                                         vehicleType,
-			                                         province,
-			                                         city,
-			                                         district,
-			                                         resiQuarter,
-			                                         coupons,
-			                                         promotions);
+			
+			url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
+			Worker worker = restTemplate.getForObject(url, Worker.class);
+			
+			url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
+			User user = restTemplate.getForObject(url, User.class);
+			
+			return EntityMapper.buildOrderDetailWithWasher(
+			                                               order,
+			                                               washCarService.getName(),
+			                                               vehicle.getColor(),
+			                                               vehicleCategory,
+			                                               vehicleType,
+			                                               province,
+			                                               city,
+			                                               district,
+			                                               resiQuarter,
+			                                               coupons,
+			                                               promotions,
+			                                               worker, 
+			                                               washCarService, 
+			                                               user);
+//			return EntityMapper.buildOrderDetailInfo(
+//			                                         order,
+//			                                         washCarService.getName(),
+//			                                         vehicle.getColor(),
+//			                                         vehicleCategory,
+//			                                         vehicleType,
+//			                                         province,
+//			                                         city,
+//			                                         district,
+//			                                         resiQuarter,
+//			                                         coupons,
+//			                                         promotions);
 	}
 
 	@Override
