@@ -1,8 +1,16 @@
 package com.aawashcar.apigateway.controller;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -15,6 +23,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.aawashcar.apigateway.entity.MiniAuthEntity;
+import com.aawashcar.apigateway.util.WXPayUtil;
+import com.aawashcar.apigateway.util.WeixinUtil;
+
+//import net.sf.json.JSONObject;
+
+//import net.sf.json.JSONObject;
 
 @RequestMapping("app/")
 @ResponseBody

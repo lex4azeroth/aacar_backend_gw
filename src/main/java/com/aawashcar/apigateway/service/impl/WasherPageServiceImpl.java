@@ -77,9 +77,11 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 				
 				url = opsUrlPrefix + "location/lal/" + String.valueOf(order.getLocationId());
 				Location location = restTemplate.getForObject(url, Location.class);
-				assignedOrder.setLatitude(location.getLatitude());
-				assignedOrder.setLongitude(location.getLongitude());
-				
+				if (location != null) {
+					assignedOrder.setLatitude(location.getLatitude());
+					assignedOrder.setLongitude(location.getLongitude());
+				}
+
 				assignedOrder.setOrderId(order.getId());
 				assignedOrder.setOrderNumber(order.getOrderNumber());
 				assignedOrder.setRemarks(order.getRemarks());

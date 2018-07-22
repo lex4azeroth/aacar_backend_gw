@@ -324,4 +324,23 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 
 		return pricing;
 	}
+
+	@Override
+	public boolean deal(int orderId, double discountedPrice, int promotionId, int couponId) {
+		// pay
+		
+		// if true
+		// update order 
+			// status, promtionid, couponid, discounted id, remarks, detail location
+		// order_transaction
+		// point_transaction
+		// promotion_transaction
+		// service_transaction
+		
+		// prom_points
+		// prom_r_user_consume_service
+				// consumedcount + 1
+		// prom_r_user_coupon -> disable
+		return false;
+	}
 }

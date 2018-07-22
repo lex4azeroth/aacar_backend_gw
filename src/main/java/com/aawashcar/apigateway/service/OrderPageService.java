@@ -18,4 +18,6 @@ public interface OrderPageService {
 	List<OrderDetailWithWasherModel> listAllOrderDetails();
 	
 	Pricing pricing(String validId, int orderId, int couponId, int promotionId);
+	
+	boolean deal(int orderId, double discountedPrice, int promotionId, int couponId);
 }
