@@ -85,7 +85,11 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 				assignedOrder.setOrderId(order.getId());
 				assignedOrder.setOrderNumber(order.getOrderNumber());
 				assignedOrder.setRemarks(order.getRemarks());
-				assignedOrder.setStatus(OrderStatusCode.getStatusName(order.getStatusCode()));
+				
+				url = omsUrlPrefix + "order/status/" + String.valueOf(order.getStatusCode());
+				String statusName = restTemplate.getForObject(url, String.class);
+				
+				assignedOrder.setStatus(statusName);
 				assignedOrder.setStatusCode(order.getStatusCode());
 				
 				washerMainPageInfo.setAssignedOrder(assignedOrder);
