@@ -263,6 +263,14 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		// get origin price by order
 		url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
 		Order order = restTemplate.getForObject(url, Order.class);
+		pricing.setBookedTime(order.getBookTime() == null ? null : EntityMapper.formatTimestamp(order.getBookTime()));
+		url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
+		WashCarService washCarService = restTemplate.getForObject(url, WashCarService.class);
+		pricing.setServiceName(washCarService.getName());
+		pricing.setOrderId(order.getId());
+		pricing.setServiceId(order.getServiceId());
+		pricing.setUserId(order.getUserId());
+		
 		double originPrice = order.getPrice();
 		pricing.setDiscountedPrice(originPrice);
 		if (originPrice <= 0) {
