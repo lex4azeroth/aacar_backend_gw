@@ -151,13 +151,13 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 			url = crmUrlPrefix + "user/" + orderModel.getValidId() + "/" + orderModel.getPhoneNumber();
 			userId = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));
 		}
-		else {
-			// double check the phoneNumber in User and OrderModel are identical
-			if (!user.getPhoneNumber().equals(orderModel.getPhoneNumber())) {
-//				throw new RuntimeException();
-				return -1;
-			}
-		}
+//		else {
+//			// double check the phoneNumber in User and OrderModel are identical
+//			if (!user.getPhoneNumber().equals(orderModel.getPhoneNumber())) {
+////				throw new RuntimeException();
+//				return -1;
+//			}
+//		}
 
 		// 2. add order
 		Order order = new Order();

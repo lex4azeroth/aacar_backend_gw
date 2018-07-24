@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
@@ -325,6 +326,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		return pricing;
 	}
 
+	@Transactional
 	@Override
 	public boolean deal(int orderId, double discountedPrice, int promotionId, int couponId) {
 		// pay

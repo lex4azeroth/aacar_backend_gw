@@ -53,4 +53,6 @@ public interface WechatPayService {
      * @return
      */
     public String takeOpenId(String code);
+    
+//    public String wechatPayTest(String res);
 }

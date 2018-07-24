@@ -2,12 +2,13 @@ package com.aawashcar.apigateway.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,9 +21,13 @@ import com.aawashcar.apigateway.model.OrderDetailWithWasherModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
 import com.aawashcar.apigateway.model.Pricing;
 import com.aawashcar.apigateway.model.WechatNotify;
+import com.aawashcar.apigateway.model.WechatPayResponse;
+import com.aawashcar.apigateway.model.WechatPayResponseModel;
 import com.aawashcar.apigateway.service.OrderPageService;
 import com.aawashcar.apigateway.service.WechatPayService;
+import com.aawashcar.apigateway.util.WXPayUtil;
 import com.aawashcar.apigateway.util.WechatUtil;
+import com.aawashcar.apigateway.util.XMLUtil;
 
 @RequestMapping("order/")
 @ResponseBody
@@ -82,20 +87,72 @@ public class OrderPageController {
 	 * @return
 	 */
 	@RequestMapping(value = "/unifiedOrder/{validid}/{body}/{total}", method = RequestMethod.GET)
-	public String getUnifiedOrder(@PathVariable("validid") String validId, @PathVariable("body") String body,
+	public WechatPayResponseModel getUnifiedOrder(@PathVariable("validid") String validId, @PathVariable("body") String body,
 			@PathVariable("total") String total) {
 
 		// String openId = payService.takeOpenId(code);
-		if (StringUtils.isEmpty(validId)) {
-			return "pay/wxpay_error";
-		}
+//		if (StringUtils.isEmpty(validId)) {
+//			return "pay/wxpay_error";
+//		}
 		String notify = "https://www.aawashcar.com/order/wechatnotify";
 		// String body = "商品支付内容";
 		// String total = "1"; // 单位分
 		String out_trade_no = new Date().getTime() + "";
 
 		String res = payService.unifiedorder(notify, validId, body, total, out_trade_no);
-		return res;
+		
+//		String url = "https://www.aawashcar.com/order/unifiedOrder/" + validId + "/" + body + "/" + String.valueOf(total);
+//		payService.wechatPay(model,res,url);
+		
+		
+//		String paySign = MD5(appId=wxd678efh567hg6787&nonceStr=5K8264ILTKCH16CQ2502SI8ZNMTM67VS&package=prepay_id=wx2017033010242291fcfe0db70013231072&signType=MD5&timeStamp=1490840662&key=qazwsxedcrfvtgbyhnujmikolp111111) = 22D9B4E54AB1950F51E0649E8810ACD6
+//		String paySign = MD5();
+		Object object = XMLUtil.xmlToBean(WechatPayResponse.class, res);
+		
+		
+        
+        
+		WechatPayResponseModel responseModel = null;
+		if (object instanceof WechatPayResponse) {
+			WechatPayResponse wechatPay = (WechatPayResponse) object;
+			
+			String timeStamp = System.currentTimeMillis() / 1000 + "";//时间戳从1970年1月1日00:00:00至今的秒数,即当前的时间
+//	        String nonceStr =  UUID.randomUUID().toString().replace("-", "");//随机字符串，长度为32个字符以下。
+			String nonceStr = wechatPay.getNonce_str();
+//	        String _package = "prepay_id="+ MapUtils.getString(txtResult, "prepay_id");//统一下单接口返回的 prepay_id 参数值，提交格式如：prepay_id=*
+			String _package = "prepay_id=" + wechatPay.getPrepay_id();
+	        String signType = "MD5";//签名类型，默认为MD5，支持HMAC-SHA256和MD5。注意此处需与统一下单的签名类型一致
+	        Map<String, String> signMap = new TreeMap<String, String>();
+	        signMap.put("appId",wechatPay.getAppid());
+	        signMap.put("timeStamp",timeStamp);
+	        signMap.put("nonceStr",nonceStr);
+	        signMap.put("package",_package);
+	        signMap.put("signType",signType);
+	        String paySign = null;
+			try {
+				paySign = WXPayUtil.generateSignature(signMap, "aawashcar789123aawashcarAA0WAGgP");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			};//签名,具体签名方案参见微信公众号支付帮助文档;
+	        signMap.put("paySign",paySign);
+	        
+			responseModel = new WechatPayResponseModel();
+			responseModel.setTimeStamp(timeStamp);
+			responseModel.setAppid(wechatPay.getAppid());
+			responseModel.setMch_id(wechatPay.getMch_id());
+			responseModel.setNonce_str(wechatPay.getNonce_str());
+			responseModel.setPrepay_id(wechatPay.getPrepay_id());
+			responseModel.setResult_code(wechatPay.getResult_code());
+			responseModel.setReturn_code(wechatPay.getReturn_code());
+			responseModel.setTrade_type(wechatPay.getTrade_type());
+			responseModel.setReturn_msg(wechatPay.getReturn_msg());
+			responseModel.setSign(paySign);
+		}
+		
+
+		
+		return responseModel;
 	}
 
 	/**
