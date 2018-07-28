@@ -19,7 +19,11 @@ public class MinePageServiceImpl extends BaseService implements MinePageService 
 	@Override
 	public List<MyPromotionModel> listMyPromotionModels(String validId) {
 		String url = "%s/promotion/mylist/%s";
-		url = String.format(url, promUrlPrefix, getUserIdByOpenId(validId));
+		int userId = getUserIdByOpenId(validId);
+		if (userId == 0) {
+			return null;
+		}
+		url = String.format(url, promUrlPrefix, userId);
 		ResponseEntity<Promotion[]> promotionResponseEntity = restTemplate.getForEntity(url, Promotion[].class);
 		Promotion[] myPromotions = promotionResponseEntity.getBody();
 		return EntityMapper.convertPromotionsToMyModel(myPromotions);
@@ -28,7 +32,11 @@ public class MinePageServiceImpl extends BaseService implements MinePageService 
 	@Override
 	public List<MyCouponModel> listMyCouponModels(String validId) {
 		String url = "%s/coupon/mylist/%s";
-		url = String.format(url, promUrlPrefix, getUserIdByOpenId(validId));
+		int userId = getUserIdByOpenId(validId);
+		if (userId == 0) {
+			return null;
+		}
+		url = String.format(url, promUrlPrefix, userId);
 		ResponseEntity<Coupon[]> couponResponseEntity = restTemplate.getForEntity(url, Coupon[].class);
 		Coupon[] myCoupons = couponResponseEntity.getBody();
 		return EntityMapper.convertCouponsToMyModel(myCoupons);
@@ -42,7 +50,8 @@ public class MinePageServiceImpl extends BaseService implements MinePageService 
 		int userId = user.getId();
 		
 		if (userId <= 0) {
-			throw new RuntimeException();
+			// log here
+			return 0;
 		} 
 		
 		return userId;

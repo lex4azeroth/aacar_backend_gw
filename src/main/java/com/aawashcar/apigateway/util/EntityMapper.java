@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
 import com.aawashcar.apigateway.entity.District;
@@ -46,19 +44,25 @@ import com.aawashcar.apigateway.model.VehicleTypeModel;
 public class EntityMapper {
 
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
 
 	public static String formatTimestamp(Timestamp timestamp) {
+		return EntityMapper.formatTimestamp(timestamp, sdf);
+	}
+	
+	public static String formatTimestamp(Timestamp timestamp, SimpleDateFormat formater) {
 		// sdf.format(Calendar.getInstance().new Date(timestamp.getTime())
 		if (timestamp == null) {
 			return null;
 		}
-		return sdf.format(timestamp);
+		return formater.format(timestamp);
 	}
 
 	public static UserModel convertUserToModel(User user) {
 		UserModel userModel = new UserModel();
 		userModel.setGender(user.getGenderId());
 		userModel.setNickName(user.getNickName());
+		userModel.setPhoneNumber(user.getPhoneNumber());
 		return userModel;
 	}
 	
@@ -113,7 +117,7 @@ public class EntityMapper {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(promotion.getCreatedTime());
 			calendar.add(Calendar.MONTH, promotion.getDuration());
-			model.setValidatedTime(formatTimestamp(new Timestamp(calendar.getTimeInMillis())));
+			model.setValidatedTime(formatTimestamp(new Timestamp(calendar.getTimeInMillis()), sdfDate));
 
 			myPromotions.add(model);
 		}
@@ -165,7 +169,7 @@ public class EntityMapper {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(coupon.getCreatedTime());
 			calendar.add(Calendar.MONTH, coupon.getDuration());
-			model.setValidatedTime(formatTimestamp(new Timestamp(calendar.getTimeInMillis())));
+			model.setValidatedTime(formatTimestamp(new Timestamp(calendar.getTimeInMillis()), sdfDate));
 
 			myCoupons.add(model);
 		}

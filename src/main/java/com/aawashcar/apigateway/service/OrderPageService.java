@@ -6,6 +6,8 @@ import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.OrderDetailWithWasherModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
 import com.aawashcar.apigateway.model.Pricing;
+import com.aawashcar.apigateway.model.WechatNotify;
+import com.aawashcar.apigateway.model.WechatPayResponseModel;
 
 public interface OrderPageService {
 
@@ -19,5 +21,7 @@ public interface OrderPageService {
 	
 	Pricing pricing(String validId, int orderId, int couponId, int promotionId);
 	
-	boolean deal(int orderId, double discountedPrice, int promotionId, int couponId);
+	WechatPayResponseModel pay(Pricing pricing);
+	
+	void proccessWechatNotification(WechatNotify notify, int orderId);
 }

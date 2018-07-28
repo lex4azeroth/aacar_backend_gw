@@ -2,32 +2,32 @@ package com.aawashcar.apigateway.entity;
 
 import java.sql.Timestamp;
 
-public class Order {
+public class UpdateOrder {
 	private int id;
-	private Timestamp createdTime;
 	private String orderNumber;
-	private int userId;
-	private int serviceId;
-	private int vehicleId;
+	private Integer userId;
+	private Integer serviceId;
+	private Integer vehicleId;
 	private String detailLocation;
 	private Timestamp bookTime;
-	private Timestamp orderTime;
 	private Timestamp completedTime;
-	private int statusCode;
+	private Timestamp orderTime;
+	private Integer statusCode;
 	private String status;
 	private String remarks;
-	private double price;
+	private Double price;
 	private boolean invoiceStatus;
-	private double discountedPrice;
-	private int provinceId;
-	private int countyId;
-	private int cityId;
-	private int districtId;
-	private int resiQuartId;
-	private int locationId;
-	private int couponId;
-	private int promotionId;
-	
+	private Double discountedPrice;
+	private Integer provinceId;
+	private Integer countyId;
+	private Integer cityId;
+	private Integer districtId;
+	private Integer resiQuartId;
+	private Integer locationId;
+	private Integer couponId;
+	private Integer promotionId;
+	private Timestamp createdTime;
+
 	public String getOrderNumber() {
 		return orderNumber;
 	}
@@ -36,27 +36,27 @@ public class Order {
 		this.orderNumber = orderNumber;
 	}
 
-	public int getUserId() {
+	public Integer getUserId() {
 		return userId;
 	}
 
-	public void setUserId(int userId) {
+	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
 
-	public int getServiceId() {
+	public Integer getServiceId() {
 		return serviceId;
 	}
 
-	public void setServiceId(int serviceId) {
+	public void setServiceId(Integer serviceId) {
 		this.serviceId = serviceId;
 	}
 
-	public int getVehicleId() {
+	public Integer getVehicleId() {
 		return vehicleId;
 	}
 
-	public void setVehicleId(int vehicleId) {
+	public void setVehicleId(Integer vehicleId) {
 		this.vehicleId = vehicleId;
 	}
 
@@ -84,11 +84,11 @@ public class Order {
 		this.completedTime = completedTime;
 	}
 
-	public int getStatusCode() {
+	public Integer getStatusCode() {
 		return statusCode;
 	}
 
-	public void setStatusCode(int statusCode) {
+	public void setStatusCode(Integer statusCode) {
 		this.statusCode = statusCode;
 	}
 
@@ -100,11 +100,11 @@ public class Order {
 		this.remarks = remarks;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 
@@ -116,51 +116,51 @@ public class Order {
 		this.invoiceStatus = invoiceStatus;
 	}
 
-	public double getDiscountedPrice() {
+	public Double getDiscountedPrice() {
 		return discountedPrice;
 	}
 
-	public void setDiscountedPrice(double discountedPrice) {
+	public void setDiscountedPrice(Double discountedPrice) {
 		this.discountedPrice = discountedPrice;
 	}
 
-	public int getProvinceId() {
+	public Integer getProvinceId() {
 		return provinceId;
 	}
 
-	public void setProvinceId(int provinceId) {
+	public void setProvinceId(Integer provinceId) {
 		this.provinceId = provinceId;
 	}
 
-	public int getCountyId() {
+	public Integer getCountyId() {
 		return countyId;
 	}
 
-	public void setCountyId(int countyId) {
+	public void setCountyId(Integer countyId) {
 		this.countyId = countyId;
 	}
 
-	public int getCityId() {
+	public Integer getCityId() {
 		return cityId;
 	}
 
-	public void setCityId(int cityId) {
+	public void setCityId(Integer cityId) {
 		this.cityId = cityId;
 	}
 
-	public int getDistrictId() {
+	public Integer getDistrictId() {
 		return districtId;
 	}
 
-	public void setDistrictId(int districtId) {
+	public void setDistrictId(Integer districtId) {
 		this.districtId = districtId;
 	}
 
-	public int getResiQuartId() {
+	public Integer getResiQuartId() {
 		return resiQuartId;
 	}
 
-	public void setResiQuartId(int resiQuartId) {
+	public void setResiQuartId(Integer resiQuartId) {
 		this.resiQuartId = resiQuartId;
 	}
 
@@ -172,28 +172,12 @@ public class Order {
 		this.orderTime = orderTime;
 	}
 
-	public int getLocationId() {
+	public Integer getLocationId() {
 		return locationId;
 	}
 
-	public void setLocationId(int locationId) {
+	public void setLocationId(Integer locationId) {
 		this.locationId = locationId;
-	}
-
-	public int getCouponId() {
-		return couponId;
-	}
-
-	public void setCouponId(int couponId) {
-		this.couponId = couponId;
-	}
-
-	public int getPromotionId() {
-		return promotionId;
-	}
-
-	public void setPromotionId(int promotionId) {
-		this.promotionId = promotionId;
 	}
 
 	public String getStatus() {
@@ -202,6 +186,22 @@ public class Order {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public Integer getCouponId() {
+		return couponId;
+	}
+
+	public void setCouponId(Integer couponId) {
+		this.couponId = couponId;
+	}
+
+	public Integer getPromotionId() {
+		return promotionId;
+	}
+
+	public void setPromotionId(int promotionId) {
+		this.promotionId = promotionId;
 	}
 
 	public int getId() {
