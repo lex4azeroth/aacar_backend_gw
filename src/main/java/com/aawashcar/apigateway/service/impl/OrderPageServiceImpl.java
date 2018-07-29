@@ -696,7 +696,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			signMap.put("signType", signType);
 			String paySign = null;
 			try {
-				paySign = WXPayUtil.generateSignature(signMap, "aawashcar789123aawashcarAA0WAGgP");
+				paySign = WXPayUtil.generateSignature(signMap, WechatConfig.getKey());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

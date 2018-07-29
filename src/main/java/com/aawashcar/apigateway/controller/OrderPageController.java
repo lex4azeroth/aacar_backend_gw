@@ -73,8 +73,8 @@ public class OrderPageController {
 	 */
 	@RequestMapping(value = "/wechatnotifyorder/{orderid}", method = RequestMethod.POST)
 	public String wechatNotifyOrder(@PathVariable("orderid") int orderId, HttpServletRequest request) {
-		System.out.println("WechatNotifing....");
-		System.out.println(String.valueOf(orderId));
+		System.out.println("WechatNotifingOrder....");
+		System.out.println("OrderID: " + String.valueOf(orderId));
 		// 从 request 对象中获取 WechatNotify 对象
 		WechatNotify notify = WechatUtil.getNotifyBean(request);
 
