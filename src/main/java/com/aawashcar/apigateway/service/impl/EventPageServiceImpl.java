@@ -42,12 +42,16 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 
 		return EntityMapper.converPromotionToModel(promotions);
 	}
+	
+	private User getUser(String validId) {
+		String url = crmUrlPrefix + "user/" + validId;
+		User user = restTemplate.getForObject(url, User.class);
+		return user;
+	}
 
 	@Override
 	public WechatPayResponseModel purchasePromotion(PromotionModel promotion, String validId) {
-		// get user id by openid
-		String url = crmUrlPrefix + "user/" + validId;
-		User user = restTemplate.getForObject(url, User.class);
+		User user = getUser(validId);
 		if (user == null) {
 			// log error
 			WechatPayResponseModel response = new WechatPayResponseModel();
@@ -65,6 +69,7 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 		// promotiontransaction/{promotionid}/{userid}/{price}
 		// find existing promotion transaction by user id, promotion id and
 		// price
+		// http://localhost:8084/prom/promotion/promotiontransaction/
 		String url = promUrlPrefix + "promotion/promotiontransaction/" + String.valueOf(promotionId) + "/"
 				+ String.valueOf(userId) + "/" + String.valueOf(price);
 		int promotionTransactionId = restTemplate.getForObject(url, Integer.class).intValue();
@@ -175,18 +180,21 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 		weixinTransaction.setTransaction_id(notify.getTransaction_id());
 		HttpEntity<PromotionWeixinTransaction> entity = new HttpEntity<PromotionWeixinTransaction>(weixinTransaction, headers);
 		boolean result = restTemplate.postForObject(url, entity, Boolean.class);
-		
-		
-//		PromotionTransaction transactionPromotion = restTemplate.getForObject(url, PromotionTransaction.class);
-//		
-//		if (transactionPromotion == null) {
-//			// log error
-//		}
-//		
-		// add new relation between user and promotion in prom_r_user_promotion
+	}
 
-		// add new relation among user, promotion, service in
-		// prom_r_user_consume_service
+	@Override
+	public List<PromotionModel> listAvailableEvents(String validId) {
+		User user = getUser(validId);
+		if (user == null) {
+			// log error
+			return null;
+		} 
+		
+		String url = promUrlPrefix + "promotion/notmylist/" + String.valueOf(user.getId());
 
+		ResponseEntity<Promotion[]> promotionResponseEntity = restTemplate.getForEntity(url, Promotion[].class);
+		Promotion[] promotions = promotionResponseEntity.getBody();
+
+		return EntityMapper.converPromotionToModel(promotions);
 	}
 }

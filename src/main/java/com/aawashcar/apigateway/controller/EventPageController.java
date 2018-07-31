@@ -33,6 +33,11 @@ public class EventPageController {
 		return eventPageService.listEvents();
 	}
 	
+	@RequestMapping(value = "promotionlist/{validid}", method = RequestMethod.GET)
+	public List<PromotionModel> listAvailablePromotions(@PathVariable("validid") String validId) {
+		return eventPageService.listAvailableEvents(validId);
+	}
+	
 	@RequestMapping(value = "purchase/promotion/{validid}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public WechatPayResponseModel purchasePromotion(@PathVariable("validid") String validId, @RequestBody PromotionModel promotion) {
 		return eventPageService.purchasePromotion(promotion, validId);
