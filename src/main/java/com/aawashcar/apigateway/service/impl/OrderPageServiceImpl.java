@@ -61,6 +61,11 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 	@Override
 	public List<OrderSummaryModel> myOrderSummaryList(String validId, int limit) {
 		User user = getUserId(validId);
+		if (user == null) {
+			// log error
+			return null;
+		}
+		
 		int userId = user.getId();
 		if (userId > 0) {
 			String url = omsUrlPrefix + "order/myordersummaries/" + String.valueOf(userId) + "/"
@@ -229,6 +234,21 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		return results;
 	}
 
+	@Override
+	public List<OrderDetailWithWasherModel> listOrderDetailsInDays(int days) {
+		String url = omsUrlPrefix + "order/listordersindays/" + String.valueOf(days);
+		ResponseEntity<Order[]> orderResponseEntity = restTemplate.getForEntity(url, Order[].class);
+		Order[] orders = orderResponseEntity.getBody();
+		List<OrderDetailWithWasherModel> results = new ArrayList<>();
+		int length = orders.length;
+
+		for (int index = 0; index < length; index++) {
+			results.add(buildOrderDetailWithWasher(orders[index]));
+		}
+
+		return results;
+	}
+	
 	private OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order) {
 		City city = null;
 		District district = null;

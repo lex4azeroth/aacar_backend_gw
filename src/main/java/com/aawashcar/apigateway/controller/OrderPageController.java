@@ -53,6 +53,11 @@ public class OrderPageController {
 	public List<OrderDetailWithWasherModel> listAll() {
 		return orderPageService.listAllOrderDetails();
 	}
+	
+	@RequestMapping(value = "listordersindays/{days}", method = RequestMethod.GET)
+	public List<OrderDetailWithWasherModel> listOrdersInDays(@PathVariable("days") int days) {
+		return orderPageService.listOrderDetailsInDays(days);
+	}
 
 	@RequestMapping(value = "pricing/{validid}/{orderid}/{couponid}/{promotionid}", method = RequestMethod.GET)
 	public Pricing pricing(@PathVariable("validid") String validId, @PathVariable("orderid") int orderId,
