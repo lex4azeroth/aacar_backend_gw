@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,6 @@ import com.aawashcar.apigateway.entity.Vehicle;
 import com.aawashcar.apigateway.entity.VehicleCategory;
 import com.aawashcar.apigateway.entity.VehicleType;
 import com.aawashcar.apigateway.entity.WashCarService;
-import com.aawashcar.apigateway.model.DistrictModel;
 import com.aawashcar.apigateway.model.DistrictOnlyModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.OrderModel;
@@ -151,13 +151,17 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 			url = crmUrlPrefix + "user/" + orderModel.getValidId() + "/" + orderModel.getPhoneNumber();
 			userId = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));
 		}
-//		else {
-//			// double check the phoneNumber in User and OrderModel are identical
-//			if (!user.getPhoneNumber().equals(orderModel.getPhoneNumber())) {
-////				throw new RuntimeException();
-//				return -1;
-//			}
-//		}
+		else {
+			if (!user.getPhoneNumber().equals(orderModel.getPhoneNumber())) {
+				// user updated his phone number when making order
+				// update user phone number in crm_user  {userid}/{phonenumber}
+				url = crmUrlPrefix + "user/updatephonenumber/" + String.valueOf(userId) + "/" + orderModel.getPhoneNumber();
+				int result = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class).getBody().intValue();
+				if (result != 1) {
+					// log error here
+				}
+			}
+		}
 
 		// 2. add order
 		Order order = new Order();
