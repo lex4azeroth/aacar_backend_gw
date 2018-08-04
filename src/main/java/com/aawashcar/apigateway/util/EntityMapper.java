@@ -450,6 +450,7 @@ public class EntityMapper {
 
 		model.setRemarks(order.getRemarks());
 		model.setServiceName(serviceName);
+		model.setServiceId(order.getServiceId());
 		model.setStatus(order.getStatus());
 		model.setStatusCode(order.getStatusCode());
 		VehicleCategoryModel vehicleCategoryModel = new VehicleCategoryModel();
@@ -466,6 +467,8 @@ public class EntityMapper {
 
 		model.setPrice(order.getPrice());
 		model.setDiscountedPrice(order.getDiscountedPrice());
+		
+		model.setOperatorId(order.getOperatorId());
 
 		return model;
 	}

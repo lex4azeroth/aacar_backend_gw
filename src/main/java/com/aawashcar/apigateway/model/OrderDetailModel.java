@@ -7,6 +7,7 @@ public class OrderDetailModel {
 	private int orderId;
 	private String orderNumber;
 	private String serviceName;
+	private int serviceId;
 	private String bookTime;
 	private String completedTime;
 	private String createdTime;
@@ -22,6 +23,7 @@ public class OrderDetailModel {
 	private List<MyPromotionModel> promotions;
 	private double price;
 	private double discountedPrice;
+	private int operatorId;
 
 	public int getOrderId() {
 		return orderId;
@@ -165,5 +167,21 @@ public class OrderDetailModel {
 
 	public void setCreatedTime(String createdTime) {
 		this.createdTime = createdTime;
+	}
+
+	public int getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(int serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public int getOperatorId() {
+		return operatorId;
+	}
+
+	public void setOperatorId(int operatorId) {
+		this.operatorId = operatorId;
 	}
 }

@@ -27,6 +27,7 @@ public class Order {
 	private int locationId;
 	private int couponId;
 	private int promotionId;
+	private int operatorId;
 	
 	public String getOrderNumber() {
 		return orderNumber;
@@ -218,6 +219,14 @@ public class Order {
 
 	public void setCreatedTime(Timestamp createdTime) {
 		this.createdTime = createdTime;
+	}
+
+	public int getOperatorId() {
+		return operatorId;
+	}
+
+	public void setOperatorId(int operatorId) {
+		this.operatorId = operatorId;
 	}
 
 }
