@@ -28,6 +28,7 @@ import com.aawashcar.apigateway.model.WasherActionResponse;
 import com.aawashcar.apigateway.model.WasherInfo;
 import com.aawashcar.apigateway.model.WasherMainPageInfo;
 import com.aawashcar.apigateway.service.WasherPageService;
+import com.aawashcar.apigateway.util.AACodeConsField;
 import com.aawashcar.apigateway.util.EntityMapper;
 import com.aawashcar.apigateway.util.OrderStatusCode;
 
@@ -309,13 +310,13 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 	}
 
 	@Override
-	public boolean apply(String validId, String phoneNumber) {
+	public String apply(String validId, String phoneNumber) {
 		if (StringUtils.isEmpty(validId) || StringUtils.isEmpty(phoneNumber)) {
-			return false;
+			return AACodeConsField.ERROR_INVALID_INPUT_30100;
 		}
 		
 		if ("null".equals(validId) || ("null").equals(phoneNumber)) {
-			return false;
+			return AACodeConsField.ERROR_INVALID_INPUT_30100;
 		}
 		
 		// add valid id in crm_r_user_uuid
@@ -332,9 +333,9 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 //		}
 		
 		if (addValidIdResponse.intValue() > 0 && addPhonenumberResponse.intValue() > 0) {
-			return true;
+			return AACodeConsField.SUCCESS_APPLY_WORKER_20200;
 		} else {
-			return false;
+			return AACodeConsField.ERROR_ALREADY_APPLIED_30000;
 		}
 	}
 }
