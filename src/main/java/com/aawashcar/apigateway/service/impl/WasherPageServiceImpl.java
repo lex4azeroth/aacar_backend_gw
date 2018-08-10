@@ -30,11 +30,10 @@ import com.aawashcar.apigateway.model.WasherMainPageInfo;
 import com.aawashcar.apigateway.service.WasherPageService;
 import com.aawashcar.apigateway.util.AACodeConsField;
 import com.aawashcar.apigateway.util.EntityMapper;
-import com.aawashcar.apigateway.util.OrderStatusCode;
 
 @Service()
 public class WasherPageServiceImpl extends BaseService implements WasherPageService {
-	
+
 	@Override
 	public WasherMainPageInfo login(String validId) {
 		int workerId = isWorker(validId);
@@ -43,39 +42,39 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		if (workerId > 0) {
 			// is a worker
 			washerMainPageInfo.setWasher(true);
-			
+
 			String url = opsUrlPrefix + "worker/" + String.valueOf(workerId);
 			Worker worker = restTemplate.getForObject(url, Worker.class);
-			
+
 			WasherInfo washerInfo = new WasherInfo();
 			washerInfo.setFirstName(worker.getFirstName());
 			washerInfo.setLevel(worker.getLevel());
 			washerInfo.setNickName(worker.getNickName());
 			washerInfo.setGender(worker.getGender());
-			
+
 			washerMainPageInfo.setWasherInfo(washerInfo);
-			
+
 			url = opsUrlPrefix + "worker/assignedorder/" + String.valueOf(workerId);
 			Integer orderId = restTemplate.getForObject(url, Integer.class);
 			if (orderId.intValue() > 0) {
 				url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
 				Order order = restTemplate.getForObject(url, Order.class);
-				
+
 				AssignedOrder assignedOrder = new AssignedOrder();
 				assignedOrder.setAddress(order.getDetailLocation());
 				assignedOrder.setBookTime(EntityMapper.formatTimestamp(order.getBookTime()));
-				
+
 				url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
 				User user = restTemplate.getForObject(url, User.class);
 				assignedOrder.setCustomerFirstName(user.getFirstName());
 				assignedOrder.setCustomerLastName(user.getLastName());
 				assignedOrder.setCustomerPhone(user.getPhoneNumber());
-				
+
 				url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
 				WashCarService service = restTemplate.getForObject(url, WashCarService.class);
 				assignedOrder.setIcon(service.getIconUrl());
 				assignedOrder.setServiceName(service.getName());
-				
+
 				url = opsUrlPrefix + "location/lal/" + String.valueOf(order.getLocationId());
 				Location location = restTemplate.getForObject(url, Location.class);
 				if (location != null) {
@@ -86,30 +85,30 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 				assignedOrder.setOrderId(order.getId());
 				assignedOrder.setOrderNumber(order.getOrderNumber());
 				assignedOrder.setRemarks(order.getRemarks());
-				
+
 				url = omsUrlPrefix + "order/status/" + String.valueOf(order.getStatusCode());
 				String statusName = restTemplate.getForObject(url, String.class);
-				
+
 				assignedOrder.setStatus(statusName);
 				assignedOrder.setStatusCode(order.getStatusCode());
-				
+
 				washerMainPageInfo.setAssignedOrder(assignedOrder);
 			}
-		} 
-		
+		}
+
 		return washerMainPageInfo;
 	}
-	
+
 	private int isWorker(String validId) {
 		User user = getUserId(validId);
-		
+
 		if (user == null) {
 			throw new RuntimeException("User not found");
 		}
-		
+
 		return user.getWorkerId();
 	}
-	
+
 	private User getUserId(String validId) {
 		String url = "%s/user/%s";
 
@@ -118,7 +117,7 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 
 		return user;
 	}
-	
+
 	@Override
 	public OrderDetailModel orderDetail(int orderId) {
 
@@ -130,76 +129,50 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		VehicleType vehicleType = null;
 		WashCarService washCarService = null;
 
+		// get order by order id;
+		String url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
+		Order order = restTemplate.getForObject(url, Order.class);
 
-			// get order by order id;
-			String url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
-			Order order = restTemplate.getForObject(url, Order.class);
+		url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
+		washCarService = restTemplate.getForObject(url, WashCarService.class);
 
-			url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
-			washCarService = restTemplate.getForObject(url, WashCarService.class);
+		url = opsUrlPrefix + "vehicle/vehiclecategory/" + String.valueOf(order.getVehicleId());
+		vehicleCategory = restTemplate.getForObject(url, VehicleCategory.class);
 
-			url = opsUrlPrefix + "vehicle/vehiclecategory/" + String.valueOf(order.getVehicleId());
-			vehicleCategory = restTemplate.getForObject(url, VehicleCategory.class);
+		url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
+		vehicleType = restTemplate.getForObject(url, VehicleType.class);
 
-			url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
-			vehicleType = restTemplate.getForObject(url, VehicleType.class);
+		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
+		province = restTemplate.getForObject(url, Province.class);
 
-			url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
-			province = restTemplate.getForObject(url, Province.class);
+		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
+		city = restTemplate.getForObject(url, City.class);
 
-			url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
-			city = restTemplate.getForObject(url, City.class);
+		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
+		district = restTemplate.getForObject(url, District.class);
 
-			url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
-			district = restTemplate.getForObject(url, District.class);
+		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
+		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
 
-			url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
-			resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+		url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
+		Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
 
-			url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
-			Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
-			
-			url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
-			Promotion promotion = restTemplate.getForObject(url, Promotion.class);
-			Promotion[] promotions = {promotion};
+		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
+		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
+		Promotion[] promotions = { promotion };
 
-			url = promUrlPrefix + "coupon/" + String.valueOf(order.getCountyId());
-			Coupon coupon = restTemplate.getForObject(url, Coupon.class);
-			Coupon[] coupons = {coupon};
-			
-			url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
-			Worker worker = restTemplate.getForObject(url, Worker.class);
-			
-			url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
-			User user = restTemplate.getForObject(url, User.class);
-			
-			return EntityMapper.buildOrderDetailWithWasher(
-			                                               order,
-			                                               washCarService.getName(),
-			                                               vehicle.getColor(),
-			                                               vehicleCategory,
-			                                               vehicleType,
-			                                               province,
-			                                               city,
-			                                               district,
-			                                               resiQuarter,
-			                                               coupons,
-			                                               promotions,
-			                                               worker, 
-			                                               washCarService, 
-			                                               user);
-//			return EntityMapper.buildOrderDetailInfo(
-//			                                         order,
-//			                                         washCarService.getName(),
-//			                                         vehicle.getColor(),
-//			                                         vehicleCategory,
-//			                                         vehicleType,
-//			                                         province,
-//			                                         city,
-//			                                         district,
-//			                                         resiQuarter,
-//			                                         coupons,
-//			                                         promotions);
+		url = promUrlPrefix + "coupon/" + String.valueOf(order.getCountyId());
+		Coupon coupon = restTemplate.getForObject(url, Coupon.class);
+		Coupon[] coupons = { coupon };
+
+		url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
+		Worker worker = restTemplate.getForObject(url, Worker.class);
+
+		url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
+		User user = restTemplate.getForObject(url, User.class);
+
+		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
+				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
 	}
 
 	@Override
@@ -208,13 +181,13 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		String url = opsUrlPrefix + "worker/takeorder/%s/%s/%s";
 		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
 		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
-		
+
 		WasherActionResponse actionResponse = new WasherActionResponse();
-		
+
 		int statusCode = codeResponse.getBody().intValue();
 		actionResponse.setStatusCode(statusCode);
 		actionResponse.setStatus(getStatusName(statusCode));
-		
+
 		return actionResponse;
 	}
 
@@ -224,29 +197,29 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		String url = opsUrlPrefix + "worker/rejectorder/%s/%s/%s";
 		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
 		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
-		
+
 		WasherActionResponse actionResponse = new WasherActionResponse();
-		
+
 		int statusCode = codeResponse.getBody().intValue();
 		actionResponse.setStatusCode(statusCode);
 		actionResponse.setStatus(getStatusName(statusCode));
-		
+
 		return actionResponse;
 	}
-	
+
 	@Override
 	public WasherActionResponse arrivedOrder(WasherActionModel model) {
 		int workerId = isWorker(model.getValidId());
 		String url = opsUrlPrefix + "worker/arrivedorder/%s/%s/%s";
 		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
 		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
-		
+
 		WasherActionResponse actionResponse = new WasherActionResponse();
-		
+
 		int statusCode = codeResponse.getBody().intValue();
 		actionResponse.setStatusCode(statusCode);
 		actionResponse.setStatus(getStatusName(statusCode));
-		
+
 		return actionResponse;
 	}
 
@@ -256,16 +229,16 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		String url = opsUrlPrefix + "worker/completeorder/%s/%s/%s";
 		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId);
 		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
-		
+
 		WasherActionResponse actionResponse = new WasherActionResponse();
 
 		int statusCode = codeResponse.getBody().intValue();
 		actionResponse.setStatusCode(statusCode);
 		actionResponse.setStatus(getStatusName(statusCode));
-		
+
 		return actionResponse;
 	}
-	
+
 	private String getStatusName(int code) {
 		String url = omsUrlPrefix + "order/status/" + String.valueOf(code);
 		ResponseEntity<String> valueResponse = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
@@ -303,9 +276,10 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 	@Override
 	public WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int size) {
 		int workerId = isWorker(validId);
-		String url = opsUrlPrefix + "worker/orders/completedorderlist/" + String.valueOf(workerId)  + "/" + String.valueOf(size);
-		ResponseEntity<WasherOrderSummary[]> orderSummaryResponseEntity = 
-						restTemplate.getForEntity(url, WasherOrderSummary[].class);
+		String url = opsUrlPrefix + "worker/orders/completedorderlist/" + String.valueOf(workerId) + "/"
+				+ String.valueOf(size);
+		ResponseEntity<WasherOrderSummary[]> orderSummaryResponseEntity = restTemplate.getForEntity(url,
+				WasherOrderSummary[].class);
 		return (WasherOrderSummary[]) orderSummaryResponseEntity.getBody();
 	}
 
@@ -314,24 +288,24 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		if (StringUtils.isEmpty(validId) || StringUtils.isEmpty(phoneNumber)) {
 			return AACodeConsField.ERROR_INVALID_INPUT_30100;
 		}
-		
+
 		if ("null".equals(validId) || ("null").equals(phoneNumber)) {
 			return AACodeConsField.ERROR_INVALID_INPUT_30100;
 		}
-		
+
 		// add valid id in crm_r_user_uuid
 		String url = crmUrlPrefix + "washer/apply/" + validId;
 		Integer addValidIdResponse = restTemplate.postForObject(url, null, Integer.class);
-		
+
 		// add phone number in ops_worker
 		url = opsUrlPrefix + "worker/apply/" + phoneNumber + "/" + validId;
 		Integer addPhonenumberResponse = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));
-		
-//		if (addValidIdResponse.intValue() != HttpStatus.OK.value() 
-//						|| addPhonenumberResponse.intValue() != HttpStatus.OK.value()) {
-//			throw new AAInnerServerError("申请注册洗车工失败");
-//		}
-		
+
+		// if (addValidIdResponse.intValue() != HttpStatus.OK.value()
+		// || addPhonenumberResponse.intValue() != HttpStatus.OK.value()) {
+		// throw new AAInnerServerError("申请注册洗车工失败");
+		// }
+
 		if (addValidIdResponse.intValue() > 0 && addPhonenumberResponse.intValue() > 0) {
 			return AACodeConsField.SUCCESS_APPLY_WORKER_20200;
 		} else {

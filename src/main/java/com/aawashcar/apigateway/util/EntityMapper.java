@@ -350,7 +350,7 @@ public class EntityMapper {
 
 	public static OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order,
 	                                                                    String serviceName,
-	                                                                    String color,
+	                                                                    Vehicle vehicle,
 	                                                                    VehicleCategory vehicleCategory,
 	                                                                    VehicleType vehicleType,
 	                                                                    Province province,
@@ -367,8 +367,9 @@ public class EntityMapper {
 		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
 		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
 		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
-		model.setColor(color);
-
+		model.setColor(vehicle.getColor());
+		model.setLicense(vehicle.getLicense());
+		
 		model.setCoupons(convertCouponsToMyModel(coupons));
 
 		DefaultAddressModel defaultAddressModel = new DefaultAddressModel();
@@ -416,7 +417,7 @@ public class EntityMapper {
 	public static OrderDetailModel buildOrderDetailInfo(
 	                                                    Order order,
 	                                                    String serviceName,
-	                                                    String color,
+	                                                    Vehicle vehicle,
 	                                                    VehicleCategory vehicleCategory,
 	                                                    VehicleType vehicleType,
 	                                                    Province province,
@@ -430,7 +431,8 @@ public class EntityMapper {
 		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
 		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
 		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
-		model.setColor(color);
+		model.setColor(vehicle.getColor());
+		model.setLicense(vehicle.getLicense());
 
 		model.setCoupons(convertCouponsToMyModel(coupons));
 

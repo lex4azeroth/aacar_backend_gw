@@ -14,6 +14,7 @@ public class OrderDetailModel {
 	private VehicleTypeModel vehicleType;
 	private VehicleCategoryModel vehicleCategory;
 	private String color;
+	private String license;
 	private String address;
 	private String status;
 	private int statusCode;
@@ -183,5 +184,13 @@ public class OrderDetailModel {
 
 	public void setOperatorId(int operatorId) {
 		this.operatorId = operatorId;
+	}
+
+	public String getLicense() {
+		return license;
+	}
+
+	public void setLicense(String license) {
+		this.license = license;
 	}
 }

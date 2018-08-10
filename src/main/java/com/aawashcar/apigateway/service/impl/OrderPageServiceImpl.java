@@ -65,7 +65,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			// log error
 			return null;
 		}
-		
+
 		int userId = user.getId();
 		if (userId > 0) {
 			String url = omsUrlPrefix + "order/myordersummaries/" + String.valueOf(userId) + "/"
@@ -144,11 +144,12 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			ResponseEntity<Coupon[]> couponResponseEntity = restTemplate.getForEntity(url, Coupon[].class);
 			Coupon[] myCoupons = couponResponseEntity.getBody();
 
-			url = promUrlPrefix + "promotion/mylistbyservice/" + String.valueOf(user.getId()) + "/" + String.valueOf(order.getServiceId());
+			url = promUrlPrefix + "promotion/mylistbyservice/" + String.valueOf(user.getId()) + "/"
+					+ String.valueOf(order.getServiceId());
 			ResponseEntity<Promotion[]> promotionResponseEntity = restTemplate.getForEntity(url, Promotion[].class);
 			Promotion[] myPromotions = promotionResponseEntity.getBody();
 
-			return EntityMapper.buildOrderDetailInfo(order, washCarService.getName(), vehicle.getColor(),
+			return EntityMapper.buildOrderDetailInfo(order, washCarService.getName(), vehicle,
 					vehicleCategory, vehicleType, province, city, district, resiQuarter, myCoupons, myPromotions);
 		}
 
@@ -214,9 +215,8 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
 		User user = restTemplate.getForObject(url, User.class);
 
-		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle.getColor(),
-				vehicleCategory, vehicleType, province, city, district, resiQuarter, coupons, promotions, worker,
-				washCarService, user);
+		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
+				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
 	}
 
 	@Override
@@ -248,7 +248,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 
 		return results;
 	}
-	
+
 	private OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order) {
 		City city = null;
 		District district = null;
@@ -295,9 +295,8 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
 		User user = restTemplate.getForObject(url, User.class);
 
-		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle.getColor(),
-				vehicleCategory, vehicleType, province, city, district, resiQuarter, coupons, promotions, worker,
-				washCarService, user);
+		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
+				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
 	}
 
 	@Override
