@@ -1,6 +1,5 @@
 package com.aawashcar.apigateway.model;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 public class OrderDetailModel {
@@ -19,6 +18,7 @@ public class OrderDetailModel {
 	private String status;
 	private int statusCode;
 	private DefaultAddressModel defalutAddress;
+	private String fullAddress;
 	private String remarks;
 	private List<MyCouponModel> coupons;
 	private List<MyPromotionModel> promotions;
@@ -192,5 +192,13 @@ public class OrderDetailModel {
 
 	public void setLicense(String license) {
 		this.license = license;
+	}
+
+	public String getFullAddress() {
+		return fullAddress;
+	}
+
+	public void setFullAddress(String fullAddress) {
+		this.fullAddress = fullAddress;
 	}
 }

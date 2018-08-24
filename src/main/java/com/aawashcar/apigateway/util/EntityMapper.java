@@ -380,6 +380,7 @@ public class EntityMapper {
 		defaultAddressModel.setProvicne(convertProvinceToModel(province));
 		// defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
 		model.setDefalutAddress(defaultAddressModel);
+		model.setFullAddress(defaultAddressModel.toString());
 
 		model.setOrderId(order.getId());
 		model.setOrderNumber(order.getOrderNumber());
@@ -444,7 +445,8 @@ public class EntityMapper {
 		defaultAddressModel.setProvicne(convertProvinceToModel(province));
 		// defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
 		model.setDefalutAddress(defaultAddressModel);
-
+		model.setFullAddress(defaultAddressModel.toString());
+		
 		model.setOrderId(order.getId());
 		model.setOrderNumber(order.getOrderNumber());
 
