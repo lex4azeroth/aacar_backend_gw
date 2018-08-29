@@ -48,6 +48,11 @@ public class AppController {
 				urlVariables);
 		return response.getBody();
 	}
+	
+	@RequestMapping(value = "testEurekaClients", method = RequestMethod.GET)
+	public String testEurekaClients() {
+		return restTemplate.getForEntity("http://crmservice/crm/echo", String.class).getBody();
+	}
 
 	private MiniAuthEntity getMiniAuth(String appName) {
 		String url = opsUrlPrefix + "miniauth/authpair/" + appName;

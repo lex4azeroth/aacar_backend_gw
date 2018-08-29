@@ -4,6 +4,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,6 +21,7 @@ public class RestConfig {
 
 	@Bean
 	@Primary
+	@LoadBalanced
 	public RestTemplate restTemplate() {
 		ClientHttpRequestFactory fac = new HttpComponentsClientHttpRequestFactory(
 		                                                                          getHttpClient());
