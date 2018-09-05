@@ -25,6 +25,9 @@ public class AppController {
 
 	@Value("${mcw.service.ops.url.prefix}")
 	private String opsUrlPrefix;
+	
+	@Value("${mcw.service.crm.url.prefix}")
+	private String crmUrlPrefix;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -51,7 +54,7 @@ public class AppController {
 	
 	@RequestMapping(value = "testEurekaClients", method = RequestMethod.GET)
 	public String testEurekaClients() {
-		return restTemplate.getForEntity("http://crmservice/crm/echo", String.class).getBody();
+		return restTemplate.getForEntity(crmUrlPrefix + "echo", String.class).getBody();
 	}
 
 	private MiniAuthEntity getMiniAuth(String appName) {
