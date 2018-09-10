@@ -46,7 +46,7 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <AsyncLogger name="org.springframework" level="INFO" additivity="false">
+        <AsyncLogger name="org.springframework.*" level="INFO">
             <AppenderRef ref="infoLog" />
             <AppenderRef ref="errorLog" />
         </AsyncLogger>
@@ -54,13 +54,12 @@
             <AppenderRef ref="infoLog" />
             <AppenderRef ref="errorLog" />
         </AsyncLogger>
-        <AsyncLogger name="com.mysql.jdbc" level="INFO" additivity="false">
+        <AsyncLogger name="com.mysql.*" level="INFO">
             <AppenderRef ref="infoLog" />
             <AppenderRef ref="errorLog" />
         </AsyncLogger>
         <root level="INFO">
             <AppenderRef ref="console_out_appender" />
-            <AppenderRef ref="console_err_appender" />
         </root>
     </Loggers>
 </Configuration>
