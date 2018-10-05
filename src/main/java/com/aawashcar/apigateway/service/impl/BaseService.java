@@ -20,4 +20,10 @@ public class BaseService {
 
 	@Value("${mcw.service.prom.url.prefix}")
 	protected String promUrlPrefix;
+	
+	@Value("${mcw.service.lbs.url.prefix}")
+	protected String lbsUrlPrefix;
+	
+	@Value("${mcw.service.cap.url.prefix}")
+	protected String capUrlPrefix;
 }
