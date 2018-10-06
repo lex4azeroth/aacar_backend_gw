@@ -35,51 +35,54 @@ public class MainPageController {
 		return service.getMainPageInfo(validId);
 	}
 
+	@Deprecated
 	@RequestMapping(value = "district/{provinceId}/{cityId}", method = RequestMethod.GET)
 	public List<DistrictFullModel> listDistricts(@PathVariable(name = "provinceId") int provinceId,
-	                                         @PathVariable(name = "cityId") int cityId) {
+			@PathVariable(name = "cityId") int cityId) {
 		provinceId = (provinceId <= 0) ? 1 : provinceId;
 		cityId = (cityId <= 0) ? 1 : cityId;
 
 		List<DistrictOnlyModel> districtOnly = service.listDistrictsOnly(provinceId, cityId);
-		
+
 		int length = districtOnly.size();
 		List<DistrictFullModel> districts = new ArrayList<>();
 		for (int index = 0; index < length; index++) {
 			int districtId = districtOnly.get(index).getId();
-			List<ResidentialQuarterModel> resiQuarters = service.listResidentialQuarters(provinceId, cityId, districtId);
+			List<ResidentialQuarterModel> resiQuarters = service.listResidentialQuarters(provinceId, cityId,
+					districtId);
 			DistrictFullModel full = new DistrictFullModel();
 			full.setId(districtId);
 			full.setName(districtOnly.get(index).getName());
 			full.setResiQuarterModel(resiQuarters);
 			districts.add(full);
 		}
-		
+
 		return districts;
 	}
 
+	@Deprecated
 	@RequestMapping(value = "residentialquarter/{provinceId}/{cityId}/{districtId}", method = RequestMethod.GET)
 	public List<ResidentialQuarterModel> listResidentialQuarter(@PathVariable(name = "provinceId") int provinceId,
-	                                                       @PathVariable(name = "cityId") int cityId,
-	                                                       @PathVariable(name = "districtId") int districtId) {
-		provinceId = (provinceId <= 0) ? 1 :provinceId;
+			@PathVariable(name = "cityId") int cityId, @PathVariable(name = "districtId") int districtId) {
+		provinceId = (provinceId <= 0) ? 1 : provinceId;
 		cityId = (cityId <= 0) ? 1 : cityId;
 		districtId = (districtId <= 0) ? 1 : districtId;
-		
+
 		return service.listResidentialQuarters(provinceId, cityId, districtId);
 	}
-	
-	@RequestMapping(value="price/{typeId}/{categoryId}/{serviceId}", method = RequestMethod.GET)
-	public PriceModel showPrice(@PathVariable(name="typeId") int typeId, @PathVariable(name="categoryId") int categoryId, @PathVariable(name="serviceId") int serviceId) {
+
+	@RequestMapping(value = "price/{typeId}/{categoryId}/{serviceId}", method = RequestMethod.GET)
+	public PriceModel showPrice(@PathVariable(name = "typeId") int typeId,
+			@PathVariable(name = "categoryId") int categoryId, @PathVariable(name = "serviceId") int serviceId) {
 		PriceModel priceModel = new PriceModel();
-		
+
 		double price = service.getPrice(typeId, categoryId, serviceId);
 		priceModel.setPrice(price);
-		
+
 		return priceModel;
 	}
-	
-	@RequestMapping(value="order", method=RequestMethod.POST, consumes=MediaType.APPLICATION_JSON_VALUE)
+
+	@RequestMapping(value = "order", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public OrderIdModel newOrder(@RequestBody OrderModel orderModel) {
 		int orderId = service.newOrder(orderModel);
 		if (orderId == -1) {

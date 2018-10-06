@@ -21,6 +21,7 @@ import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
 import com.aawashcar.apigateway.entity.CouponTransaction;
 import com.aawashcar.apigateway.entity.District;
+import com.aawashcar.apigateway.entity.Location;
 import com.aawashcar.apigateway.entity.Order;
 import com.aawashcar.apigateway.entity.OrderSummary;
 import com.aawashcar.apigateway.entity.OrderTransaction;
@@ -38,6 +39,7 @@ import com.aawashcar.apigateway.entity.VehicleType;
 import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.entity.Worker;
 import com.aawashcar.apigateway.exception.AAInnerServerError;
+import com.aawashcar.apigateway.model.LocationModel;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.OrderDetailWithWasherModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
@@ -102,10 +104,10 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			// throw new RuntimeException("user not found");
 		}
 
-		City city = null;
-		District district = null;
-		Province province = null;
-		ResidentialQuarter resiQuarter = null;
+//		City city = null;
+//		District district = null;
+//		Province province = null;
+//		ResidentialQuarter resiQuarter = null;
 		VehicleCategory vehicleCategory = null;
 		VehicleType vehicleType = null;
 		WashCarService washCarService = null;
@@ -125,17 +127,17 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
 			vehicleType = restTemplate.getForObject(url, VehicleType.class);
 
-			url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
-			province = restTemplate.getForObject(url, Province.class);
-
-			url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
-			city = restTemplate.getForObject(url, City.class);
-
-			url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
-			district = restTemplate.getForObject(url, District.class);
-
-			url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
-			resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+//			url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
+//			province = restTemplate.getForObject(url, Province.class);
+//
+//			url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
+//			city = restTemplate.getForObject(url, City.class);
+//
+//			url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
+//			district = restTemplate.getForObject(url, District.class);
+//
+//			url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
+//			resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
 
 			url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
 			Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
@@ -148,9 +150,13 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 					+ String.valueOf(order.getServiceId());
 			ResponseEntity<Promotion[]> promotionResponseEntity = restTemplate.getForEntity(url, Promotion[].class);
 			Promotion[] myPromotions = promotionResponseEntity.getBody();
-
-			return EntityMapper.buildOrderDetailInfo(order, washCarService.getName(), vehicle,
-					vehicleCategory, vehicleType, province, city, district, resiQuarter, myCoupons, myPromotions);
+			
+			url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
+			LocationModel location = restTemplate.getForObject(url, LocationModel.class);
+			
+			return EntityMapper.buildOrderDetailInfo(order, washCarService.getName(), vehicle, vehicleCategory, vehicleType, location, myCoupons, myPromotions);
+//			return EntityMapper.buildOrderDetailInfo(order, washCarService.getName(), vehicle,
+//					vehicleCategory, vehicleType, province, city, district, resiQuarter, myCoupons, myPromotions);
 		}
 
 		return null;
@@ -167,10 +173,10 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 
 	@Override
 	public OrderDetailWithWasherModel orderDetailWithWasher(int orderId) {
-		City city = null;
-		District district = null;
-		Province province = null;
-		ResidentialQuarter resiQuarter = null;
+//		City city = null;
+//		District district = null;
+//		Province province = null;
+//		ResidentialQuarter resiQuarter = null;
 		VehicleCategory vehicleCategory = null;
 		VehicleType vehicleType = null;
 		WashCarService washCarService = null;
@@ -187,17 +193,17 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
 		vehicleType = restTemplate.getForObject(url, VehicleType.class);
 
-		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
-		province = restTemplate.getForObject(url, Province.class);
-
-		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
-		city = restTemplate.getForObject(url, City.class);
-
-		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
-		district = restTemplate.getForObject(url, District.class);
-
-		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
-		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+//		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
+//		province = restTemplate.getForObject(url, Province.class);
+//
+//		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
+//		city = restTemplate.getForObject(url, City.class);
+//
+//		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
+//		district = restTemplate.getForObject(url, District.class);
+//
+//		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
+//		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
 
 		url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
 		Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
@@ -214,9 +220,14 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 
 		url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
 		User user = restTemplate.getForObject(url, User.class);
-
-		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
-				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
+		
+		url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
+		LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
+		
+		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory, 
+				vehicleType, locationModel, coupons, promotions, worker, washCarService, user);
+//		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
+//				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
 	}
 
 	@Override
@@ -250,10 +261,10 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 	}
 
 	private OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order) {
-		City city = null;
-		District district = null;
-		Province province = null;
-		ResidentialQuarter resiQuarter = null;
+//		City city = null;
+//		District district = null;
+//		Province province = null;
+//		ResidentialQuarter resiQuarter = null;
 		VehicleCategory vehicleCategory = null;
 		VehicleType vehicleType = null;
 		WashCarService washCarService = null;
@@ -267,17 +278,17 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
 		vehicleType = restTemplate.getForObject(url, VehicleType.class);
 
-		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
-		province = restTemplate.getForObject(url, Province.class);
-
-		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
-		city = restTemplate.getForObject(url, City.class);
-
-		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
-		district = restTemplate.getForObject(url, District.class);
-
-		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
-		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+//		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
+//		province = restTemplate.getForObject(url, Province.class);
+//
+//		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
+//		city = restTemplate.getForObject(url, City.class);
+//
+//		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
+//		district = restTemplate.getForObject(url, District.class);
+//
+//		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
+//		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
 
 		url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
 		Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
@@ -295,8 +306,14 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
 		User user = restTemplate.getForObject(url, User.class);
 
-		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
-				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
+		url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
+		LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
+		
+		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory, 
+				vehicleType, locationModel, coupons, promotions, worker, washCarService, user);
+		
+//		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
+//				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
 	}
 
 	@Override

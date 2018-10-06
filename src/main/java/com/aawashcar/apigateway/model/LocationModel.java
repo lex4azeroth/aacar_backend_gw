@@ -1,17 +1,19 @@
-package com.aawashcar.apigateway.entity;
+package com.aawashcar.apigateway.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-public class Location extends BaseEntity {
+public class LocationModel {
 	
+	private int id;
 	private int userId;
 	private String openId;
 	private String detailAddress;
 	private String addressRemark;
 	private BigDecimal longitude;
 	private BigDecimal latitude;
-	private Timestamp lastModifiedTime;
+	private Timestamp modifiedTime;
+	private Timestamp createdTime;
 	
 	public String getDetailAddress() {
 		return detailAddress;
@@ -36,15 +38,7 @@ public class Location extends BaseEntity {
 	public void setLatitude(BigDecimal latitude) {
 		this.latitude = latitude;
 	}
-
-	public Timestamp getLastModifiedTime() {
-		return lastModifiedTime;
-	}
-
-	public void setLastModifiedTime(Timestamp lastModifiedTime) {
-		this.lastModifiedTime = lastModifiedTime;
-	}
-
+	
 	public int getUserId() {
 		return userId;
 	}
@@ -67,5 +61,35 @@ public class Location extends BaseEntity {
 
 	public void setAddressRemark(String addressRemark) {
 		this.addressRemark = addressRemark;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Timestamp getCreatedTime() {
+		return createdTime;
+	}
+
+	public void setCreatedTime(Timestamp createdTime) {
+		this.createdTime = createdTime;
+	}
+	
+	@Override
+	public String toString() {
+		String fullLocation = String.format("%s %s", this.detailAddress, this.addressRemark);
+		return fullLocation;
+	}
+
+	public Timestamp getModifiedTime() {
+		return modifiedTime;
+	}
+
+	public void setModifiedTime(Timestamp modifiedTime) {
+		this.modifiedTime = modifiedTime;
 	}
 }

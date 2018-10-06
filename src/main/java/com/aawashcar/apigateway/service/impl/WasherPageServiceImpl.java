@@ -22,6 +22,7 @@ import com.aawashcar.apigateway.entity.WasherOrderSummary;
 import com.aawashcar.apigateway.entity.Worker;
 import com.aawashcar.apigateway.entity.WorkerRemark;
 import com.aawashcar.apigateway.model.AssignedOrder;
+import com.aawashcar.apigateway.model.LocationModel;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.WasherActionModel;
 import com.aawashcar.apigateway.model.WasherActionResponse;
@@ -75,13 +76,21 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 				assignedOrder.setIcon(service.getIconUrl());
 				assignedOrder.setServiceName(service.getName());
 
-				url = opsUrlPrefix + "location/lal/" + String.valueOf(order.getLocationId());
-				Location location = restTemplate.getForObject(url, Location.class);
-				if (location != null) {
-					assignedOrder.setLatitude(location.getLatitude());
-					assignedOrder.setLongitude(location.getLongitude());
+//				url = opsUrlPrefix + "location/lal/" + String.valueOf(order.getLocationId());
+//				Location location = restTemplate.getForObject(url, Location.class);
+//				if (location != null) {
+//					assignedOrder.setLatitude(location.getLatitude());
+//					assignedOrder.setLongitude(location.getLongitude());
+//				}
+				
+				url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
+				LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
+				if (locationModel != null) {
+					assignedOrder.setLatitude(locationModel.getLatitude());
+					assignedOrder.setLongitude(locationModel.getLongitude());
 				}
-
+				
+				
 				assignedOrder.setOrderId(order.getId());
 				assignedOrder.setOrderNumber(order.getOrderNumber());
 				assignedOrder.setRemarks(order.getRemarks());
@@ -121,10 +130,10 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 	@Override
 	public OrderDetailModel orderDetail(int orderId) {
 
-		City city = null;
-		District district = null;
-		Province province = null;
-		ResidentialQuarter resiQuarter = null;
+//		City city = null;
+//		District district = null;
+//		Province province = null;
+//		ResidentialQuarter resiQuarter = null;
 		VehicleCategory vehicleCategory = null;
 		VehicleType vehicleType = null;
 		WashCarService washCarService = null;
@@ -142,17 +151,17 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
 		vehicleType = restTemplate.getForObject(url, VehicleType.class);
 
-		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
-		province = restTemplate.getForObject(url, Province.class);
-
-		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
-		city = restTemplate.getForObject(url, City.class);
-
-		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
-		district = restTemplate.getForObject(url, District.class);
-
-		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
-		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+//		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
+//		province = restTemplate.getForObject(url, Province.class);
+//
+//		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
+//		city = restTemplate.getForObject(url, City.class);
+//
+//		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
+//		district = restTemplate.getForObject(url, District.class);
+//
+//		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
+//		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
 
 		url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
 		Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
@@ -170,9 +179,15 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 
 		url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
 		User user = restTemplate.getForObject(url, User.class);
+		
+		url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
+		LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
+		
+		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory, 
+				vehicleType, locationModel, coupons, promotions, worker, washCarService, user);
 
-		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
-				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
+//		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
+//				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
 	}
 
 	@Override

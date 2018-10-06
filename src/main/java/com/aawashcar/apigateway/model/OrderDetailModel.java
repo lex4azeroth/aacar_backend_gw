@@ -25,6 +25,7 @@ public class OrderDetailModel {
 	private double price;
 	private double discountedPrice;
 	private int operatorId;
+	private LocationModel location;
 
 	public int getOrderId() {
 		return orderId;
@@ -200,5 +201,13 @@ public class OrderDetailModel {
 
 	public void setFullAddress(String fullAddress) {
 		this.fullAddress = fullAddress;
+	}
+
+	public LocationModel getLocation() {
+		return location;
+	}
+
+	public void setLocation(LocationModel location) {
+		this.location = location;
 	}
 }

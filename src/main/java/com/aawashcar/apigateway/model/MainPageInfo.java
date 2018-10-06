@@ -19,6 +19,8 @@ public class MainPageInfo {
 	private DefaultAddressModel defaultAddress;
 	
 	private String license;
+	
+	private LocationModel location;
 
 	public List<VehicleTypeModel> getVehicleTypes() {
 		return vehicleTypes;
@@ -82,5 +84,13 @@ public class MainPageInfo {
 
 	public void setLicense(String license) {
 		this.license = license;
+	}
+
+	public LocationModel getLocation() {
+		return location;
+	}
+
+	public void setLocation(LocationModel location) {
+		this.location = location;
 	}
 }

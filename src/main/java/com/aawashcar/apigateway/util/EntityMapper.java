@@ -25,6 +25,7 @@ import com.aawashcar.apigateway.model.CityModel;
 import com.aawashcar.apigateway.model.DefaultAddressModel;
 import com.aawashcar.apigateway.model.DistrictModel;
 import com.aawashcar.apigateway.model.DistrictOnlyModel;
+import com.aawashcar.apigateway.model.LocationModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.MiniAuthModel;
 import com.aawashcar.apigateway.model.MyCouponModel;
@@ -49,7 +50,7 @@ public class EntityMapper {
 	public static String formatTimestamp(Timestamp timestamp) {
 		return EntityMapper.formatTimestamp(timestamp, sdf);
 	}
-	
+
 	public static String formatTimestamp(Timestamp timestamp, SimpleDateFormat formater) {
 		// sdf.format(Calendar.getInstance().new Date(timestamp.getTime())
 		if (timestamp == null) {
@@ -65,7 +66,7 @@ public class EntityMapper {
 		userModel.setPhoneNumber(user.getPhoneNumber());
 		return userModel;
 	}
-	
+
 	public static List<VehicleCategoryModel> convertVehicleCategoryToModel(VehicleCategory[] vehicleCategories) {
 		List<VehicleCategoryModel> categories = new ArrayList<>();
 		int size = vehicleCategories.length;
@@ -152,7 +153,7 @@ public class EntityMapper {
 		if (coupons == null) {
 			return null;
 		}
-		
+
 		List<MyCouponModel> myCoupons = new ArrayList<>();
 		int size = coupons.length;
 		for (int index = 0; index < size; index++) {
@@ -185,8 +186,7 @@ public class EntityMapper {
 		return model;
 	}
 
-	public static DistrictModel convertDistrictToModel(District district,
-	                                                   ResidentialQuarterModel resiQuarterModel) {
+	public static DistrictModel convertDistrictToModel(District district, ResidentialQuarterModel resiQuarterModel) {
 		DistrictModel model = new DistrictModel();
 		model.setId(district.getDistrictId());
 		model.setName(district.getName());
@@ -265,13 +265,56 @@ public class EntityMapper {
 	}
 
 	public static MainPageInfo buildMainPageInfo(User user, Order order, VehicleCategory[] categories,
-	                                             VehicleType[] types,
-	                                             WashCarService[] services,
-	                                             City city,
-	                                             District district,
-	                                             Province province,
-	                                             ResidentialQuarter resiQuart,
-	                                             Vehicle vehicle) {
+			VehicleType[] types, WashCarService[] services, LocationModel locationModel, Vehicle vehicle) {
+		MainPageInfo mainPageInfo = new MainPageInfo();
+		mainPageInfo.setUser(convertUserToModel(user));
+		mainPageInfo.setBookedTime(formatTimestamp(order.getBookTime()));
+		mainPageInfo.setServices(convertServiceToModel(services));
+		mainPageInfo.setVehicleCategories(convertVehicleCategoryToModel(categories));
+		mainPageInfo.setVehicleTypes(convertVehicleTypeToModel(types));
+		int size = mainPageInfo.getServices().size();
+		for (int index = 0; index < size; index++) {
+			ServiceModel serviceModel = mainPageInfo.getServices().get(index);
+			if (serviceModel.getId() == order.getServiceId()) {
+				serviceModel.setDefault(true);
+				break;
+			}
+		}
+
+		size = mainPageInfo.getVehicleCategories().size();
+		for (int index = 0; index < size; index++) {
+			VehicleCategoryModel vehicleCategoryModel = mainPageInfo.getVehicleCategories().get(index);
+			if (vehicleCategoryModel.getId() == vehicle.getCategoryId()) {
+				vehicleCategoryModel.setDefault(true);
+				break;
+			}
+		}
+
+		size = mainPageInfo.getVehicleTypes().size();
+		for (int index = 0; index < size; index++) {
+			VehicleTypeModel vehicleTypeModel = mainPageInfo.getVehicleTypes().get(index);
+			if (vehicleTypeModel.getId() == vehicle.getTypeId()) {
+				vehicleTypeModel.setDefault(true);
+				break;
+			}
+		}
+
+		mainPageInfo.setLicense(vehicle.getLicense());
+		mainPageInfo.setColor(vehicle.getColor());
+
+//		LocationModel location = new LocationModel();
+//		location.setLatitude(locationModel.getLatitude());
+//		location.setLongitude(locationModel.getLongitude());
+//		location.setDetailAddress(locationModel.getDetailAddress());
+//		location.setAddressRemark(locationModel.getAddressRemark());
+		mainPageInfo.setLocation(locationModel); 
+
+		return mainPageInfo;
+	}
+	
+	public static MainPageInfo buildMainPageInfo(User user, Order order, VehicleCategory[] categories,
+			VehicleType[] types, WashCarService[] services, City city, District district, Province province,
+			ResidentialQuarter resiQuart, Vehicle vehicle) {
 		MainPageInfo mainPageInfo = new MainPageInfo();
 		mainPageInfo.setUser(convertUserToModel(user));
 		mainPageInfo.setBookedTime(formatTimestamp(order.getBookTime()));
@@ -320,14 +363,28 @@ public class EntityMapper {
 		return mainPageInfo;
 	}
 
-	public static MainPageInfo buildDefaultMainPageInfo(
-	                                                    VehicleCategory[] categories,
-	                                                    VehicleType[] types,
-	                                                    WashCarService[] services,
-	                                                    City city,
-	                                                    District district,
-	                                                    Province province,
-	                                                    ResidentialQuarter resiQuart) {
+	public static MainPageInfo buildDefaultMainPageInfo(VehicleCategory[] categories, VehicleType[] types,
+			WashCarService[] services, LocationModel locationModel) {
+		MainPageInfo mainPageInfo = new MainPageInfo();
+		mainPageInfo.setColor("");
+		mainPageInfo.setLicense("");
+		mainPageInfo.setBookedTime(null);
+		mainPageInfo.setUser(new UserModel());
+		mainPageInfo.setVehicleCategories(convertVehicleCategoryToModel(categories));
+		mainPageInfo.setVehicleTypes(convertVehicleTypeToModel(types));
+		mainPageInfo.setServices(convertServiceToModel(services));
+
+//		LocationModel location = new LocationModel();
+//		location.setLatitude(locationModel.getLatitude());
+//		location.setLongitude(locationModel.getLongitude());
+//		location.setDetailAddress(locationModel.getDetailAddress());
+//		location.setAddressRemark(locationModel.getAddressRemark());
+		mainPageInfo.setLocation(locationModel);
+		return mainPageInfo;
+	}
+
+	public static MainPageInfo buildDefaultMainPageInfo(VehicleCategory[] categories, VehicleType[] types,
+			WashCarService[] services, City city, District district, Province province, ResidentialQuarter resiQuart) {
 		MainPageInfo mainPageInfo = new MainPageInfo();
 		mainPageInfo.setColor("");
 		mainPageInfo.setLicense("");
@@ -348,20 +405,9 @@ public class EntityMapper {
 		return mainPageInfo;
 	}
 
-	public static OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order,
-	                                                                    String serviceName,
-	                                                                    Vehicle vehicle,
-	                                                                    VehicleCategory vehicleCategory,
-	                                                                    VehicleType vehicleType,
-	                                                                    Province province,
-	                                                                    City city,
-	                                                                    District district,
-	                                                                    ResidentialQuarter residentialQuarter,
-	                                                                    Coupon[] coupons,
-	                                                                    Promotion[] promotions,
-	                                                                    Worker worker, 
-	                                                                    WashCarService washCarService, 
-	                                                                    User user) {
+	public static OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order, String serviceName,
+			Vehicle vehicle, VehicleCategory vehicleCategory, VehicleType vehicleType, LocationModel locationModel, Coupon[] coupons, Promotion[] promotions,
+			Worker worker, WashCarService washCarService, User user) {
 		OrderDetailWithWasherModel model = new OrderDetailWithWasherModel();
 		model.setAddress(order.getDetailLocation());
 		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
@@ -369,14 +415,68 @@ public class EntityMapper {
 		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
 		model.setColor(vehicle.getColor());
 		model.setLicense(vehicle.getLicense());
-		
+
+		model.setCoupons(convertCouponsToMyModel(coupons));
+
+//		LocationModel location = new LocationModel();
+//		location.setLatitude(locationModel.getLatitude());
+//		location.setLongitude(locationModel.getLongitude());
+//		location.setDetailAddress(locationModel.getDetailAddress());
+//		location.setAddressRemark(locationModel.getAddressRemark());
+		model.setLocation(locationModel); 
+		model.setFullAddress(locationModel.toString());
+
+		model.setOrderId(order.getId());
+		model.setOrderNumber(order.getOrderNumber());
+
+		model.setPromotions(convertPromotionsToMyModel(promotions));
+
+		model.setRemarks(order.getRemarks());
+		model.setServiceName(serviceName);
+		model.setStatus(order.getStatus());
+		model.setStatusCode(order.getStatusCode());
+		VehicleCategoryModel vehicleCategoryModel = new VehicleCategoryModel();
+		vehicleCategoryModel.setDefault(true);
+		vehicleCategoryModel.setId(vehicleCategory.getId());
+		vehicleCategoryModel.setName(vehicleCategory.getName());
+		model.setVehicleCategory(vehicleCategoryModel);
+
+		VehicleTypeModel vehicleTypeModel = new VehicleTypeModel();
+		vehicleTypeModel.setDefault(true);
+		vehicleTypeModel.setId(vehicleType.getId());
+		vehicleTypeModel.setName(vehicleType.getName());
+		model.setVehicleType(vehicleTypeModel);
+
+		model.setPrice(order.getPrice());
+		model.setDiscountedPrice(order.getDiscountedPrice());
+		model.setWasherInfo(worker);
+
+		model.setWashCarService(washCarService);
+
+		model.setUser(user);
+
+		return model;
+	}
+
+	public static OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order, String serviceName,
+			Vehicle vehicle, VehicleCategory vehicleCategory, VehicleType vehicleType, Province province, City city,
+			District district, ResidentialQuarter residentialQuarter, Coupon[] coupons, Promotion[] promotions,
+			Worker worker, WashCarService washCarService, User user) {
+		OrderDetailWithWasherModel model = new OrderDetailWithWasherModel();
+		model.setAddress(order.getDetailLocation());
+		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
+		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
+		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
+		model.setColor(vehicle.getColor());
+		model.setLicense(vehicle.getLicense());
+
 		model.setCoupons(convertCouponsToMyModel(coupons));
 
 		DefaultAddressModel defaultAddressModel = new DefaultAddressModel();
 		defaultAddressModel.setCity(convertCityToModel(city));
 		defaultAddressModel.setDetailLocation(order.getDetailLocation());
-		defaultAddressModel.setDistrict(convertDistrictToModel(district,
-		                                                       convertResidentialQuarterToModel(residentialQuarter)));
+		defaultAddressModel
+				.setDistrict(convertDistrictToModel(district, convertResidentialQuarterToModel(residentialQuarter)));
 		defaultAddressModel.setProvicne(convertProvinceToModel(province));
 		// defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
 		model.setDefalutAddress(defaultAddressModel);
@@ -406,27 +506,16 @@ public class EntityMapper {
 		model.setPrice(order.getPrice());
 		model.setDiscountedPrice(order.getDiscountedPrice());
 		model.setWasherInfo(worker);
-		
+
 		model.setWashCarService(washCarService);
-		
+
 		model.setUser(user);
-		
+
 		return model;
 	}
-	
 
-	public static OrderDetailModel buildOrderDetailInfo(
-	                                                    Order order,
-	                                                    String serviceName,
-	                                                    Vehicle vehicle,
-	                                                    VehicleCategory vehicleCategory,
-	                                                    VehicleType vehicleType,
-	                                                    Province province,
-	                                                    City city,
-	                                                    District district,
-	                                                    ResidentialQuarter residentialQuarter,
-	                                                    Coupon[] coupons,
-	                                                    Promotion[] promotions) {
+	public static OrderDetailModel buildOrderDetailInfo(Order order, String serviceName, Vehicle vehicle,
+			VehicleCategory vehicleCategory, VehicleType vehicleType, LocationModel locationModel, Coupon[] coupons, Promotion[] promotions) {
 		OrderDetailModel model = new OrderDetailModel();
 		model.setAddress(order.getDetailLocation());
 		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
@@ -437,16 +526,14 @@ public class EntityMapper {
 
 		model.setCoupons(convertCouponsToMyModel(coupons));
 
-		DefaultAddressModel defaultAddressModel = new DefaultAddressModel();
-		defaultAddressModel.setCity(convertCityToModel(city));
-		defaultAddressModel.setDetailLocation(order.getDetailLocation());
-		defaultAddressModel.setDistrict(convertDistrictToModel(district,
-		                                                       convertResidentialQuarterToModel(residentialQuarter)));
-		defaultAddressModel.setProvicne(convertProvinceToModel(province));
-		// defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
-		model.setDefalutAddress(defaultAddressModel);
-		model.setFullAddress(defaultAddressModel.toString());
-		
+//		LocationModel location = new LocationModel();
+//		location.setLatitude(locationModel.getLatitude());
+//		location.setLongitude(locationModel.getLongitude());
+//		location.setDetailAddress(locationModel.getDetailAddress());
+//		location.setAddressRemark(locationModel.getAddressRemark());
+		model.setLocation(locationModel); 
+		model.setFullAddress(locationModel.toString());
+
 		model.setOrderId(order.getId());
 		model.setOrderNumber(order.getOrderNumber());
 
@@ -471,7 +558,60 @@ public class EntityMapper {
 
 		model.setPrice(order.getPrice());
 		model.setDiscountedPrice(order.getDiscountedPrice());
-		
+
+		model.setOperatorId(order.getOperatorId());
+
+		return model;
+	}
+	
+	public static OrderDetailModel buildOrderDetailInfo(Order order, String serviceName, Vehicle vehicle,
+			VehicleCategory vehicleCategory, VehicleType vehicleType, Province province, City city, District district,
+			ResidentialQuarter residentialQuarter, Coupon[] coupons, Promotion[] promotions) {
+		OrderDetailModel model = new OrderDetailModel();
+		model.setAddress(order.getDetailLocation());
+		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
+		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
+		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
+		model.setColor(vehicle.getColor());
+		model.setLicense(vehicle.getLicense());
+
+		model.setCoupons(convertCouponsToMyModel(coupons));
+
+		DefaultAddressModel defaultAddressModel = new DefaultAddressModel();
+		defaultAddressModel.setCity(convertCityToModel(city));
+		defaultAddressModel.setDetailLocation(order.getDetailLocation());
+		defaultAddressModel
+				.setDistrict(convertDistrictToModel(district, convertResidentialQuarterToModel(residentialQuarter)));
+		defaultAddressModel.setProvicne(convertProvinceToModel(province));
+		// defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
+		model.setDefalutAddress(defaultAddressModel);
+		model.setFullAddress(defaultAddressModel.toString());
+
+		model.setOrderId(order.getId());
+		model.setOrderNumber(order.getOrderNumber());
+
+		model.setPromotions(convertPromotionsToMyModel(promotions));
+
+		model.setRemarks(order.getRemarks());
+		model.setServiceName(serviceName);
+		model.setServiceId(order.getServiceId());
+		model.setStatus(order.getStatus());
+		model.setStatusCode(order.getStatusCode());
+		VehicleCategoryModel vehicleCategoryModel = new VehicleCategoryModel();
+		vehicleCategoryModel.setDefault(true);
+		vehicleCategoryModel.setId(vehicleCategory.getId());
+		vehicleCategoryModel.setName(vehicleCategory.getName());
+		model.setVehicleCategory(vehicleCategoryModel);
+
+		VehicleTypeModel vehicleTypeModel = new VehicleTypeModel();
+		vehicleTypeModel.setDefault(true);
+		vehicleTypeModel.setId(vehicleType.getId());
+		vehicleTypeModel.setName(vehicleType.getName());
+		model.setVehicleType(vehicleTypeModel);
+
+		model.setPrice(order.getPrice());
+		model.setDiscountedPrice(order.getDiscountedPrice());
+
 		model.setOperatorId(order.getOperatorId());
 
 		return model;

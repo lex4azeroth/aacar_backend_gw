@@ -1,6 +1,6 @@
 package com.aawashcar.apigateway.model;
 
-import java.sql.Timestamp;
+import java.math.BigDecimal;
 
 public class OrderModel {
 	private String validId;
@@ -18,6 +18,9 @@ public class OrderModel {
 	private String detailLocation;
 	private String phoneNumber;
 	private String license;
+	private String addressRemark;
+	private BigDecimal longitude;
+	private BigDecimal latitude;
 
 	public String getValidId() {
 		return validId;
@@ -137,5 +140,29 @@ public class OrderModel {
 
 	public void setLicense(String license) {
 		this.license = license;
+	}
+
+	public String getAddressRemark() {
+		return addressRemark;
+	}
+
+	public void setAddressRemark(String addressRemark) {
+		this.addressRemark = addressRemark;
+	}
+
+	public BigDecimal getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(BigDecimal longitude) {
+		this.longitude = longitude;
+	}
+
+	public BigDecimal getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(BigDecimal latitude) {
+		this.latitude = latitude;
 	}
 }
