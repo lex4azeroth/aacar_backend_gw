@@ -31,6 +31,7 @@ import com.aawashcar.apigateway.model.WasherMainPageInfo;
 import com.aawashcar.apigateway.service.WasherPageService;
 import com.aawashcar.apigateway.util.AACodeConsField;
 import com.aawashcar.apigateway.util.EntityMapper;
+import com.aawashcar.apigateway.util.ServiceUtil;
 
 @Service()
 public class WasherPageServiceImpl extends BaseService implements WasherPageService {
@@ -70,11 +71,13 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 				assignedOrder.setCustomerFirstName(user.getFirstName());
 				assignedOrder.setCustomerLastName(user.getLastName());
 				assignedOrder.setCustomerPhone(user.getPhoneNumber());
+				
+				assignedOrder.setServiceName(getServicesName(order.getServiceId()));
 
-				url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
-				WashCarService service = restTemplate.getForObject(url, WashCarService.class);
-				assignedOrder.setIcon(service.getIconUrl());
-				assignedOrder.setServiceName(service.getName());
+//				url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
+//				WashCarService service = restTemplate.getForObject(url, WashCarService.class);
+//				assignedOrder.setIcon(service.getIconUrl());
+//				assignedOrder.setServiceName(service.getName());
 
 //				url = opsUrlPrefix + "location/lal/" + String.valueOf(order.getLocationId());
 //				Location location = restTemplate.getForObject(url, Location.class);
@@ -107,6 +110,22 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 
 		return washerMainPageInfo;
 	}
+	
+	private String getServicesName(String serviceIds) {
+		String[] ids = ServiceUtil.getServiceIDs(serviceIds);
+		int length = ids.length;
+		StringBuilder sb = new StringBuilder();
+		for (int index = 0; index < length; index++) {
+			String url = capUrlPrefix + "capabilityname/" + ids[index];
+			sb.append(restTemplate.getForObject(url, String.class));
+			
+			if (index != length - 1) {
+				sb.append(" + ");
+			}
+		}
+		
+		return sb.toString();
+	}
 
 	private int isWorker(String validId) {
 		User user = getUserId(validId);
@@ -136,14 +155,14 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 //		ResidentialQuarter resiQuarter = null;
 		VehicleCategory vehicleCategory = null;
 		VehicleType vehicleType = null;
-		WashCarService washCarService = null;
+//		WashCarService washCarService = null;
 
 		// get order by order id;
 		String url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
 		Order order = restTemplate.getForObject(url, Order.class);
 
-		url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
-		washCarService = restTemplate.getForObject(url, WashCarService.class);
+//		url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
+//		washCarService = restTemplate.getForObject(url, WashCarService.class);
 
 		url = opsUrlPrefix + "vehicle/vehiclecategory/" + String.valueOf(order.getVehicleId());
 		vehicleCategory = restTemplate.getForObject(url, VehicleCategory.class);
@@ -170,7 +189,7 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
 		Promotion[] promotions = { promotion };
 
-		url = promUrlPrefix + "coupon/" + String.valueOf(order.getCountyId());
+		url = promUrlPrefix + "coupon/" + String.valueOf(order.getCouponId());
 		Coupon coupon = restTemplate.getForObject(url, Coupon.class);
 		Coupon[] coupons = { coupon };
 
@@ -183,8 +202,9 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
 		LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
 		
-		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory, 
-				vehicleType, locationModel, coupons, promotions, worker, washCarService, user);
+		String servicesName = getServicesName(order.getServiceId());
+		return EntityMapper.buildOrderDetailWithWasher(order, servicesName, vehicle, vehicleCategory, 
+				vehicleType, locationModel, coupons, promotions, worker, null, user);
 
 //		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
 //				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);

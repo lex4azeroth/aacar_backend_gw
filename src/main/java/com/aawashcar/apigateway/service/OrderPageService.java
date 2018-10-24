@@ -21,7 +21,7 @@ public interface OrderPageService {
 	
 	List<OrderDetailWithWasherModel> listOrderDetailsInDays(int days);
 	
-	Pricing pricing(String validId, int orderId, int couponId, int promotionId);
+	Pricing pricing(String validId, String serviceIds, int couponId, int promotionId, double originPrice, int vehicleTypeId, int vehicleCategoryId);
 	
 	WechatPayResponseModel pay(Pricing pricing);
 	

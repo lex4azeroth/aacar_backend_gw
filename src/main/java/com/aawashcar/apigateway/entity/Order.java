@@ -7,7 +7,7 @@ public class Order {
 	private Timestamp createdTime;
 	private String orderNumber;
 	private int userId;
-	private int serviceId;
+	private String serviceId;
 	private int vehicleId;
 	private String detailLocation;
 	private Timestamp bookTime;
@@ -19,15 +19,17 @@ public class Order {
 	private double price;
 	private boolean invoiceStatus;
 	private double discountedPrice;
-	private int provinceId;
-	private int countyId;
-	private int cityId;
-	private int districtId;
-	private int resiQuartId;
+//	private int provinceId;
+//	private int countyId;
+//	private int cityId;
+//	private int districtId;
+//	private int resiQuartId;
 	private int locationId;
 	private int couponId;
 	private int promotionId;
 	private int operatorId;
+	private String capabilityType;
+	private String storeId;
 	
 	public String getOrderNumber() {
 		return orderNumber;
@@ -45,11 +47,11 @@ public class Order {
 		this.userId = userId;
 	}
 
-	public int getServiceId() {
+	public String getServiceId() {
 		return serviceId;
 	}
 
-	public void setServiceId(int serviceId) {
+	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
 	}
 
@@ -125,45 +127,45 @@ public class Order {
 		this.discountedPrice = discountedPrice;
 	}
 
-	public int getProvinceId() {
-		return provinceId;
-	}
-
-	public void setProvinceId(int provinceId) {
-		this.provinceId = provinceId;
-	}
-
-	public int getCountyId() {
-		return countyId;
-	}
-
-	public void setCountyId(int countyId) {
-		this.countyId = countyId;
-	}
-
-	public int getCityId() {
-		return cityId;
-	}
-
-	public void setCityId(int cityId) {
-		this.cityId = cityId;
-	}
-
-	public int getDistrictId() {
-		return districtId;
-	}
-
-	public void setDistrictId(int districtId) {
-		this.districtId = districtId;
-	}
-
-	public int getResiQuartId() {
-		return resiQuartId;
-	}
-
-	public void setResiQuartId(int resiQuartId) {
-		this.resiQuartId = resiQuartId;
-	}
+//	public int getProvinceId() {
+//		return provinceId;
+//	}
+//
+//	public void setProvinceId(int provinceId) {
+//		this.provinceId = provinceId;
+//	}
+//
+//	public int getCountyId() {
+//		return countyId;
+//	}
+//
+//	public void setCountyId(int countyId) {
+//		this.countyId = countyId;
+//	}
+//
+//	public int getCityId() {
+//		return cityId;
+//	}
+//
+//	public void setCityId(int cityId) {
+//		this.cityId = cityId;
+//	}
+//
+//	public int getDistrictId() {
+//		return districtId;
+//	}
+//
+//	public void setDistrictId(int districtId) {
+//		this.districtId = districtId;
+//	}
+//
+//	public int getResiQuartId() {
+//		return resiQuartId;
+//	}
+//
+//	public void setResiQuartId(int resiQuartId) {
+//		this.resiQuartId = resiQuartId;
+//	}
 
 	public Timestamp getOrderTime() {
 		return orderTime;
@@ -227,6 +229,22 @@ public class Order {
 
 	public void setOperatorId(int operatorId) {
 		this.operatorId = operatorId;
+	}
+
+	public String getCapabilityType() {
+		return capabilityType;
+	}
+
+	public void setCapabilityType(String capabilityType) {
+		this.capabilityType = capabilityType;
+	}
+
+	public String getStoreId() {
+		return storeId;
+	}
+
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
 	}
 
 }

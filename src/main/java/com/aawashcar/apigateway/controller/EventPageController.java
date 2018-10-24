@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aawashcar.apigateway.config.WechatConfig;
 import com.aawashcar.apigateway.model.PromotionModel;
+import com.aawashcar.apigateway.model.PromotionWithServicesModel;
 import com.aawashcar.apigateway.model.WechatNotify;
 import com.aawashcar.apigateway.model.WechatPayResponseModel;
 import com.aawashcar.apigateway.service.EventPageService;
@@ -33,7 +34,17 @@ public class EventPageController {
 		return eventPageService.listEvents();
 	}
 	
-	@RequestMapping(value = "promotionlist/{validid}", method = RequestMethod.GET)
+	@RequestMapping(value = "promotionwithserviceslist", method = RequestMethod.GET)
+	public List<PromotionWithServicesModel> listPromotionWithServices() {
+		return eventPageService.listEventsWithServices();
+	}
+	
+	@RequestMapping(value = "mypromotionwithserviceslist/{validid}", method = RequestMethod.GET)
+	public List<PromotionWithServicesModel> listAvailablePromotionWithServices(@PathVariable("validid") String validId) {
+		return eventPageService.listAvailableEventsWithServices(validId);
+	}
+	
+	@RequestMapping(value = "mypromotionlist/{validid}", method = RequestMethod.GET)
 	public List<PromotionModel> listAvailablePromotions(@PathVariable("validid") String validId) {
 		return eventPageService.listAvailableEvents(validId);
 	}

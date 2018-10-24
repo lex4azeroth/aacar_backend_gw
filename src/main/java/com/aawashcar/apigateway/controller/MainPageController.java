@@ -71,6 +71,7 @@ public class MainPageController {
 		return service.listResidentialQuarters(provinceId, cityId, districtId);
 	}
 
+	@Deprecated
 	@RequestMapping(value = "price/{typeId}/{categoryId}/{serviceId}", method = RequestMethod.GET)
 	public PriceModel showPrice(@PathVariable(name = "typeId") int typeId,
 			@PathVariable(name = "categoryId") int categoryId, @PathVariable(name = "serviceId") int serviceId) {

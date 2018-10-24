@@ -6,7 +6,7 @@ public class UpdateOrder {
 	private int id;
 	private String orderNumber;
 	private Integer userId;
-	private Integer serviceId;
+	private String serviceId;
 	private Integer vehicleId;
 	private String detailLocation;
 	private Timestamp bookTime;
@@ -44,11 +44,11 @@ public class UpdateOrder {
 		this.userId = userId;
 	}
 
-	public Integer getServiceId() {
+	public String getServiceId() {
 		return serviceId;
 	}
 
-	public void setServiceId(Integer serviceId) {
+	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
 	}
 

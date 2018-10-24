@@ -7,7 +7,7 @@ public class Pricing {
 	private double originalPrice;
 	private String serviceName;
 	private String bookedTime;
-	private int serviceId;
+	private String serviceId;
 	private int orderId;
 	private int userId;
 	private String validId;
@@ -42,10 +42,10 @@ public class Pricing {
 	public void setBookedTime(String bookedTime) {
 		this.bookedTime = bookedTime;
 	}
-	public int getServiceId() {
+	public String getServiceId() {
 		return serviceId;
 	}
-	public void setServiceId(int serviceId) {
+	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
 	}
 	public int getOrderId() {

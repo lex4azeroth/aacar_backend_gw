@@ -13,6 +13,7 @@ import com.aawashcar.apigateway.entity.MiniAuthEntity;
 import com.aawashcar.apigateway.entity.Order;
 import com.aawashcar.apigateway.entity.OrderSummary;
 import com.aawashcar.apigateway.entity.Promotion;
+import com.aawashcar.apigateway.entity.PromotionWithServices;
 import com.aawashcar.apigateway.entity.Province;
 import com.aawashcar.apigateway.entity.ResidentialQuarter;
 import com.aawashcar.apigateway.entity.User;
@@ -35,6 +36,7 @@ import com.aawashcar.apigateway.model.OrderDetailWithWasherModel;
 import com.aawashcar.apigateway.model.OrderModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
 import com.aawashcar.apigateway.model.PromotionModel;
+import com.aawashcar.apigateway.model.PromotionWithServicesModel;
 import com.aawashcar.apigateway.model.ProvinceModel;
 import com.aawashcar.apigateway.model.ResidentialQuarterModel;
 import com.aawashcar.apigateway.model.ServiceModel;
@@ -263,25 +265,48 @@ public class EntityMapper {
 
 		return promotionModels;
 	}
+	
+	public static List<PromotionWithServicesModel> converPromotionWithServiceToModel(PromotionWithServices[] promotionsWithServices) {
+		if (promotionsWithServices == null) {
+			return null;
+		}
+		List<PromotionWithServicesModel> promotionWithServicesModels = new ArrayList<>();
+		int size = promotionsWithServices.length;
+		for (int index = 0; index < size; index++) {
+			PromotionWithServicesModel model = new PromotionWithServicesModel();
+			PromotionWithServices promotionWithServices = promotionsWithServices[index];
+			model.setId(promotionWithServices.getId());
+			model.setDescription(promotionWithServices.getDescription());
+			model.setDuration(promotionWithServices.getDuration());
+			model.setName(promotionWithServices.getName());
+			model.setPrice(promotionWithServices.getPrice());
+			
+			promotionWithServicesModels.add(model);
+		}
 
+		return promotionWithServicesModels;
+	}
+
+//	public static MainPageInfo buildMainPageInfo(User user, Order order, VehicleCategory[] categories,
+//			VehicleType[] types, WashCarService[] services, LocationModel locationModel, Vehicle vehicle) {
 	public static MainPageInfo buildMainPageInfo(User user, Order order, VehicleCategory[] categories,
-			VehicleType[] types, WashCarService[] services, LocationModel locationModel, Vehicle vehicle) {
+			VehicleType[] types, LocationModel locationModel, Vehicle vehicle) {
 		MainPageInfo mainPageInfo = new MainPageInfo();
 		mainPageInfo.setUser(convertUserToModel(user));
 		mainPageInfo.setBookedTime(formatTimestamp(order.getBookTime()));
-		mainPageInfo.setServices(convertServiceToModel(services));
+//		mainPageInfo.setServices(convertServiceToModel(services));
 		mainPageInfo.setVehicleCategories(convertVehicleCategoryToModel(categories));
 		mainPageInfo.setVehicleTypes(convertVehicleTypeToModel(types));
-		int size = mainPageInfo.getServices().size();
-		for (int index = 0; index < size; index++) {
-			ServiceModel serviceModel = mainPageInfo.getServices().get(index);
-			if (serviceModel.getId() == order.getServiceId()) {
-				serviceModel.setDefault(true);
-				break;
-			}
-		}
+//		int size = mainPageInfo.getServices().size();
+//		for (int index = 0; index < size; index++) {
+//			ServiceModel serviceModel = mainPageInfo.getServices().get(index);
+//			if (serviceModel.getId() == order.getServiceId()) {
+//				serviceModel.setDefault(true);
+//				break;
+//			}
+//		}
 
-		size = mainPageInfo.getVehicleCategories().size();
+		int size = mainPageInfo.getVehicleCategories().size();
 		for (int index = 0; index < size; index++) {
 			VehicleCategoryModel vehicleCategoryModel = mainPageInfo.getVehicleCategories().get(index);
 			if (vehicleCategoryModel.getId() == vehicle.getCategoryId()) {
@@ -318,19 +343,19 @@ public class EntityMapper {
 		MainPageInfo mainPageInfo = new MainPageInfo();
 		mainPageInfo.setUser(convertUserToModel(user));
 		mainPageInfo.setBookedTime(formatTimestamp(order.getBookTime()));
-		mainPageInfo.setServices(convertServiceToModel(services));
+//		mainPageInfo.setServices(convertServiceToModel(services));
 		mainPageInfo.setVehicleCategories(convertVehicleCategoryToModel(categories));
 		mainPageInfo.setVehicleTypes(convertVehicleTypeToModel(types));
-		int size = mainPageInfo.getServices().size();
-		for (int index = 0; index < size; index++) {
-			ServiceModel serviceModel = mainPageInfo.getServices().get(index);
-			if (serviceModel.getId() == order.getServiceId()) {
-				serviceModel.setDefault(true);
-				break;
-			}
-		}
+//		int size = mainPageInfo.getServices().size();
+//		for (int index = 0; index < size; index++) {
+//			ServiceModel serviceModel = mainPageInfo.getServices().get(index);
+////			if (serviceModel.getId() == order.getServiceId()) {
+////				serviceModel.setDefault(true);
+////				break;
+////			}
+//		}
 
-		size = mainPageInfo.getVehicleCategories().size();
+		int size = mainPageInfo.getVehicleCategories().size();
 		for (int index = 0; index < size; index++) {
 			VehicleCategoryModel vehicleCategoryModel = mainPageInfo.getVehicleCategories().get(index);
 			if (vehicleCategoryModel.getId() == vehicle.getCategoryId()) {
@@ -363,8 +388,10 @@ public class EntityMapper {
 		return mainPageInfo;
 	}
 
+//	public static MainPageInfo buildDefaultMainPageInfo(VehicleCategory[] categories, VehicleType[] types,
+//			WashCarService[] services, LocationModel locationModel) {
 	public static MainPageInfo buildDefaultMainPageInfo(VehicleCategory[] categories, VehicleType[] types,
-			WashCarService[] services, LocationModel locationModel) {
+			LocationModel locationModel) {
 		MainPageInfo mainPageInfo = new MainPageInfo();
 		mainPageInfo.setColor("");
 		mainPageInfo.setLicense("");
@@ -372,7 +399,7 @@ public class EntityMapper {
 		mainPageInfo.setUser(new UserModel());
 		mainPageInfo.setVehicleCategories(convertVehicleCategoryToModel(categories));
 		mainPageInfo.setVehicleTypes(convertVehicleTypeToModel(types));
-		mainPageInfo.setServices(convertServiceToModel(services));
+//		mainPageInfo.setServices(convertServiceToModel(services));
 
 //		LocationModel location = new LocationModel();
 //		location.setLatitude(locationModel.getLatitude());
@@ -392,7 +419,7 @@ public class EntityMapper {
 		mainPageInfo.setUser(new UserModel());
 		mainPageInfo.setVehicleCategories(convertVehicleCategoryToModel(categories));
 		mainPageInfo.setVehicleTypes(convertVehicleTypeToModel(types));
-		mainPageInfo.setServices(convertServiceToModel(services));
+//		mainPageInfo.setServices(convertServiceToModel(services));
 
 		DefaultAddressModel defaultAddress = new DefaultAddressModel();
 		defaultAddress.setCity(convertCityToModel(city));
@@ -451,7 +478,7 @@ public class EntityMapper {
 		model.setDiscountedPrice(order.getDiscountedPrice());
 		model.setWasherInfo(worker);
 
-		model.setWashCarService(washCarService);
+		model.setWashCarService(null);
 
 		model.setUser(user);
 
@@ -595,6 +622,8 @@ public class EntityMapper {
 		model.setRemarks(order.getRemarks());
 		model.setServiceName(serviceName);
 		model.setServiceId(order.getServiceId());
+		model.setStoreId(order.getStoreId());
+		model.setCapabilityType(order.getCapabilityType());
 		model.setStatus(order.getStatus());
 		model.setStatusCode(order.getStatusCode());
 		VehicleCategoryModel vehicleCategoryModel = new VehicleCategoryModel();
@@ -620,13 +649,15 @@ public class EntityMapper {
 	public static void convertOrderModelToOrder(OrderModel model, Order order) {
 		order.setBookTime(Timestamp.valueOf(model.getBookTime()));
 		order.setOrderTime(Timestamp.valueOf(model.getOrderTime()));
-		order.setCityId(model.getCityId());
-		order.setCountyId(1); // 默认为1，上海
+//		order.setCityId(model.getCityId());
+//		order.setCountyId(1); // 默认为1，上海
 		order.setDetailLocation(model.getDetailLocation());
-		order.setDistrictId(model.getDistrictId());
+//		order.setDistrictId(model.getDistrictId());
 		order.setPrice(model.getPrice());
-		order.setProvinceId(model.getProvinceId());
-		order.setResiQuartId(model.getResidentialQuarterId());
+//		order.setProvinceId(model.getProvinceId());
+//		order.setResiQuartId(model.getResidentialQuarterId());
 		order.setServiceId(model.getServiceId());
+		order.setStoreId(model.getStoreId());
+		order.setCapabilityType(model.getCapabilityType());
 	}
 }

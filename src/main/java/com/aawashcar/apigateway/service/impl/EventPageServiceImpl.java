@@ -1,6 +1,7 @@
 package com.aawashcar.apigateway.service.impl;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,11 +18,16 @@ import com.aawashcar.apigateway.config.WechatConfig;
 import com.aawashcar.apigateway.entity.Promotion;
 import com.aawashcar.apigateway.entity.PromotionTransaction;
 import com.aawashcar.apigateway.entity.PromotionWeixinTransaction;
+import com.aawashcar.apigateway.entity.PromotionWithServices;
 import com.aawashcar.apigateway.entity.User;
+import com.aawashcar.apigateway.model.CapabilityModel;
 import com.aawashcar.apigateway.model.PromotionModel;
+import com.aawashcar.apigateway.model.PromotionService;
+import com.aawashcar.apigateway.model.PromotionWithServicesModel;
 import com.aawashcar.apigateway.model.WechatNotify;
 import com.aawashcar.apigateway.model.WechatPayResponse;
 import com.aawashcar.apigateway.model.WechatPayResponseModel;
+import com.aawashcar.apigateway.service.CapabilityPageService;
 import com.aawashcar.apigateway.service.EventPageService;
 import com.aawashcar.apigateway.service.WechatPayService;
 import com.aawashcar.apigateway.util.EntityMapper;
@@ -33,6 +39,9 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 	@Autowired
 	private WechatPayService payService;
 
+	@Autowired
+	private CapabilityPageService capabilityService;
+
 	@Override
 	public List<PromotionModel> listEvents() {
 		String url = promUrlPrefix + "promotion/listall";
@@ -42,7 +51,63 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 
 		return EntityMapper.converPromotionToModel(promotions);
 	}
-	
+
+	@Override
+	public List<PromotionWithServicesModel> listEventsWithServices() {
+		String url = promUrlPrefix + "promotion/listallwtihservices";
+
+		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url,
+				PromotionWithServices[].class);
+		PromotionWithServices[] promotionsWithServices = promotionResponseEntity.getBody();
+
+		List<PromotionWithServicesModel> promotionWithServicesModels = new ArrayList<>();
+		buildPromotionWithServicesList(promotionWithServicesModels, promotionsWithServices);
+
+		return promotionWithServicesModels;
+	}
+
+	private void buildPromotionWithServicesList(List<PromotionWithServicesModel> promotionWithServicesModels,
+			PromotionWithServices[] promotionsWithServices) {
+		int size = promotionsWithServices.length;
+		int promotionId = -1;
+		PromotionWithServicesModel model = new PromotionWithServicesModel();
+		List<PromotionService> promotionServiceList = new ArrayList<>();
+		for (int index = 0; index < size; index++) {
+			PromotionWithServices item = promotionsWithServices[index];
+			if (promotionId != item.getId()) {
+				promotionServiceList = new ArrayList<>();
+				model = new PromotionWithServicesModel();
+				model.setId(item.getId());
+				model.setDescription(item.getDescription());
+				model.setDuration(item.getDuration());
+				model.setName(item.getName());
+				model.setPrice(item.getPrice());
+				model.setServices(promotionServiceList);
+
+				buildServiceList(promotionServiceList, item);
+
+				promotionWithServicesModels.add(model);
+				promotionId = item.getId();
+
+			} else {
+				buildServiceList(promotionServiceList, item);
+			}
+		}
+	}
+
+	private void buildServiceList(List<PromotionService> promotionServiceList, PromotionWithServices item) {
+		int serviceId = item.getServiceId();
+		PromotionService ps = new PromotionService();
+		ps.setCount(item.getCount());
+		ps.setConsumedCount(item.getConsumedCount());
+		ps.setRemainingCount(item.getRemainingCount());
+		ps.setServiceId(serviceId);
+		CapabilityModel capability = capabilityService.findCapabilityById(serviceId);
+		ps.setServiceName(capability.getName());
+		ps.setServiceCode(capability.getServiceId());
+		promotionServiceList.add(ps);
+	}
+
 	private User getUser(String validId) {
 		String url = crmUrlPrefix + "user/" + validId;
 		User user = restTemplate.getForObject(url, User.class);
@@ -159,7 +224,7 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 		String url = promUrlPrefix + "/promotion/purchase/" + String.valueOf(promotionTransactionId);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		
+
 		PromotionWeixinTransaction weixinTransaction = new PromotionWeixinTransaction();
 		weixinTransaction.setAppid(notify.getAppid());
 		weixinTransaction.setAttach(notify.getAttach());
@@ -178,7 +243,8 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 		weixinTransaction.setTotal_fee(notify.getTotal_fee());
 		weixinTransaction.setTrade_type(notify.getTrade_type());
 		weixinTransaction.setTransaction_id(notify.getTransaction_id());
-		HttpEntity<PromotionWeixinTransaction> entity = new HttpEntity<PromotionWeixinTransaction>(weixinTransaction, headers);
+		HttpEntity<PromotionWeixinTransaction> entity = new HttpEntity<PromotionWeixinTransaction>(weixinTransaction,
+				headers);
 		boolean result = restTemplate.postForObject(url, entity, Boolean.class);
 	}
 
@@ -188,13 +254,33 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 		if (user == null) {
 			// log error
 			return null;
-		} 
-		
+		}
+
 		String url = promUrlPrefix + "promotion/notmylist/" + String.valueOf(user.getId());
 
 		ResponseEntity<Promotion[]> promotionResponseEntity = restTemplate.getForEntity(url, Promotion[].class);
 		Promotion[] promotions = promotionResponseEntity.getBody();
 
 		return EntityMapper.converPromotionToModel(promotions);
+	}
+
+	@Override
+	public List<PromotionWithServicesModel> listAvailableEventsWithServices(String validid) {
+		User user = getUser(validid);
+		if (user == null) {
+			// log error
+			return null;
+		}
+
+		String url = promUrlPrefix + "promotion/notmylistwithservices/" + String.valueOf(user.getId());
+
+		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url,
+				PromotionWithServices[].class);
+		PromotionWithServices[] promotionsWithServices = promotionResponseEntity.getBody();
+
+		List<PromotionWithServicesModel> promotionWithServicesModels = new ArrayList<>();
+		buildPromotionWithServicesList(promotionWithServicesModels, promotionsWithServices);
+
+		return promotionWithServicesModels;
 	}
 }

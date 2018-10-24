@@ -24,7 +24,7 @@ public class MinePageController {
 	public List<MyPromotionModel> promtionList(@PathVariable("openid") String openId) {
 		return service.listMyPromotionModels(openId);
 	}
-	
+
 	@RequestMapping(value = "couponlist/{openid}", method = RequestMethod.GET)
 	public List<MyCouponModel> couponList(@PathVariable("openid") String openId) {
 		return service.listMyCouponModels(openId);

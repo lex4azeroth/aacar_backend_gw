@@ -1,12 +1,17 @@
 package com.aawashcar.apigateway.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +36,9 @@ public class AppController {
 
 	@Autowired
 	private RestTemplate restTemplate;
+	
+	@Autowired
+	private HttpClient httpClient;
 
 	@RequestMapping(value = "getOpenId", method = RequestMethod.GET)
 	public String getOpenId(@RequestParam("name") String name, @RequestParam("js_code") String jsCode,
@@ -47,9 +55,31 @@ public class AppController {
 		urlVariables.put("jsCode", jsCode);
 		urlVariables.put("grantType", grantType);
 
-		ResponseEntity<String> response = restTemplate.exchange(weixinUrl, HttpMethod.GET, null, String.class,
-				urlVariables);
-		return response.getBody();
+//		ResponseEntity<String> response = restTemplate.exchange(weixinUrl, HttpMethod.GET, null, String.class,
+//				urlVariables);
+		
+		// weixin.openid.url.get=https://api.weixin.qq.com/sns/jscode2session?appid={appId}&secret={secret}&js_code={jsCode}&grant_type={grantType}
+		weixinUrl = weixinUrl.replace("appIdValue", appId);
+		weixinUrl = weixinUrl.replace("secretValue", secret);
+		weixinUrl = weixinUrl.replace("jsCodeValue", jsCode);
+		weixinUrl = weixinUrl.replace("grantTypeValue", grantType);
+		System.out.println(weixinUrl);
+		HttpGet get = new HttpGet(weixinUrl);
+		HttpResponse response;
+		String result = null;
+		try {
+			response = httpClient.execute(get);
+			HttpEntity entity = response.getEntity();
+			result = EntityUtils.toString(entity,"UTF-8");
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 	
 	@RequestMapping(value = "testEurekaClients", method = RequestMethod.GET)

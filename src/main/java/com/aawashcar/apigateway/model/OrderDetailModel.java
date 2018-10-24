@@ -6,7 +6,7 @@ public class OrderDetailModel {
 	private int orderId;
 	private String orderNumber;
 	private String serviceName;
-	private int serviceId;
+	private String serviceId;
 	private String bookTime;
 	private String completedTime;
 	private String createdTime;
@@ -26,7 +26,9 @@ public class OrderDetailModel {
 	private double discountedPrice;
 	private int operatorId;
 	private LocationModel location;
-
+	private String capabilityType;
+	private String storeId;
+	
 	public int getOrderId() {
 		return orderId;
 	}
@@ -171,11 +173,11 @@ public class OrderDetailModel {
 		this.createdTime = createdTime;
 	}
 
-	public int getServiceId() {
+	public String getServiceId() {
 		return serviceId;
 	}
 
-	public void setServiceId(int serviceId) {
+	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
 	}
 
@@ -209,5 +211,21 @@ public class OrderDetailModel {
 
 	public void setLocation(LocationModel location) {
 		this.location = location;
+	}
+
+	public String getStoreId() {
+		return storeId;
+	}
+
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
+	}
+
+	public String getCapabilityType() {
+		return capabilityType;
+	}
+
+	public void setCapabilityType(String capabilityType) {
+		this.capabilityType = capabilityType;
 	}
 }

@@ -2,19 +2,16 @@ package com.aawashcar.apigateway.model;
 
 import java.math.BigDecimal;
 
-public class OrderModel {
+public class OrderPayModel {
 	private String validId;
 	private double price;
+	private double discountedPrice;
 	private int vehicleType;
 	private int vehicleCategory;
 	private String color;
 	private String serviceId;
 	private String bookTime;
 	private String orderTime;
-//	private int provinceId;
-//	private int cityId;
-//	private int districtId;
-//	private int residentialQuarterId;
 	private String detailLocation;
 	private String phoneNumber;
 	private String license;
@@ -38,6 +35,14 @@ public class OrderModel {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public double getDiscountedPrice() {
+		return discountedPrice;
+	}
+
+	public void setDiscountedPrice(double discountedPrice) {
+		this.discountedPrice = discountedPrice;
 	}
 
 	public int getVehicleType() {
@@ -87,38 +92,6 @@ public class OrderModel {
 	public void setOrderTime(String orderTime) {
 		this.orderTime = orderTime;
 	}
-
-//	public int getProvinceId() {
-//		return provinceId;
-//	}
-//
-//	public void setProvinceId(int provinceId) {
-//		this.provinceId = provinceId;
-//	}
-//
-//	public int getCityId() {
-//		return cityId;
-//	}
-//
-//	public void setCityId(int cityId) {
-//		this.cityId = cityId;
-//	}
-//
-//	public int getDistrictId() {
-//		return districtId;
-//	}
-//
-//	public void setDistrictId(int districtId) {
-//		this.districtId = districtId;
-//	}
-//
-//	public int getResidentialQuarterId() {
-//		return residentialQuarterId;
-//	}
-//
-//	public void setResidentialQuarterId(int residentialQuarterId) {
-//		this.residentialQuarterId = residentialQuarterId;
-//	}
 
 	public String getDetailLocation() {
 		return detailLocation;
@@ -183,4 +156,5 @@ public class OrderModel {
 	public void setStoreId(String storeId) {
 		this.storeId = storeId;
 	}
+
 }

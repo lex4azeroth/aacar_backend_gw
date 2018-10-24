@@ -12,7 +12,7 @@ public class MainPageInfo {
 
 	private UserModel user;
 
-	private List<ServiceModel> services;
+//	private List<ServiceModel> services;
 
 	private String bookedTime;
 
@@ -54,13 +54,13 @@ public class MainPageInfo {
 		this.user = user;
 	}
 
-	public List<ServiceModel> getServices() {
-		return services;
-	}
-
-	public void setServices(List<ServiceModel> services) {
-		this.services = services;
-	}
+//	public List<ServiceModel> getServices() {
+//		return services;
+//	}
+//
+//	public void setServices(List<ServiceModel> services) {
+//		this.services = services;
+//	}
 
 	public String getBookedTime() {
 		return bookedTime;
