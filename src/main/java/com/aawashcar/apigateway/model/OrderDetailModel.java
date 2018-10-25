@@ -21,7 +21,7 @@ public class OrderDetailModel {
 	private String fullAddress;
 	private String remarks;
 	private List<MyCouponModel> coupons;
-	private List<MyPromotionModel> promotions;
+	private List<PromotionWithServicesModel> promotions;
 	private double price;
 	private double discountedPrice;
 	private int operatorId;
@@ -125,11 +125,11 @@ public class OrderDetailModel {
 		this.coupons = coupons;
 	}
 
-	public List<MyPromotionModel> getPromotions() {
+	public List<PromotionWithServicesModel> getPromotions() {
 		return promotions;
 	}
 
-	public void setPromotions(List<MyPromotionModel> promotions) {
+	public void setPromotions(List<PromotionWithServicesModel> promotions) {
 		this.promotions = promotions;
 	}
 

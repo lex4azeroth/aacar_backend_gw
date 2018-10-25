@@ -11,6 +11,7 @@ import com.aawashcar.apigateway.entity.District;
 import com.aawashcar.apigateway.entity.Location;
 import com.aawashcar.apigateway.entity.Order;
 import com.aawashcar.apigateway.entity.Promotion;
+import com.aawashcar.apigateway.entity.PromotionWithServices;
 import com.aawashcar.apigateway.entity.Province;
 import com.aawashcar.apigateway.entity.ResidentialQuarter;
 import com.aawashcar.apigateway.entity.User;
@@ -185,9 +186,13 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
 		Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
 
-		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
-		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
-		Promotion[] promotions = { promotion };
+//		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
+//		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
+//		Promotion[] promotions = { promotion };
+		
+		url = promUrlPrefix + "promotion/mylistwithservices/" + String.valueOf(order.getUserId());
+		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url, PromotionWithServices[].class);
+		PromotionWithServices[] promotions = promotionResponseEntity.getBody();
 
 		url = promUrlPrefix + "coupon/" + String.valueOf(order.getCouponId());
 		Coupon coupon = restTemplate.getForObject(url, Coupon.class);

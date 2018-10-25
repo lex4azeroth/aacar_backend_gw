@@ -3,6 +3,7 @@ package com.aawashcar.apigateway.service.impl;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,14 +41,18 @@ import com.aawashcar.apigateway.entity.VehicleType;
 import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.entity.Worker;
 import com.aawashcar.apigateway.exception.AAInnerServerError;
+import com.aawashcar.apigateway.model.CapabilityModel;
 import com.aawashcar.apigateway.model.LocationModel;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.OrderDetailWithWasherModel;
 import com.aawashcar.apigateway.model.OrderSummaryModel;
 import com.aawashcar.apigateway.model.Pricing;
+import com.aawashcar.apigateway.model.PromotionService;
+import com.aawashcar.apigateway.model.PromotionWithServicesModel;
 import com.aawashcar.apigateway.model.WechatNotify;
 import com.aawashcar.apigateway.model.WechatPayResponse;
 import com.aawashcar.apigateway.model.WechatPayResponseModel;
+import com.aawashcar.apigateway.service.CapabilityPageService;
 import com.aawashcar.apigateway.service.OrderPageService;
 import com.aawashcar.apigateway.service.WechatPayService;
 import com.aawashcar.apigateway.util.EntityMapper;
@@ -59,6 +64,9 @@ import com.aawashcar.apigateway.util.XMLUtil;
 public class OrderPageServiceImpl extends BaseService implements OrderPageService {
 	@Autowired
 	private WechatPayService payService;
+	
+	@Autowired
+	private CapabilityPageService capabilityService;
 
 	private static final String NO_FEE = "NO_FEE";
 
@@ -164,25 +172,68 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			ResponseEntity<Coupon[]> couponResponseEntity = restTemplate.getForEntity(url, Coupon[].class);
 			Coupon[] myCoupons = couponResponseEntity.getBody();
 
-//			url = promUrlPrefix + "promotion/mylistbyservice/" + String.valueOf(user.getId()) + "/"
-//					+ String.valueOf(order.getServiceId());
-//			ResponseEntity<Promotion[]> promotionResponseEntity = restTemplate.getForEntity(url, Promotion[].class);
-//			Promotion[] myPromotions = promotionResponseEntity.getBody();
+			url = promUrlPrefix + "promotion/mylistwithservices/" + String.valueOf(user.getId());
+			ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url, PromotionWithServices[].class);
+			PromotionWithServices[] myPromotionsWithServices = promotionResponseEntity.getBody();
 			
-			url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
-			ResponseEntity<Promotion> promotionResponseEntity = restTemplate.getForEntity(url, Promotion.class);
-			Promotion myPromotion = promotionResponseEntity.getBody();
-			Promotion[] myPromotions = {myPromotion};
+//			url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
+//			ResponseEntity<Promotion> promotionResponseEntity = restTemplate.getForEntity(url, Promotion.class);
+//			Promotion myPromotion = promotionResponseEntity.getBody();
+//			Promotion[] myPromotions = {myPromotion};
 			
 			url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
 			LocationModel location = restTemplate.getForObject(url, LocationModel.class);
 			
-			return EntityMapper.buildOrderDetailInfo(order, getServicesName(order.getServiceId()), vehicle, vehicleCategory, vehicleType, location, myCoupons, myPromotions);
+			List<PromotionWithServicesModel> promotionWithServicesModels = new ArrayList<>();
+			buildPromotionWithServicesList(promotionWithServicesModels, myPromotionsWithServices);
+			return EntityMapper.buildOrderDetailInfo(order, getServicesName(order.getServiceId()), vehicle, vehicleCategory, vehicleType, location, myCoupons, promotionWithServicesModels);
 //			return EntityMapper.buildOrderDetailInfo(order, washCarService.getName(), vehicle,
 //					vehicleCategory, vehicleType, province, city, district, resiQuarter, myCoupons, myPromotions);
 		}
 
 		return null;
+	}
+	
+	private void buildPromotionWithServicesList(List<PromotionWithServicesModel> promotionWithServicesModels,
+			PromotionWithServices[] promotionsWithServices) {
+		int size = promotionsWithServices.length;
+		int promotionId = -1;
+		PromotionWithServicesModel model = new PromotionWithServicesModel();
+		List<PromotionService> promotionServiceList = new ArrayList<>();
+		for (int index = 0; index < size; index++) {
+			PromotionWithServices item = promotionsWithServices[index];
+			if (promotionId != item.getId()) {
+				promotionServiceList = new ArrayList<>();
+				model = new PromotionWithServicesModel();
+				model.setId(item.getId());
+				model.setDescription(item.getDescription());
+				model.setDuration(item.getDuration());
+				model.setName(item.getName());
+				model.setPrice(item.getPrice());
+				model.setServices(promotionServiceList);
+
+				buildServiceList(promotionServiceList, item);
+
+				promotionWithServicesModels.add(model);
+				promotionId = item.getId();
+
+			} else {
+				buildServiceList(promotionServiceList, item);
+			}
+		}
+	}
+
+	private void buildServiceList(List<PromotionService> promotionServiceList, PromotionWithServices item) {
+		int serviceId = item.getServiceId();
+		PromotionService ps = new PromotionService();
+		ps.setCount(item.getCount());
+		ps.setConsumedCount(item.getConsumedCount());
+		ps.setRemainingCount(item.getRemainingCount());
+		ps.setServiceId(serviceId);
+		CapabilityModel capability = capabilityService.findCapabilityById(serviceId);
+		ps.setServiceName(capability.getName());
+		ps.setServiceCode(capability.getServiceId());
+		promotionServiceList.add(ps);
 	}
 
 	private User getUserId(String validId) {
@@ -235,9 +286,14 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		Coupon coupon = restTemplate.getForObject(url, Coupon.class);
 		Coupon[] coupons = { coupon };
 
-		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
-		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
-		Promotion[] promotions = { promotion };
+//		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
+//		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
+//		Promotion[] promotions = { promotion };
+		
+		url = promUrlPrefix + "promotion/mylistwithservices/" + String.valueOf(order.getUserId());
+		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url, PromotionWithServices[].class);
+		PromotionWithServices[] promotions = promotionResponseEntity.getBody();
+		
 		url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
 		Worker worker = restTemplate.getForObject(url, Worker.class);
 
@@ -321,9 +377,13 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		Coupon coupon = restTemplate.getForObject(url, Coupon.class);
 		Coupon[] coupons = { coupon };
 
-		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
-		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
-		Promotion[] promotions = { promotion };
+//		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
+//		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
+//		Promotion[] promotions = { promotion };
+		url = promUrlPrefix + "promotion/mylistwithservices/" + String.valueOf(order.getUserId());
+		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url, PromotionWithServices[].class);
+		PromotionWithServices[] promotions = promotionResponseEntity.getBody();
+		
 		url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
 		Worker worker = restTemplate.getForObject(url, Worker.class);
 

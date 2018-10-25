@@ -433,7 +433,7 @@ public class EntityMapper {
 	}
 
 	public static OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order, String serviceName,
-			Vehicle vehicle, VehicleCategory vehicleCategory, VehicleType vehicleType, LocationModel locationModel, Coupon[] coupons, Promotion[] promotions,
+			Vehicle vehicle, VehicleCategory vehicleCategory, VehicleType vehicleType, LocationModel locationModel, Coupon[] coupons, PromotionWithServices[] promotions,
 			Worker worker, WashCarService washCarService, User user) {
 		OrderDetailWithWasherModel model = new OrderDetailWithWasherModel();
 		model.setAddress(order.getDetailLocation());
@@ -456,7 +456,8 @@ public class EntityMapper {
 		model.setOrderId(order.getId());
 		model.setOrderNumber(order.getOrderNumber());
 
-		model.setPromotions(convertPromotionsToMyModel(promotions));
+		List<PromotionWithServicesModel> models = EntityMapper.converPromotionWithServiceToModel(promotions);
+		model.setPromotions(models);
 
 		model.setRemarks(order.getRemarks());
 		model.setServiceName(serviceName);
@@ -487,7 +488,7 @@ public class EntityMapper {
 
 	public static OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order, String serviceName,
 			Vehicle vehicle, VehicleCategory vehicleCategory, VehicleType vehicleType, Province province, City city,
-			District district, ResidentialQuarter residentialQuarter, Coupon[] coupons, Promotion[] promotions,
+			District district, ResidentialQuarter residentialQuarter, Coupon[] coupons, PromotionWithServices[] promotions,
 			Worker worker, WashCarService washCarService, User user) {
 		OrderDetailWithWasherModel model = new OrderDetailWithWasherModel();
 		model.setAddress(order.getDetailLocation());
@@ -512,7 +513,8 @@ public class EntityMapper {
 		model.setOrderId(order.getId());
 		model.setOrderNumber(order.getOrderNumber());
 
-		model.setPromotions(convertPromotionsToMyModel(promotions));
+		List<PromotionWithServicesModel> models = EntityMapper.converPromotionWithServiceToModel(promotions);
+		model.setPromotions(models);
 
 		model.setRemarks(order.getRemarks());
 		model.setServiceName(serviceName);
@@ -540,9 +542,11 @@ public class EntityMapper {
 
 		return model;
 	}
+	
+	
 
 	public static OrderDetailModel buildOrderDetailInfo(Order order, String serviceName, Vehicle vehicle,
-			VehicleCategory vehicleCategory, VehicleType vehicleType, LocationModel locationModel, Coupon[] coupons, Promotion[] promotions) {
+			VehicleCategory vehicleCategory, VehicleType vehicleType, LocationModel locationModel, Coupon[] coupons, List<PromotionWithServicesModel> promotions) {
 		OrderDetailModel model = new OrderDetailModel();
 		model.setAddress(order.getDetailLocation());
 		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
@@ -564,7 +568,9 @@ public class EntityMapper {
 		model.setOrderId(order.getId());
 		model.setOrderNumber(order.getOrderNumber());
 
-		model.setPromotions(convertPromotionsToMyModel(promotions));
+		
+//		List<PromotionWithServicesModel> models = EntityMapper.converPromotionWithServiceToModel(promotions);
+		model.setPromotions(promotions);
 
 		model.setRemarks(order.getRemarks());
 		model.setServiceName(serviceName);
@@ -591,60 +597,60 @@ public class EntityMapper {
 		return model;
 	}
 	
-	public static OrderDetailModel buildOrderDetailInfo(Order order, String serviceName, Vehicle vehicle,
-			VehicleCategory vehicleCategory, VehicleType vehicleType, Province province, City city, District district,
-			ResidentialQuarter residentialQuarter, Coupon[] coupons, Promotion[] promotions) {
-		OrderDetailModel model = new OrderDetailModel();
-		model.setAddress(order.getDetailLocation());
-		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
-		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
-		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
-		model.setColor(vehicle.getColor());
-		model.setLicense(vehicle.getLicense());
-
-		model.setCoupons(convertCouponsToMyModel(coupons));
-
-		DefaultAddressModel defaultAddressModel = new DefaultAddressModel();
-		defaultAddressModel.setCity(convertCityToModel(city));
-		defaultAddressModel.setDetailLocation(order.getDetailLocation());
-		defaultAddressModel
-				.setDistrict(convertDistrictToModel(district, convertResidentialQuarterToModel(residentialQuarter)));
-		defaultAddressModel.setProvicne(convertProvinceToModel(province));
-		// defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
-		model.setDefalutAddress(defaultAddressModel);
-		model.setFullAddress(defaultAddressModel.toString());
-
-		model.setOrderId(order.getId());
-		model.setOrderNumber(order.getOrderNumber());
-
-		model.setPromotions(convertPromotionsToMyModel(promotions));
-
-		model.setRemarks(order.getRemarks());
-		model.setServiceName(serviceName);
-		model.setServiceId(order.getServiceId());
-		model.setStoreId(order.getStoreId());
-		model.setCapabilityType(order.getCapabilityType());
-		model.setStatus(order.getStatus());
-		model.setStatusCode(order.getStatusCode());
-		VehicleCategoryModel vehicleCategoryModel = new VehicleCategoryModel();
-		vehicleCategoryModel.setDefault(true);
-		vehicleCategoryModel.setId(vehicleCategory.getId());
-		vehicleCategoryModel.setName(vehicleCategory.getName());
-		model.setVehicleCategory(vehicleCategoryModel);
-
-		VehicleTypeModel vehicleTypeModel = new VehicleTypeModel();
-		vehicleTypeModel.setDefault(true);
-		vehicleTypeModel.setId(vehicleType.getId());
-		vehicleTypeModel.setName(vehicleType.getName());
-		model.setVehicleType(vehicleTypeModel);
-
-		model.setPrice(order.getPrice());
-		model.setDiscountedPrice(order.getDiscountedPrice());
-
-		model.setOperatorId(order.getOperatorId());
-
-		return model;
-	}
+//	public static OrderDetailModel buildOrderDetailInfo(Order order, String serviceName, Vehicle vehicle,
+//			VehicleCategory vehicleCategory, VehicleType vehicleType, Province province, City city, District district,
+//			ResidentialQuarter residentialQuarter, Coupon[] coupons, Promotion[] promotions) {
+//		OrderDetailModel model = new OrderDetailModel();
+//		model.setAddress(order.getDetailLocation());
+//		model.setBookTime(order.getBookTime() == null ? null : formatTimestamp(order.getBookTime()));
+//		model.setCreatedTime(order.getCreatedTime() == null ? null : formatTimestamp(order.getCreatedTime()));
+//		model.setCompletedTime(order.getCompletedTime() == null ? null : formatTimestamp(order.getCompletedTime()));
+//		model.setColor(vehicle.getColor());
+//		model.setLicense(vehicle.getLicense());
+//
+//		model.setCoupons(convertCouponsToMyModel(coupons));
+//
+//		DefaultAddressModel defaultAddressModel = new DefaultAddressModel();
+//		defaultAddressModel.setCity(convertCityToModel(city));
+//		defaultAddressModel.setDetailLocation(order.getDetailLocation());
+//		defaultAddressModel
+//				.setDistrict(convertDistrictToModel(district, convertResidentialQuarterToModel(residentialQuarter)));
+//		defaultAddressModel.setProvicne(convertProvinceToModel(province));
+//		// defaultAddressModel.setResidentialQuarter(convertResidentialQuarterToModel(residentialQuarter));
+//		model.setDefalutAddress(defaultAddressModel);
+//		model.setFullAddress(defaultAddressModel.toString());
+//
+//		model.setOrderId(order.getId());
+//		model.setOrderNumber(order.getOrderNumber());
+//
+//		model.setPromotions(convertPromotionsToMyModel(promotions));
+//
+//		model.setRemarks(order.getRemarks());
+//		model.setServiceName(serviceName);
+//		model.setServiceId(order.getServiceId());
+//		model.setStoreId(order.getStoreId());
+//		model.setCapabilityType(order.getCapabilityType());
+//		model.setStatus(order.getStatus());
+//		model.setStatusCode(order.getStatusCode());
+//		VehicleCategoryModel vehicleCategoryModel = new VehicleCategoryModel();
+//		vehicleCategoryModel.setDefault(true);
+//		vehicleCategoryModel.setId(vehicleCategory.getId());
+//		vehicleCategoryModel.setName(vehicleCategory.getName());
+//		model.setVehicleCategory(vehicleCategoryModel);
+//
+//		VehicleTypeModel vehicleTypeModel = new VehicleTypeModel();
+//		vehicleTypeModel.setDefault(true);
+//		vehicleTypeModel.setId(vehicleType.getId());
+//		vehicleTypeModel.setName(vehicleType.getName());
+//		model.setVehicleType(vehicleTypeModel);
+//
+//		model.setPrice(order.getPrice());
+//		model.setDiscountedPrice(order.getDiscountedPrice());
+//
+//		model.setOperatorId(order.getOperatorId());
+//
+//		return model;
+//	}
 
 	public static void convertOrderModelToOrder(OrderModel model, Order order) {
 		order.setBookTime(Timestamp.valueOf(model.getBookTime()));
