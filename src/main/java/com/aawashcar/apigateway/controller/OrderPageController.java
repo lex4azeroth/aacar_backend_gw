@@ -75,6 +75,8 @@ public class OrderPageController {
 
 	@RequestMapping(value = "pay", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public WechatPayResponseModel pay(@RequestBody Pricing pricingToPay) {
+		System.out.println("origin price = " + pricingToPay.getOriginalPrice() + " discounted price = " + pricingToPay.getDiscountedPrice() + 
+				" promtion id = " + pricingToPay.getPromotionId());
 		return orderPageService.pay(pricingToPay);
 	}
 

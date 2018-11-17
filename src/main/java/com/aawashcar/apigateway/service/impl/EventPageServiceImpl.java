@@ -135,7 +135,7 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 		// find existing promotion transaction by user id, promotion id and
 		// price
 		// http://localhost:8084/prom/promotion/promotiontransaction/
-		String url = promUrlPrefix + "promotion/promotiontransaction/" + String.valueOf(promotionId) + "/"
+		String url = promUrlPrefix + "/promotion/promotiontransaction/" + String.valueOf(promotionId) + "/"
 				+ String.valueOf(userId) + "/" + String.valueOf(price);
 		int promotionTransactionId = restTemplate.getForObject(url, Integer.class).intValue();
 
@@ -162,7 +162,7 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 
 		int promotionTransactionId = recordPromotionTransaction(userId, promotionId, price);
 
-		String notify = "https://www.aawashcar.com/event/wechatnotifypromotion/"
+		String notify = "https://www.aawashcar.com/v2/event/wechatnotifypromotion/"
 				+ String.valueOf(promotionTransactionId);
 		String out_trade_no = new Date().getTime() + "";
 

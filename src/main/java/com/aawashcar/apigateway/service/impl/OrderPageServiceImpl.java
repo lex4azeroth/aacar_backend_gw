@@ -594,7 +594,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		restTemplate.postForObject(url, entity, Integer.class);
 	}
 	
-	private void recordServicesTransaction(String serviesIds, int userId, int orderId) {
+	private void recordServicesTransaction(String servicesIds, int userId, int orderId) {
 //		String url = omsUrlPrefix + "transaction/recordServiceTransaction";
 //		ServiceTransaction serviceTransaction = new ServiceTransaction();
 //		serviceTransaction.setOrderId(orderId);
@@ -606,6 +606,13 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 //
 //		HttpEntity<ServiceTransaction> entity = new HttpEntity<ServiceTransaction>(serviceTransaction, headers);
 //		restTemplate.postForObject(url, entity, Integer.class);
+		
+		String[] ids = ServiceUtil.getServiceIDs(servicesIds);
+		int length = ids.length;
+		for (int index = 0; index < length; index++) {
+			recordServiceTransaction(Integer.valueOf(ids[index]), userId, orderId);
+//			consumeService(userId, Integer.valueOf(ids[index]), order.getPromotionId());
+		}
 	}
 
 	private void recordServiceTransaction(int serviceId, int userId, int orderId) {
@@ -734,6 +741,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		orderToUpdate.setCouponId(pricing.getCouponId());
 		orderToUpdate.setServiceId(pricing.getServiceId());
 		orderToUpdate.setStatusCode(status);
+		orderToUpdate.setPrice(pricing.getOriginalPrice());
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -766,16 +774,23 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 	}
 
 	private void updateOrderStatusOnly(int orderId, int status) {
-		String url = omsUrlPrefix + "order/updateorder";
-		UpdateOrder orderToUpdate = new UpdateOrder();
-		orderToUpdate.setStatusCode(status);
-		orderToUpdate.setId(orderId);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		HttpEntity<UpdateOrder> entity = new HttpEntity<UpdateOrder>(orderToUpdate, headers);
-		restTemplate.put(url, entity);
+		String url = omsUrlPrefix + "order/udpatestatus/" + String.valueOf(orderId) + "/" + String.valueOf(status);
+		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
+		if (codeResponse.getStatusCodeValue() != 1) {
+			// Log error
+		}
+//		String url = omsUrlPrefix + "order/updateorder";
+//		UpdateOrder orderToUpdate = new UpdateOrder();
+//		orderToUpdate.setStatusCode(status);
+//		orderToUpdate.setId(orderId);
+//		orderToUpdate.setPrice(null);
+//		orderToUpdate.setOrderNumber(null);
+//
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//		HttpEntity<UpdateOrder> entity = new HttpEntity<UpdateOrder>(orderToUpdate, headers);
+//		restTemplate.put(url, entity);
 	}
 
 	/**
@@ -811,7 +826,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			String[] ids = ServiceUtil.getServiceIDs(order.getServiceId());
 			int length = ids.length;
 			for (int index = 0; index < length; index++) {
-				recordServiceTransaction(Integer.valueOf(ids[index]), order.getUserId(), orderId);
+//				recordServiceTransaction(Integer.valueOf(ids[index]), order.getUserId(), orderId);
 				consumeService(order.getUserId(), Integer.valueOf(ids[index]), order.getPromotionId());
 			}
 		}
@@ -829,7 +844,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		// order id;
 		recordFeeOrderTransaction(pricing);
 
-		String notify = "https://www.aawashcar.com/order/wechatnotifyorder/" + String.valueOf(pricing.getOrderId());
+		String notify = "https://www.aawashcar.com/v2/order/wechatnotifyorder/" + String.valueOf(pricing.getOrderId());
 		String out_trade_no = new Date().getTime() + "";
 
 		String validId = pricing.getValidId();
@@ -912,7 +927,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			pricing.setCouponId(couponId);
 			pricingByCoupon(user.getId(), couponId, pricing, originPrice);
 		} else {
-			throw new AAInnerServerError(String.format("Cannot use promotion id and coupon id ", originPrice));
+//			throw new AAInnerServerError(String.format("Cannot use promotion id and coupon id ", originPrice));
 		}
 
 		return pricing;
