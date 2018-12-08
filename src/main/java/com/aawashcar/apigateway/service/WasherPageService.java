@@ -6,6 +6,7 @@ import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.WasherActionModel;
 import com.aawashcar.apigateway.model.WasherActionResponse;
 import com.aawashcar.apigateway.model.WasherMainPageInfo;
+import com.aawashcar.apigateway.model.WasherOrderSummaryModel;
 
 public interface WasherPageService {
 	
@@ -29,7 +30,9 @@ public interface WasherPageService {
 	
 	OrderDetailModel orderDetail(int orderId);
 	
-	WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int status);
+	WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int size);
+	
+	WasherOrderSummaryModel[] listWasherUnCompletedOrderSummary(String validId, int size);
 	
 	String apply(String validId, String phoneNumber);
 }

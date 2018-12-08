@@ -15,6 +15,7 @@ import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.WasherActionModel;
 import com.aawashcar.apigateway.model.WasherActionResponse;
 import com.aawashcar.apigateway.model.WasherMainPageInfo;
+import com.aawashcar.apigateway.model.WasherOrderSummaryModel;
 import com.aawashcar.apigateway.service.WasherPageService;
 
 @RequestMapping("washer/")
@@ -85,5 +86,12 @@ public class WasherPageController {
 	public WasherOrderSummary[] listCompletedOrderSummary(@PathVariable("validid") String validId, 
 	                                                      @PathVariable("size") int size) {
 		return service.listWasherCompletedOrderSummary(validId, size);
+	}
+	
+	@RequestMapping(value="order/uncompletedlist/{validid}/{size}", method = RequestMethod.GET)
+	public WasherOrderSummaryModel[] listUnCompletedOrderSummary(@PathVariable("validid") String validId, 
+	                                                      @PathVariable("size") int size) {
+		WasherOrderSummaryModel[] uncompletedSummary = service.listWasherUnCompletedOrderSummary(validId, size);
+		return uncompletedSummary;
 	}
 }

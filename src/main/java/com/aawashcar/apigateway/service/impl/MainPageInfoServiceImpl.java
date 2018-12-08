@@ -1,12 +1,10 @@
 package com.aawashcar.apigateway.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,12 +17,12 @@ import com.aawashcar.apigateway.entity.User;
 import com.aawashcar.apigateway.entity.Vehicle;
 import com.aawashcar.apigateway.entity.VehicleCategory;
 import com.aawashcar.apigateway.entity.VehicleType;
-import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.model.DistrictOnlyModel;
 import com.aawashcar.apigateway.model.LocationModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.OrderModel;
 import com.aawashcar.apigateway.model.ResidentialQuarterModel;
+import com.aawashcar.apigateway.model.Store;
 import com.aawashcar.apigateway.service.MainPageInfoService;
 import com.aawashcar.apigateway.util.EntityMapper;
 import com.aawashcar.apigateway.util.ServiceUtil;
@@ -41,7 +39,7 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 
 		VehicleCategory[] vehicleCategories = null;
 		VehicleType[] vehicleTypes = null;
-//		WashCarService[] services = null;
+		// WashCarService[] services = null;
 		// City city = null;
 		// District district = null;
 		// Province province = null;
@@ -56,10 +54,12 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 		ResponseEntity<VehicleType[]> vehicleTypeResponseEntity = restTemplate.getForEntity(url, VehicleType[].class);
 		vehicleTypes = vehicleTypeResponseEntity.getBody();
 
-//		url = opsUrlPrefix + "wasshcarservice/services";
-//		ResponseEntity<WashCarService[]> washCareServiceResponseEntity = restTemplate.getForEntity(url,
-//				WashCarService[].class);
-//		services = (WashCarService[]) washCareServiceResponseEntity.getBody();
+		// url = opsUrlPrefix + "wasshcarservice/services";
+		// ResponseEntity<WashCarService[]> washCareServiceResponseEntity =
+		// restTemplate.getForEntity(url,
+		// WashCarService[].class);
+		// services = (WashCarService[])
+		// washCareServiceResponseEntity.getBody();
 		MainPageInfo mainPageInfo = null;
 		if (user.getId() > 0) {
 			// get latest order by user id;
@@ -89,8 +89,8 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 			url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
 			LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
 
-			mainPageInfo = EntityMapper.buildMainPageInfo(user, order, vehicleCategories, vehicleTypes, 
-					locationModel, vehicle);
+			mainPageInfo = EntityMapper.buildMainPageInfo(user, order, vehicleCategories, vehicleTypes, locationModel,
+					vehicle);
 
 			// mainPageInfo = EntityMapper.buildMainPageInfo(user, order,
 			// vehicleCategories, vehicleTypes, services, city,
@@ -112,8 +112,7 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 			// vehicleTypes, services, city,
 			// district, province, resiQuarter);
 
-			mainPageInfo = EntityMapper.buildDefaultMainPageInfo(vehicleCategories, vehicleTypes, 
-					new LocationModel());
+			mainPageInfo = EntityMapper.buildDefaultMainPageInfo(vehicleCategories, vehicleTypes, new LocationModel());
 		}
 
 		return mainPageInfo;
@@ -168,27 +167,31 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 		url = String.format(url, crmUrlPrefix, orderModel.getValidId());
 		User user = restTemplate.getForObject(url, User.class);
 		int userId = user.getId();
-		
+
 		if (userId <= 0) {
 			url = crmUrlPrefix + "user/" + orderModel.getValidId() + "/PHONE_PLACE_HOLDER";
-			userId = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));			
+			userId = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));
 		}
 
-//		if (userId <= 0) {
-//			url = crmUrlPrefix + "user/" + orderModel.getValidId() + "/" + orderModel.getPhoneNumber();
-//			userId = Integer.valueOf(restTemplate.postForObject(url, null, Integer.class));
-//		} else {
-//			if (!user.getPhoneNumber().equals(orderModel.getPhoneNumber())) {
-//				// user updated his phone number when making order
-//				// update user phone number in crm_user {userid}/{phonenumber}
-//				url = crmUrlPrefix + "user/updatephonenumber/" + String.valueOf(userId) + "/"
-//						+ orderModel.getPhoneNumber();
-//				int result = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class).getBody().intValue();
-//				if (result != 1) {
-//					// log error here
-//				}
-//			}
-//		}
+		// if (userId <= 0) {
+		// url = crmUrlPrefix + "user/" + orderModel.getValidId() + "/" +
+		// orderModel.getPhoneNumber();
+		// userId = Integer.valueOf(restTemplate.postForObject(url, null,
+		// Integer.class));
+		// } else {
+		// if (!user.getPhoneNumber().equals(orderModel.getPhoneNumber())) {
+		// // user updated his phone number when making order
+		// // update user phone number in crm_user {userid}/{phonenumber}
+		// url = crmUrlPrefix + "user/updatephonenumber/" +
+		// String.valueOf(userId) + "/"
+		// + orderModel.getPhoneNumber();
+		// int result = restTemplate.exchange(url, HttpMethod.PUT, null,
+		// Integer.class).getBody().intValue();
+		// if (result != 1) {
+		// // log error here
+		// }
+		// }
+		// }
 
 		// 2. add order
 		Order order = new Order();
@@ -217,25 +220,28 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 		} else {
 			order.setVehicleId(vehicle.getId());
 		}
-		
+
 		String[] serviceIds = ServiceUtil.getServiceIDs(orderModel.getServiceId());
 		int length = serviceIds.length;
-//		double totalPrice = 0d;
-//		for (int index = 0; index < length; index++) {
-//			totalPrice += getPrice(orderModel.getVehicleType(), orderModel.getVehicleCategory(), Integer.valueOf(serviceIds[index]));
-//		}
-//		
-//		order.setPrice(totalPrice);
-//		order.setDiscountedPrice(totalPrice);
+		// double totalPrice = 0d;
+		// for (int index = 0; index < length; index++) {
+		// totalPrice += getPrice(orderModel.getVehicleType(),
+		// orderModel.getVehicleCategory(), Integer.valueOf(serviceIds[index]));
+		// }
+		//
+		// order.setPrice(totalPrice);
+		// order.setDiscountedPrice(totalPrice);
 		order.setPrice(orderModel.getPrice());
 		order.setDiscountedPrice(orderModel.getPrice());
 
-//		// 3. add origin price
-//		url = opsUrlPrefix + "wasshcarservice/service/originprice/" + String.valueOf(vehicle.getTypeId()) + "/"
-//				+ String.valueOf(vehicle.getCategoryId()) + "/" + String.valueOf(orderModel.getServiceId());
-//		Double originPrice = restTemplate.getForObject(url, Double.class);
-//		order.setPrice(originPrice.doubleValue());
-//		order.setDiscountedPrice(originPrice);
+		// // 3. add origin price
+		// url = opsUrlPrefix + "wasshcarservice/service/originprice/" +
+		// String.valueOf(vehicle.getTypeId()) + "/"
+		// + String.valueOf(vehicle.getCategoryId()) + "/" +
+		// String.valueOf(orderModel.getServiceId());
+		// Double originPrice = restTemplate.getForObject(url, Double.class);
+		// order.setPrice(originPrice.doubleValue());
+		// order.setDiscountedPrice(originPrice);
 
 		// 4. add location in lbs service
 		url = lbsUrlPrefix + "add";
@@ -256,5 +262,17 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 		Integer orderId = restTemplate.postForObject(url, postEntity, Integer.class);
 
 		return orderId.intValue();
+	}
+
+	@Override
+	public List<Store> listStores() {
+		String url = opsUrlPrefix + "store/listall";
+		ResponseEntity<Store[]> storeResponseEntity = restTemplate.getForEntity(url, Store[].class);
+		Store[] stores = storeResponseEntity.getBody();
+		ArrayList<Store> storesList = new ArrayList();
+		for (Store store : stores) {
+			storesList.add(store);
+		}
+		return storesList;
 	}
 }

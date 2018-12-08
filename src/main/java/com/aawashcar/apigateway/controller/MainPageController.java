@@ -20,6 +20,7 @@ import com.aawashcar.apigateway.model.OrderIdModel;
 import com.aawashcar.apigateway.model.OrderModel;
 import com.aawashcar.apigateway.model.PriceModel;
 import com.aawashcar.apigateway.model.ResidentialQuarterModel;
+import com.aawashcar.apigateway.model.Store;
 import com.aawashcar.apigateway.service.MainPageInfoService;
 
 @RequestMapping("main/")
@@ -29,6 +30,11 @@ public class MainPageController {
 
 	@Autowired
 	private MainPageInfoService service;
+	
+	@RequestMapping(value = "stores", method = RequestMethod.GET)
+	public List<Store> listStores() {
+		return service.listStores();
+	}
 
 	@RequestMapping(value = "pageinfo/{validid}", method = RequestMethod.GET)
 	public MainPageInfo mainPageInfo(@PathVariable("validid") String validId) {

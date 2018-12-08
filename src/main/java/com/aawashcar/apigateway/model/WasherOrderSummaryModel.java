@@ -1,14 +1,18 @@
-package com.aawashcar.apigateway.entity;
+package com.aawashcar.apigateway.model;
 
 import java.sql.Timestamp;
+import java.util.List;
 
-public class WasherOrderSummary {
+public class WasherOrderSummaryModel {
 	private int id;
 	private int workerId;
 	private Timestamp timestamp;
 	private int orderId;
 	private String orderNumber;
 	private int status;
+	private String detailLocation;
+	private String locationRemarks;
+	private List<String> services;
 	
 	public int getId() {
 		return id;
@@ -56,5 +60,29 @@ public class WasherOrderSummary {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getDetailLocation() {
+		return detailLocation;
+	}
+
+	public void setDetailLocation(String detailLocation) {
+		this.detailLocation = detailLocation;
+	}
+
+	public String getLocationRemarks() {
+		return locationRemarks;
+	}
+
+	public void setLocationRemarks(String locationRemarks) {
+		this.locationRemarks = locationRemarks;
+	}
+
+	public List<String> getServices() {
+		return services;
+	}
+
+	public void setServices(List<String> services) {
+		this.services = services;
 	}
 }

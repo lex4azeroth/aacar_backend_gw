@@ -1,34 +1,35 @@
 package com.aawashcar.apigateway.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
-import com.aawashcar.apigateway.entity.District;
-import com.aawashcar.apigateway.entity.Location;
 import com.aawashcar.apigateway.entity.Order;
-import com.aawashcar.apigateway.entity.Promotion;
 import com.aawashcar.apigateway.entity.PromotionWithServices;
-import com.aawashcar.apigateway.entity.Province;
-import com.aawashcar.apigateway.entity.ResidentialQuarter;
 import com.aawashcar.apigateway.entity.User;
 import com.aawashcar.apigateway.entity.Vehicle;
 import com.aawashcar.apigateway.entity.VehicleCategory;
 import com.aawashcar.apigateway.entity.VehicleType;
-import com.aawashcar.apigateway.entity.WashCarService;
 import com.aawashcar.apigateway.entity.WasherOrderSummary;
 import com.aawashcar.apigateway.entity.Worker;
 import com.aawashcar.apigateway.entity.WorkerRemark;
 import com.aawashcar.apigateway.model.AssignedOrder;
+import com.aawashcar.apigateway.model.CapabilityModel;
 import com.aawashcar.apigateway.model.LocationModel;
 import com.aawashcar.apigateway.model.OrderDetailModel;
 import com.aawashcar.apigateway.model.WasherActionModel;
 import com.aawashcar.apigateway.model.WasherActionResponse;
 import com.aawashcar.apigateway.model.WasherInfo;
 import com.aawashcar.apigateway.model.WasherMainPageInfo;
+import com.aawashcar.apigateway.model.WasherOrderSummaryModel;
+import com.aawashcar.apigateway.service.CapabilityPageService;
 import com.aawashcar.apigateway.service.WasherPageService;
 import com.aawashcar.apigateway.util.AACodeConsField;
 import com.aawashcar.apigateway.util.EntityMapper;
@@ -37,6 +38,9 @@ import com.aawashcar.apigateway.util.ServiceUtil;
 @Service()
 public class WasherPageServiceImpl extends BaseService implements WasherPageService {
 
+	@Autowired
+	private CapabilityPageService capabilityService;
+	
 	@Override
 	public WasherMainPageInfo login(String validId) {
 		int workerId = isWorker(validId);
@@ -352,4 +356,52 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 			return AACodeConsField.ERROR_ALREADY_APPLIED_30000;
 		}
 	}
+
+	@Override
+	public WasherOrderSummaryModel[] listWasherUnCompletedOrderSummary(String validId, int size) {
+		int workerId = isWorker(validId);
+		String url = opsUrlPrefix + "worker/orders/uncompletedorderlist/" + String.valueOf(workerId) + "/"
+				+ String.valueOf(size);
+		ResponseEntity<WasherOrderSummary[]> orderSummaryResponseEntity = restTemplate.getForEntity(url,
+				WasherOrderSummary[].class);
+		
+        WasherOrderSummary[] entities = (WasherOrderSummary[]) orderSummaryResponseEntity.getBody();
+        int length = entities.length;
+		WasherOrderSummaryModel[] models = new WasherOrderSummaryModel[length];
+		for (int index = 0; index < length; index++) {
+			models[index] = buildWashOrderSummaryModel(entities[index]);
+		}
+		
+		return models;
+	}
+	
+	private WasherOrderSummaryModel buildWashOrderSummaryModel(WasherOrderSummary entity) {
+		Assert.notNull(entity, "Washer Order Summary should not be null");
+		String url = omsUrlPrefix + "order/detail/" + String.valueOf(entity.getOrderId());
+		Order order = restTemplate.getForObject(url, Order.class);
+
+        url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
+		LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
+		WasherOrderSummaryModel model = new WasherOrderSummaryModel();
+		model.setId(entity.getId());
+		model.setOrderId(entity.getOrderId());
+		model.setOrderNumber(entity.getOrderNumber());
+		model.setStatus(entity.getStatus());
+		model.setTimestamp(entity.getTimestamp());
+		model.setWorkerId(entity.getWorkerId());
+		model.setDetailLocation(locationModel.getDetailAddress());
+		model.setLocationRemarks(locationModel.getAddressRemark());
+		
+		String[] serviceIds = order.getServiceId().split(",");
+		List<String> services = new ArrayList<>();
+		for (String serviceId : serviceIds) {
+
+			CapabilityModel capModel = capabilityService.findCapabilityById(Integer.parseInt(serviceId));
+			services.add(capModel.getName());
+		}
+		model.setServices(services);
+	
+		return model;
+	}
+	
 }
