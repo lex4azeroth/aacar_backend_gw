@@ -234,6 +234,22 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 
 		return actionResponse;
 	}
+	
+	@Override
+	public WasherActionResponse rushOrder(WasherActionModel model) {
+		int workerId = isWorker(model.getValidId());
+		String url = opsUrlPrefix + "worker/rushorder/%s/%s/%s/%s";
+		url = String.format(url, model.getOrderId(), model.getRemarkId(), workerId, model.getOrderNumber());
+		ResponseEntity<Integer> codeResponse = restTemplate.exchange(url, HttpMethod.PUT, null, Integer.class);
+
+		WasherActionResponse actionResponse = new WasherActionResponse();
+
+		int statusCode = codeResponse.getBody().intValue();
+		actionResponse.setStatusCode(statusCode);
+		actionResponse.setStatus(getStatusName(statusCode));
+
+		return actionResponse;
+	}
 
 	@Override
 	public WasherActionResponse rejectOrder(WasherActionModel model) {
@@ -375,33 +391,75 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		return models;
 	}
 	
-	private WasherOrderSummaryModel buildWashOrderSummaryModel(WasherOrderSummary entity) {
-		Assert.notNull(entity, "Washer Order Summary should not be null");
-		String url = omsUrlPrefix + "order/detail/" + String.valueOf(entity.getOrderId());
-		Order order = restTemplate.getForObject(url, Order.class);
-
-        url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
+	@Override
+	public WasherOrderSummaryModel[] listWasherAvailableOrderSummary(String validId, int size) {
+		int workerId = isWorker(validId);
+		String url = omsUrlPrefix + "order/availableorderlist/" + String.valueOf(size);
+		ResponseEntity<Order[]> ordersResponseEntity = restTemplate.getForEntity(url,
+				Order[].class);
+		
+		Order[] entities = (Order[]) ordersResponseEntity.getBody();
+        int length = entities.length;
+		WasherOrderSummaryModel[] models = new WasherOrderSummaryModel[length];
+		for (int index = 0; index < length; index++) {
+			models[index] = buildWashOrderSummaryModelWithOrder(entities[index]);
+		}
+		
+		return models;
+	}
+	
+	private WasherOrderSummaryModel buildWashOrderSummaryModelWithOrder(Order order) {
+		Assert.notNull(order, "Washer Order Summary should not be null");
+//		String url = omsUrlPrefix + "order/detail/" + String.valueOf(entity.getOrderId());
+//		Order order = restTemplate.getForObject(url, Order.class);
+		
+        String url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
 		LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
 		WasherOrderSummaryModel model = new WasherOrderSummaryModel();
-		model.setId(entity.getId());
-		model.setOrderId(entity.getOrderId());
-		model.setOrderNumber(entity.getOrderNumber());
-		model.setStatus(entity.getStatus());
-		model.setTimestamp(entity.getTimestamp());
-		model.setWorkerId(entity.getWorkerId());
-		model.setDetailLocation(locationModel.getDetailAddress());
-		model.setLocationRemarks(locationModel.getAddressRemark());
+//		model.setId(entity.getOrderId());
+		model.setId(order.getId());
+		model.setOrderNumber(order.getOrderNumber());
+		model.setStatus(order.getStatusCode());
+		model.setAddress(locationModel.getDetailAddress());
+		model.setBookTime(order.getBookTime());
+		model.setRemarks(locationModel.getAddressRemark());
 		
 		String[] serviceIds = order.getServiceId().split(",");
-		List<String> services = new ArrayList<>();
+		String serviceName = "";
 		for (String serviceId : serviceIds) {
-
 			CapabilityModel capModel = capabilityService.findCapabilityById(Integer.parseInt(serviceId));
-			services.add(capModel.getName());
+			serviceName += capModel.getName();
+			serviceName += " ";
 		}
-		model.setServices(services);
+		model.setServiceName(serviceName.trim());
 	
 		return model;
 	}
 	
+	private WasherOrderSummaryModel buildWashOrderSummaryModel(WasherOrderSummary entity) {
+		Assert.notNull(entity, "Washer Order Summary should not be null");
+		String url = omsUrlPrefix + "order/detail/" + String.valueOf(entity.getOrderId());
+		Order order = restTemplate.getForObject(url, Order.class);
+		
+        url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
+		LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
+		WasherOrderSummaryModel model = new WasherOrderSummaryModel();
+		model.setId(entity.getOrderId());
+		model.setOrderNumber(entity.getOrderNumber());
+		model.setStatus(entity.getStatus());
+		model.setAddress(locationModel.getDetailAddress());
+		model.setBookTime(order.getBookTime());
+		model.setRemarks(locationModel.getAddressRemark());
+		
+		String[] serviceIds = order.getServiceId().split(",");
+		String serviceName = "";
+		for (String serviceId : serviceIds) {
+			CapabilityModel capModel = capabilityService.findCapabilityById(Integer.parseInt(serviceId));
+			serviceName += capModel.getName();
+			serviceName += " ";
+		}
+		model.setServiceName(serviceName.trim());
+	
+		return model;
+	}
 }

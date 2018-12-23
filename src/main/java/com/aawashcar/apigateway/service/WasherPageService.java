@@ -14,6 +14,8 @@ public interface WasherPageService {
 	
 	WasherActionResponse takeOrder(WasherActionModel model);
 	
+	WasherActionResponse rushOrder(WasherActionModel model);
+	
 	WasherActionResponse rejectOrder(WasherActionModel model);
 	
 	WasherActionResponse arrivedOrder(WasherActionModel model);
@@ -33,6 +35,8 @@ public interface WasherPageService {
 	WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int size);
 	
 	WasherOrderSummaryModel[] listWasherUnCompletedOrderSummary(String validId, int size);
+	
+	WasherOrderSummaryModel[] listWasherAvailableOrderSummary(String validId, int size);
 	
 	String apply(String validId, String phoneNumber);
 }

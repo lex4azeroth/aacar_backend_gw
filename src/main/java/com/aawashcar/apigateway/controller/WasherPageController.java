@@ -42,6 +42,11 @@ public class WasherPageController {
 		return service.takeOrder(actionModel);
 	}
 	
+	@RequestMapping(value="main/rushorder", method = RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE)
+	public WasherActionResponse rushOrder(@RequestBody WasherActionModel actionModel) {
+		return service.rushOrder(actionModel);
+	}
+	
 	@RequestMapping(value="main/rejectorder", method = RequestMethod.PUT, consumes=MediaType.APPLICATION_JSON_VALUE)
 	public WasherActionResponse rejectOrder(@RequestBody WasherActionModel actionModel) {
 		return service.rejectOrder(actionModel);
@@ -92,6 +97,13 @@ public class WasherPageController {
 	public WasherOrderSummaryModel[] listUnCompletedOrderSummary(@PathVariable("validid") String validId, 
 	                                                      @PathVariable("size") int size) {
 		WasherOrderSummaryModel[] uncompletedSummary = service.listWasherUnCompletedOrderSummary(validId, size);
+		return uncompletedSummary;
+	}
+	
+	@RequestMapping(value="order/availablelist/{validid}/{size}", method = RequestMethod.GET)
+	public WasherOrderSummaryModel[] listAvailableOrderSummary(@PathVariable("validid") String validId, 
+	                                                      @PathVariable("size") int size) {
+		WasherOrderSummaryModel[] uncompletedSummary = service.listWasherAvailableOrderSummary(validId, size);
 		return uncompletedSummary;
 	}
 }

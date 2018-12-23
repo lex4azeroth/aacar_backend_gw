@@ -1,49 +1,22 @@
 package com.aawashcar.apigateway.model;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 public class WasherOrderSummaryModel {
 	private int id;
-	private int workerId;
-	private Timestamp timestamp;
-	private int orderId;
 	private String orderNumber;
 	private int status;
-	private String detailLocation;
-	private String locationRemarks;
-	private List<String> services;
-	
+	private String serviceName;
+	private String address;
+	private String remarks;
+	private Timestamp bookTime;
+
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public int getWorkerId() {
-		return workerId;
-	}
-
-	public void setWorkerId(int workerId) {
-		this.workerId = workerId;
-	}
-
-	public Timestamp getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Timestamp timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public int getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(int orderId) {
-		this.orderId = orderId;
 	}
 
 	public String getOrderNumber() {
@@ -62,27 +35,36 @@ public class WasherOrderSummaryModel {
 		this.status = status;
 	}
 
-	public String getDetailLocation() {
-		return detailLocation;
+	public String getServiceName() {
+		return serviceName;
 	}
 
-	public void setDetailLocation(String detailLocation) {
-		this.detailLocation = detailLocation;
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
 	}
 
-	public String getLocationRemarks() {
-		return locationRemarks;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setLocationRemarks(String locationRemarks) {
-		this.locationRemarks = locationRemarks;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
-	public List<String> getServices() {
-		return services;
+	public String getRemarks() {
+		return remarks;
 	}
 
-	public void setServices(List<String> services) {
-		this.services = services;
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
+
+	public Timestamp getBookTime() {
+		return bookTime;
+	}
+
+	public void setBookTime(Timestamp bookTime) {
+		this.bookTime = bookTime;
+	}
+
 }

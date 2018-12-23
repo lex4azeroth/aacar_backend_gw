@@ -5,6 +5,7 @@ public class WasherActionModel {
 	private String validId;
 	private int orderId;
 	private int remarkId;
+	private String orderNumber;
 
 	public String getValidId() {
 		return validId;
@@ -28,6 +29,14 @@ public class WasherActionModel {
 
 	public void setRemarkId(int remarkId) {
 		this.remarkId = remarkId;
+	}
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 
 }
