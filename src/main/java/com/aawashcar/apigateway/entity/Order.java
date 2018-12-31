@@ -30,6 +30,7 @@ public class Order {
 	private int operatorId;
 	private String capabilityType;
 	private String storeId;
+	private String orderPhoneNumber;
 	
 	public String getOrderNumber() {
 		return orderNumber;
@@ -245,6 +246,14 @@ public class Order {
 
 	public void setStoreId(String storeId) {
 		this.storeId = storeId;
+	}
+
+	public String getOrderPhoneNumber() {
+		return orderPhoneNumber;
+	}
+
+	public void setOrderPhoneNumber(String orderPhoneNumber) {
+		this.orderPhoneNumber = orderPhoneNumber;
 	}
 
 }

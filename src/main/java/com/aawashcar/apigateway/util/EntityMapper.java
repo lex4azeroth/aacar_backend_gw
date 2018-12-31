@@ -482,6 +482,8 @@ public class EntityMapper {
 		model.setWashCarService(null);
 
 		model.setUser(user);
+		
+		model.setOrderPhoneNumber(order.getOrderPhoneNumber() == null ? user.getPhoneNumber() : order.getOrderPhoneNumber());
 
 		return model;
 	}
@@ -539,6 +541,8 @@ public class EntityMapper {
 		model.setWashCarService(washCarService);
 
 		model.setUser(user);
+		
+		model.setOrderPhoneNumber(order.getOrderPhoneNumber() == null ? user.getPhoneNumber() : order.getOrderPhoneNumber());
 
 		return model;
 	}
@@ -567,6 +571,7 @@ public class EntityMapper {
 
 		model.setOrderId(order.getId());
 		model.setOrderNumber(order.getOrderNumber());
+		model.setOrderPhoneNumber(order.getOrderPhoneNumber() == null ? null : order.getOrderPhoneNumber());
 
 		
 //		List<PromotionWithServicesModel> models = EntityMapper.converPromotionWithServiceToModel(promotions);
@@ -593,6 +598,7 @@ public class EntityMapper {
 		model.setDiscountedPrice(order.getDiscountedPrice());
 
 		model.setOperatorId(order.getOperatorId());
+		model.setOrderPhoneNumber(order.getOrderPhoneNumber() == null ? null : order.getOrderPhoneNumber());
 
 		return model;
 	}
@@ -665,5 +671,6 @@ public class EntityMapper {
 		order.setServiceId(model.getServiceId());
 		order.setStoreId(model.getStoreId());
 		order.setCapabilityType(model.getCapabilityType());
+		order.setOrderPhoneNumber(model.getPhoneNumber());
 	}
 }

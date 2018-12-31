@@ -28,6 +28,7 @@ public class OrderDetailModel {
 	private LocationModel location;
 	private String capabilityType;
 	private String storeId;
+	private String orderPhoneNumber;
 	
 	public int getOrderId() {
 		return orderId;
@@ -227,5 +228,13 @@ public class OrderDetailModel {
 
 	public void setCapabilityType(String capabilityType) {
 		this.capabilityType = capabilityType;
+	}
+
+	public String getOrderPhoneNumber() {
+		return orderPhoneNumber;
+	}
+
+	public void setOrderPhoneNumber(String orderPhoneNumber) {
+		this.orderPhoneNumber = orderPhoneNumber;
 	}
 }
