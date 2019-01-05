@@ -81,7 +81,8 @@ public class LocationModel {
 	
 	@Override
 	public String toString() {
-		String fullLocation = String.format("%s %s", this.detailAddress, this.addressRemark);
+		String remark = this.addressRemark == null ? "" : this.addressRemark;
+		String fullLocation = String.format("%s %s", this.detailAddress, remark);
 		return fullLocation;
 	}
 
