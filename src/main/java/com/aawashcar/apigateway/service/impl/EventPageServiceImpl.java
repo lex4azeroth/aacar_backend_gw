@@ -246,6 +246,9 @@ public class EventPageServiceImpl extends BaseService implements EventPageServic
 		HttpEntity<PromotionWeixinTransaction> entity = new HttpEntity<PromotionWeixinTransaction>(weixinTransaction,
 				headers);
 		boolean result = restTemplate.postForObject(url, entity, Boolean.class);
+		if (!result) {
+			System.out.println("Purchase ERRor!!");
+		}
 	}
 
 	@Override

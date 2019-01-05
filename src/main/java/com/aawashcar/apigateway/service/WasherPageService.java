@@ -32,7 +32,7 @@ public interface WasherPageService {
 	
 	OrderDetailModel orderDetail(int orderId);
 	
-	WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int size);
+	WasherOrderSummaryModel[] listWasherCompletedOrderSummary(String validId, int size);
 	
 	WasherOrderSummaryModel[] listWasherUnCompletedOrderSummary(String validId, int size);
 	

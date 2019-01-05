@@ -255,5 +255,4 @@ public class Order {
 	public void setOrderPhoneNumber(String orderPhoneNumber) {
 		this.orderPhoneNumber = orderPhoneNumber;
 	}
-
 }

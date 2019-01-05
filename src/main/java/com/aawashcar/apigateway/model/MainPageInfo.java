@@ -21,6 +21,8 @@ public class MainPageInfo {
 	private String license;
 	
 	private LocationModel location;
+	
+	private LatestOrder latestOrder;
 
 	public List<VehicleTypeModel> getVehicleTypes() {
 		return vehicleTypes;
@@ -92,5 +94,13 @@ public class MainPageInfo {
 
 	public void setLocation(LocationModel location) {
 		this.location = location;
+	}
+
+	public LatestOrder getLatestOrder() {
+		return latestOrder;
+	}
+
+	public void setLatestOrder(LatestOrder latestOrder) {
+		this.latestOrder = latestOrder;
 	}
 }

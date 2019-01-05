@@ -6,10 +6,11 @@ public class WasherOrderSummaryModel {
 	private int id;
 	private String orderNumber;
 	private int status;
+	private String statusName;
 	private String serviceName;
 	private String address;
 	private String remarks;
-	private Timestamp bookTime;
+	private String bookTime;
 
 	public int getId() {
 		return id;
@@ -59,12 +60,20 @@ public class WasherOrderSummaryModel {
 		this.remarks = remarks;
 	}
 
-	public Timestamp getBookTime() {
+	public String getBookTime() {
 		return bookTime;
 	}
 
-	public void setBookTime(Timestamp bookTime) {
+	public void setBookTime(String bookTime) {
 		this.bookTime = bookTime;
+	}
+
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
 	}
 
 }

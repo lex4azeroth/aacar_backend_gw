@@ -18,6 +18,7 @@ import com.aawashcar.apigateway.entity.Vehicle;
 import com.aawashcar.apigateway.entity.VehicleCategory;
 import com.aawashcar.apigateway.entity.VehicleType;
 import com.aawashcar.apigateway.model.DistrictOnlyModel;
+import com.aawashcar.apigateway.model.LatestOrder;
 import com.aawashcar.apigateway.model.LocationModel;
 import com.aawashcar.apigateway.model.MainPageInfo;
 import com.aawashcar.apigateway.model.OrderModel;
@@ -65,6 +66,14 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 			// get latest order by user id;
 			url = omsUrlPrefix + "order/latest/" + String.valueOf(user.getId());
 			Order order = restTemplate.getForObject(url, Order.class);
+			
+			LatestOrder latestOrder = new LatestOrder();
+			latestOrder.setId(order.getId());
+			latestOrder.setOrderNumber(order.getOrderNumber());
+			latestOrder.setPrice(order.getPrice());
+			latestOrder.setServiceId(order.getServiceId());
+			latestOrder.setStoreId(order.getStoreId());
+			latestOrder.setCapType(order.getCapabilityType());
 
 			// url = opsUrlPrefix + "location/province/" +
 			// String.valueOf(order.getProvinceId());
@@ -91,6 +100,8 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 
 			mainPageInfo = EntityMapper.buildMainPageInfo(user, order, vehicleCategories, vehicleTypes, locationModel,
 					vehicle);
+			
+			mainPageInfo.setLatestOrder(latestOrder);
 
 			// mainPageInfo = EntityMapper.buildMainPageInfo(user, order,
 			// vehicleCategories, vehicleTypes, services, city,

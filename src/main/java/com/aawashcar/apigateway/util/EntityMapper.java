@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import com.aawashcar.apigateway.entity.City;
 import com.aawashcar.apigateway.entity.Coupon;
@@ -122,6 +123,34 @@ public class EntityMapper {
 			calendar.add(Calendar.MONTH, promotion.getDuration());
 			model.setValidatedTime(formatTimestamp(new Timestamp(calendar.getTimeInMillis()), sdfDate));
 
+			myPromotions.add(model);
+		}
+
+		return myPromotions;
+	}
+	
+	public static List<MyPromotionModel> convertPromotionsWithServicesToMyModel(PromotionWithServices[] promotionsWithServices, 
+			Map<Integer, String> serviceNames) {
+		List<MyPromotionModel> myPromotions = new ArrayList<>();
+		int size = promotionsWithServices.length;
+		for (int index = 0; index < size; index++) {
+			PromotionWithServices promotionWithServices = promotionsWithServices[index];
+			if (promotionWithServices == null) {
+				continue;
+			}
+			
+			MyPromotionModel model = new MyPromotionModel();
+			System.out.println("service id " + promotionWithServices.getServiceId());
+			model.setName(promotionWithServices.getName() + " - " + serviceNames.get(promotionWithServices.getServiceId()) + " 剩余次数: " + promotionWithServices.getRemainingCount());
+			model.setDescription(promotionWithServices.getDescription());
+			model.setDuration(promotionWithServices.getDuration());
+			model.setId(promotionWithServices.getId());
+			model.setPrice(promotionWithServices.getPrice());
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(promotionWithServices.getCreatedTime());
+			calendar.add(Calendar.MONTH, promotionWithServices.getDuration());
+			model.setValidatedTime(formatTimestamp(new Timestamp(calendar.getTimeInMillis()), sdfDate));
 			myPromotions.add(model);
 		}
 

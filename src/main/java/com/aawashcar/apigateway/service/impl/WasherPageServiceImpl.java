@@ -334,13 +334,21 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 	}
 
 	@Override
-	public WasherOrderSummary[] listWasherCompletedOrderSummary(String validId, int size) {
+	public WasherOrderSummaryModel[] listWasherCompletedOrderSummary(String validId, int size) {
 		int workerId = isWorker(validId);
 		String url = opsUrlPrefix + "worker/orders/completedorderlist/" + String.valueOf(workerId) + "/"
 				+ String.valueOf(size);
 		ResponseEntity<WasherOrderSummary[]> orderSummaryResponseEntity = restTemplate.getForEntity(url,
 				WasherOrderSummary[].class);
-		return (WasherOrderSummary[]) orderSummaryResponseEntity.getBody();
+		
+        WasherOrderSummary[] entities = (WasherOrderSummary[]) orderSummaryResponseEntity.getBody();
+        int length = entities.length;
+		WasherOrderSummaryModel[] models = new WasherOrderSummaryModel[length];
+		for (int index = 0; index < length; index++) {
+			models[index] = buildWashOrderSummaryModel(entities[index]);
+		}
+		
+		return models;
 	}
 
 	@Override
@@ -421,8 +429,10 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		model.setOrderNumber(order.getOrderNumber());
 		model.setStatus(order.getStatusCode());
 		model.setAddress(locationModel.getDetailAddress());
-		model.setBookTime(order.getBookTime());
+		model.setBookTime(EntityMapper.formatTimestamp(order.getBookTime()));
 		model.setRemarks(locationModel.getAddressRemark());
+		
+		model.setStatusName(order.getStatus());
 		
 		String[] serviceIds = order.getServiceId().split(",");
 		String serviceName = "";
@@ -448,8 +458,10 @@ public class WasherPageServiceImpl extends BaseService implements WasherPageServ
 		model.setOrderNumber(entity.getOrderNumber());
 		model.setStatus(entity.getStatus());
 		model.setAddress(locationModel.getDetailAddress());
-		model.setBookTime(order.getBookTime());
+		model.setBookTime(EntityMapper.formatTimestamp(order.getBookTime()));
 		model.setRemarks(locationModel.getAddressRemark());
+		
+		model.setStatusName(order.getStatus());
 		
 		String[] serviceIds = order.getServiceId().split(",");
 		String serviceName = "";

@@ -1,12 +1,13 @@
 package com.aawashcar.apigateway.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.aawashcar.apigateway.entity.Coupon;
-import com.aawashcar.apigateway.entity.Promotion;
+import com.aawashcar.apigateway.entity.PromotionWithServices;
 import com.aawashcar.apigateway.entity.User;
 import com.aawashcar.apigateway.model.MyCouponModel;
 import com.aawashcar.apigateway.model.MyPromotionModel;
@@ -17,16 +18,19 @@ import com.aawashcar.apigateway.util.EntityMapper;
 public class MinePageServiceImpl extends BaseService implements MinePageService {
 
 	@Override
-	public List<MyPromotionModel> listMyPromotionModels(String validId) {
-		String url = "%s/promotion/mylist/%s";
+	public List<MyPromotionModel> listMyPromotionModels(String validId, Map<Integer, String> serviceNames) {
 		int userId = getUserIdByOpenId(validId);
 		if (userId == 0) {
 			return null;
-		}
-		url = String.format(url, promUrlPrefix, userId);
-		ResponseEntity<Promotion[]> promotionResponseEntity = restTemplate.getForEntity(url, Promotion[].class);
-		Promotion[] myPromotions = promotionResponseEntity.getBody();
-		return EntityMapper.convertPromotionsToMyModel(myPromotions);
+		}	
+		
+		String url = promUrlPrefix + "promotion/listmypromotionswithservicescount/" + String.valueOf(userId);
+
+		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url,
+				PromotionWithServices[].class);
+		PromotionWithServices[] promotionsWithServices = promotionResponseEntity.getBody();
+		
+		return EntityMapper.convertPromotionsWithServicesToMyModel(promotionsWithServices, serviceNames);
 	}
 
 	@Override

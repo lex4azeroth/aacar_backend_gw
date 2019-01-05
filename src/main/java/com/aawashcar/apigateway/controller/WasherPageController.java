@@ -88,7 +88,7 @@ public class WasherPageController {
 	}
 	
 	@RequestMapping(value="order/completedlist/{validid}/{size}", method = RequestMethod.GET)
-	public WasherOrderSummary[] listCompletedOrderSummary(@PathVariable("validid") String validId, 
+	public WasherOrderSummaryModel[] listCompletedOrderSummary(@PathVariable("validid") String validId, 
 	                                                      @PathVariable("size") int size) {
 		return service.listWasherCompletedOrderSummary(validId, size);
 	}
@@ -103,7 +103,7 @@ public class WasherPageController {
 	@RequestMapping(value="order/availablelist/{validid}/{size}", method = RequestMethod.GET)
 	public WasherOrderSummaryModel[] listAvailableOrderSummary(@PathVariable("validid") String validId, 
 	                                                      @PathVariable("size") int size) {
-		WasherOrderSummaryModel[] uncompletedSummary = service.listWasherAvailableOrderSummary(validId, size);
-		return uncompletedSummary;
+		WasherOrderSummaryModel[] availableOrderSummary = service.listWasherAvailableOrderSummary(validId, size);
+		return availableOrderSummary;
 	}
 }
