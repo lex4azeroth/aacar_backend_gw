@@ -27,6 +27,7 @@ public class UpdateOrder {
 	private Integer couponId;
 	private Integer promotionId;
 	private Timestamp createdTime;
+	private Integer paymentType;
 
 	public String getOrderNumber() {
 		return orderNumber;
@@ -218,6 +219,14 @@ public class UpdateOrder {
 
 	public void setCreatedTime(Timestamp createdTime) {
 		this.createdTime = createdTime;
+	}
+
+	public Integer getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(Integer paymentType) {
+		this.paymentType = paymentType;
 	}
 
 }

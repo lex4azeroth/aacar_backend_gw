@@ -64,7 +64,7 @@ import com.aawashcar.apigateway.util.XMLUtil;
 public class OrderPageServiceImpl extends BaseService implements OrderPageService {
 	@Autowired
 	private WechatPayService payService;
-	
+
 	@Autowired
 	private CapabilityPageService capabilityService;
 
@@ -90,8 +90,10 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			int size = orderSummaryModels.size();
 			for (int index = 0; index < size; index++) {
 				String serviceIds = myOrderSummarys[index].getServiceId();
-//				url = capUrlPrefix + "capabilityname/" + String.valueOf(serviceId);
-//				String serviceName = restTemplate.getForObject(url, String.class);
+				// url = capUrlPrefix + "capabilityname/" +
+				// String.valueOf(serviceId);
+				// String serviceName = restTemplate.getForObject(url,
+				// String.class);
 				orderSummaryModels.get(index).setServiceName(getServicesName(serviceIds));
 			}
 
@@ -111,15 +113,15 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		for (int index = 0; index < length; index++) {
 			String url = capUrlPrefix + "capabilityname/" + ids[index];
 			sb.append(restTemplate.getForObject(url, String.class));
-			
+
 			if (index != length - 1) {
 				sb.append(" + ");
 			}
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	@Override
 	public OrderDetailModel myOrderDetail(int orderId, String validId) {
 		User user = getUserId(validId);
@@ -130,22 +132,24 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			// throw new RuntimeException("user not found");
 		}
 
-//		City city = null;
-//		District district = null;
-//		Province province = null;
-//		ResidentialQuarter resiQuarter = null;
+		// City city = null;
+		// District district = null;
+		// Province province = null;
+		// ResidentialQuarter resiQuarter = null;
 		VehicleCategory vehicleCategory = null;
 		VehicleType vehicleType = null;
-//		WashCarService washCarService = null;
+		// WashCarService washCarService = null;
 
 		if (user.getId() > 0) {
 
 			// get order by order id;
 			String url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
 			Order order = restTemplate.getForObject(url, Order.class);
-//
-//			url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
-//			washCarService = restTemplate.getForObject(url, WashCarService.class);
+			//
+			// url = opsUrlPrefix + "wasshcarservice/service/" +
+			// String.valueOf(order.getServiceId());
+			// washCarService = restTemplate.getForObject(url,
+			// WashCarService.class);
 
 			url = opsUrlPrefix + "vehicle/vehiclecategory/" + String.valueOf(order.getVehicleId());
 			vehicleCategory = restTemplate.getForObject(url, VehicleCategory.class);
@@ -153,17 +157,22 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
 			vehicleType = restTemplate.getForObject(url, VehicleType.class);
 
-//			url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
-//			province = restTemplate.getForObject(url, Province.class);
-//
-//			url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
-//			city = restTemplate.getForObject(url, City.class);
-//
-//			url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
-//			district = restTemplate.getForObject(url, District.class);
-//
-//			url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
-//			resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+			// url = opsUrlPrefix + "location/province/" +
+			// String.valueOf(order.getProvinceId());
+			// province = restTemplate.getForObject(url, Province.class);
+			//
+			// url = opsUrlPrefix + "location/city/" +
+			// String.valueOf(order.getCityId());
+			// city = restTemplate.getForObject(url, City.class);
+			//
+			// url = opsUrlPrefix + "location/district/" +
+			// String.valueOf(order.getDistrictId());
+			// district = restTemplate.getForObject(url, District.class);
+			//
+			// url = opsUrlPrefix + "location/resiquarter/" +
+			// String.valueOf(order.getResiQuartId());
+			// resiQuarter = restTemplate.getForObject(url,
+			// ResidentialQuarter.class);
 
 			url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
 			Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
@@ -173,27 +182,33 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			Coupon[] myCoupons = couponResponseEntity.getBody();
 
 			url = promUrlPrefix + "promotion/mylistwithservices/" + String.valueOf(user.getId());
-			ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url, PromotionWithServices[].class);
+			ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url,
+					PromotionWithServices[].class);
 			PromotionWithServices[] myPromotionsWithServices = promotionResponseEntity.getBody();
-			
-//			url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
-//			ResponseEntity<Promotion> promotionResponseEntity = restTemplate.getForEntity(url, Promotion.class);
-//			Promotion myPromotion = promotionResponseEntity.getBody();
-//			Promotion[] myPromotions = {myPromotion};
-			
+
+			// url = promUrlPrefix + "promotion/" +
+			// String.valueOf(order.getPromotionId());
+			// ResponseEntity<Promotion> promotionResponseEntity =
+			// restTemplate.getForEntity(url, Promotion.class);
+			// Promotion myPromotion = promotionResponseEntity.getBody();
+			// Promotion[] myPromotions = {myPromotion};
+
 			url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
 			LocationModel location = restTemplate.getForObject(url, LocationModel.class);
-			
+
 			List<PromotionWithServicesModel> promotionWithServicesModels = new ArrayList<>();
 			buildPromotionWithServicesList(promotionWithServicesModels, myPromotionsWithServices);
-			return EntityMapper.buildOrderDetailInfo(order, getServicesName(order.getServiceId()), vehicle, vehicleCategory, vehicleType, location, myCoupons, promotionWithServicesModels);
-//			return EntityMapper.buildOrderDetailInfo(order, washCarService.getName(), vehicle,
-//					vehicleCategory, vehicleType, province, city, district, resiQuarter, myCoupons, myPromotions);
+			return EntityMapper.buildOrderDetailInfo(order, getServicesName(order.getServiceId()), vehicle,
+					vehicleCategory, vehicleType, location, myCoupons, promotionWithServicesModels);
+			// return EntityMapper.buildOrderDetailInfo(order,
+			// washCarService.getName(), vehicle,
+			// vehicleCategory, vehicleType, province, city, district,
+			// resiQuarter, myCoupons, myPromotions);
 		}
 
 		return null;
 	}
-	
+
 	private void buildPromotionWithServicesList(List<PromotionWithServicesModel> promotionWithServicesModels,
 			PromotionWithServices[] promotionsWithServices) {
 		int size = promotionsWithServices.length;
@@ -247,10 +262,10 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 
 	@Override
 	public OrderDetailWithWasherModel orderDetailWithWasher(int orderId) {
-//		City city = null;
-//		District district = null;
-//		Province province = null;
-//		ResidentialQuarter resiQuarter = null;
+		// City city = null;
+		// District district = null;
+		// Province province = null;
+		// ResidentialQuarter resiQuarter = null;
 		VehicleCategory vehicleCategory = null;
 		VehicleType vehicleType = null;
 		WashCarService washCarService = null;
@@ -258,8 +273,10 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		String url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
 		Order order = restTemplate.getForObject(url, Order.class);
 
-//		url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
-//		washCarService = restTemplate.getForObject(url, WashCarService.class);
+		// url = opsUrlPrefix + "wasshcarservice/service/" +
+		// String.valueOf(order.getServiceId());
+		// washCarService = restTemplate.getForObject(url,
+		// WashCarService.class);
 
 		url = opsUrlPrefix + "vehicle/vehiclecategory/" + String.valueOf(order.getVehicleId());
 		vehicleCategory = restTemplate.getForObject(url, VehicleCategory.class);
@@ -267,17 +284,22 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
 		vehicleType = restTemplate.getForObject(url, VehicleType.class);
 
-//		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
-//		province = restTemplate.getForObject(url, Province.class);
-//
-//		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
-//		city = restTemplate.getForObject(url, City.class);
-//
-//		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
-//		district = restTemplate.getForObject(url, District.class);
-//
-//		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
-//		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+		// url = opsUrlPrefix + "location/province/" +
+		// String.valueOf(order.getProvinceId());
+		// province = restTemplate.getForObject(url, Province.class);
+		//
+		// url = opsUrlPrefix + "location/city/" +
+		// String.valueOf(order.getCityId());
+		// city = restTemplate.getForObject(url, City.class);
+		//
+		// url = opsUrlPrefix + "location/district/" +
+		// String.valueOf(order.getDistrictId());
+		// district = restTemplate.getForObject(url, District.class);
+		//
+		// url = opsUrlPrefix + "location/resiquarter/" +
+		// String.valueOf(order.getResiQuartId());
+		// resiQuarter = restTemplate.getForObject(url,
+		// ResidentialQuarter.class);
 
 		url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
 		Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
@@ -286,27 +308,32 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		Coupon coupon = restTemplate.getForObject(url, Coupon.class);
 		Coupon[] coupons = { coupon };
 
-//		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
-//		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
-//		Promotion[] promotions = { promotion };
-		
+		// url = promUrlPrefix + "promotion/" +
+		// String.valueOf(order.getPromotionId());
+		// Promotion promotion = restTemplate.getForObject(url,
+		// Promotion.class);
+		// Promotion[] promotions = { promotion };
+
 		url = promUrlPrefix + "promotion/mylistwithservices/" + String.valueOf(order.getUserId());
-		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url, PromotionWithServices[].class);
+		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url,
+				PromotionWithServices[].class);
 		PromotionWithServices[] promotions = promotionResponseEntity.getBody();
-		
+
 		url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
 		Worker worker = restTemplate.getForObject(url, Worker.class);
 
 		url = crmUrlPrefix + "user/info/" + String.valueOf(order.getUserId());
 		User user = restTemplate.getForObject(url, User.class);
-		
+
 		url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
 		LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
-		
-		return EntityMapper.buildOrderDetailWithWasher(order, getServicesName(order.getServiceId()), vehicle, vehicleCategory, 
-				vehicleType, locationModel, coupons, promotions, worker, null, user);
-//		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
-//				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
+
+		return EntityMapper.buildOrderDetailWithWasher(order, getServicesName(order.getServiceId()), vehicle,
+				vehicleCategory, vehicleType, locationModel, coupons, promotions, worker, null, user);
+		// return EntityMapper.buildOrderDetailWithWasher(order,
+		// washCarService.getName(), vehicle, vehicleCategory,
+		// vehicleType, province, city, district, resiQuarter, coupons,
+		// promotions, worker, washCarService, user);
 	}
 
 	@Override
@@ -340,16 +367,18 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 	}
 
 	private OrderDetailWithWasherModel buildOrderDetailWithWasher(Order order) {
-//		City city = null;
-//		District district = null;
-//		Province province = null;
-//		ResidentialQuarter resiQuarter = null;
+		// City city = null;
+		// District district = null;
+		// Province province = null;
+		// ResidentialQuarter resiQuarter = null;
 		VehicleCategory vehicleCategory = null;
 		VehicleType vehicleType = null;
-//		WashCarService washCarService = null;
+		// WashCarService washCarService = null;
 
-//		String url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
-//		washCarService = restTemplate.getForObject(url, WashCarService.class);
+		// String url = opsUrlPrefix + "wasshcarservice/service/" +
+		// String.valueOf(order.getServiceId());
+		// washCarService = restTemplate.getForObject(url,
+		// WashCarService.class);
 		String url = null;
 
 		url = opsUrlPrefix + "vehicle/vehiclecategory/" + String.valueOf(order.getVehicleId());
@@ -358,17 +387,22 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		url = opsUrlPrefix + "vehicle/vehicletype/" + String.valueOf(order.getVehicleId());
 		vehicleType = restTemplate.getForObject(url, VehicleType.class);
 
-//		url = opsUrlPrefix + "location/province/" + String.valueOf(order.getProvinceId());
-//		province = restTemplate.getForObject(url, Province.class);
-//
-//		url = opsUrlPrefix + "location/city/" + String.valueOf(order.getCityId());
-//		city = restTemplate.getForObject(url, City.class);
-//
-//		url = opsUrlPrefix + "location/district/" + String.valueOf(order.getDistrictId());
-//		district = restTemplate.getForObject(url, District.class);
-//
-//		url = opsUrlPrefix + "location/resiquarter/" + String.valueOf(order.getResiQuartId());
-//		resiQuarter = restTemplate.getForObject(url, ResidentialQuarter.class);
+		// url = opsUrlPrefix + "location/province/" +
+		// String.valueOf(order.getProvinceId());
+		// province = restTemplate.getForObject(url, Province.class);
+		//
+		// url = opsUrlPrefix + "location/city/" +
+		// String.valueOf(order.getCityId());
+		// city = restTemplate.getForObject(url, City.class);
+		//
+		// url = opsUrlPrefix + "location/district/" +
+		// String.valueOf(order.getDistrictId());
+		// district = restTemplate.getForObject(url, District.class);
+		//
+		// url = opsUrlPrefix + "location/resiquarter/" +
+		// String.valueOf(order.getResiQuartId());
+		// resiQuarter = restTemplate.getForObject(url,
+		// ResidentialQuarter.class);
 
 		url = opsUrlPrefix + "vehicle/" + String.valueOf(order.getVehicleId());
 		Vehicle vehicle = restTemplate.getForObject(url, Vehicle.class);
@@ -377,13 +411,16 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		Coupon coupon = restTemplate.getForObject(url, Coupon.class);
 		Coupon[] coupons = { coupon };
 
-//		url = promUrlPrefix + "promotion/" + String.valueOf(order.getPromotionId());
-//		Promotion promotion = restTemplate.getForObject(url, Promotion.class);
-//		Promotion[] promotions = { promotion };
+		// url = promUrlPrefix + "promotion/" +
+		// String.valueOf(order.getPromotionId());
+		// Promotion promotion = restTemplate.getForObject(url,
+		// Promotion.class);
+		// Promotion[] promotions = { promotion };
 		url = promUrlPrefix + "promotion/mylistwithservices/" + String.valueOf(order.getUserId());
-		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url, PromotionWithServices[].class);
+		ResponseEntity<PromotionWithServices[]> promotionResponseEntity = restTemplate.getForEntity(url,
+				PromotionWithServices[].class);
 		PromotionWithServices[] promotions = promotionResponseEntity.getBody();
-		
+
 		url = opsUrlPrefix + "worker/washedorder/" + String.valueOf(order.getId());
 		Worker worker = restTemplate.getForObject(url, Worker.class);
 
@@ -392,126 +429,172 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 
 		url = lbsUrlPrefix + "getLocationById/" + String.valueOf(order.getLocationId());
 		LocationModel locationModel = restTemplate.getForObject(url, LocationModel.class);
-		
-		return EntityMapper.buildOrderDetailWithWasher(order, getServicesName(order.getServiceId()), vehicle, vehicleCategory, 
-				vehicleType, locationModel, coupons, promotions, worker, null, user);
-		
-//		return EntityMapper.buildOrderDetailWithWasher(order, washCarService.getName(), vehicle, vehicleCategory,
-//				vehicleType, province, city, district, resiQuarter, coupons, promotions, worker, washCarService, user);
+
+		return EntityMapper.buildOrderDetailWithWasher(order, getServicesName(order.getServiceId()), vehicle,
+				vehicleCategory, vehicleType, locationModel, coupons, promotions, worker, null, user);
+
+		// return EntityMapper.buildOrderDetailWithWasher(order,
+		// washCarService.getName(), vehicle, vehicleCategory,
+		// vehicleType, province, city, district, resiQuarter, coupons,
+		// promotions, worker, washCarService, user);
 	}
-	
+
 	private double countOriginPrice(String[] ids, int vehicleTypeId, int vehicleCategoryId) {
-		String url = opsUrlPrefix + "pricing/price/" + String.valueOf(vehicleTypeId) + "/" + String.valueOf(vehicleCategoryId) + "/%s";
-		
+		String url = opsUrlPrefix + "pricing/price/" + String.valueOf(vehicleTypeId) + "/"
+				+ String.valueOf(vehicleCategoryId) + "/%s";
+
 		double originalPrice = 0d;
 		int length = ids.length;
 		for (int index = 0; index < length; index++) {
 			Double price = restTemplate.getForObject(url, Double.class);
 			originalPrice += price.doubleValue();
 		}
-		
+
 		return originalPrice;
 	}
-	
+
 	private double countDiscountedPriceAccordingToPromotions(int userId) {
 		String url = promUrlPrefix + "mylistwithservices/" + String.valueOf(userId);
-		ResponseEntity<PromotionWithServices[]> promotionsWithServicesResponseEntity = restTemplate.getForEntity(url, PromotionWithServices[].class);
+		ResponseEntity<PromotionWithServices[]> promotionsWithServicesResponseEntity = restTemplate.getForEntity(url,
+				PromotionWithServices[].class);
 		PromotionWithServices[] promotionsWithServices = promotionsWithServicesResponseEntity.getBody();
 		return 0d;
 	}
 
-
-//	@Override
-//	public Pricing pricing(String validId, int orderId, int couponId, int promotionId) {
-//		Pricing pricing = new Pricing();
-//
-//		// get user id by valid id
-//		User user = getUserId(validId);
-//		if (user == null) {
-//			throw new AAInnerServerError(String.format("User not found by valid id [%s]", validId));
-//		}
-//
-//		String url = null;
-//		// get origin price by order
-//		url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
-//		Order order = restTemplate.getForObject(url, Order.class);
-//		pricing.setBookedTime(order.getBookTime() == null ? null : EntityMapper.formatTimestamp(order.getBookTime()));
-//		url = opsUrlPrefix + "wasshcarservice/service/" + String.valueOf(order.getServiceId());
-//		WashCarService washCarService = restTemplate.getForObject(url, WashCarService.class);
-//		pricing.setServiceName(washCarService.getName());
-//		pricing.setOrderId(order.getId());
-////		pricing.setServiceId(order.getServiceId());
-//		pricing.setUserId(order.getUserId());
-//
-//		double originPrice = order.getPrice();
-//		pricing.setOriginalPrice(order.getPrice());
-//		pricing.setDiscountedPrice(originPrice);
-//		if (originPrice <= 0) {
-//			throw new AAInnerServerError(String.format("Invalid origin price [%d]", originPrice));
-//		}
-//
-//		if (promotionId > 0) {
-//			// check the promotion id matches the service
-//			// check promotion still available
-//			// check promotion remaining counts available
-//			url = promUrlPrefix + "promotion/validpromotion/" + String.valueOf(user.getId()) + "/"
-//					+ String.valueOf(order.getServiceId()) + "/" + String.valueOf(promotionId);
-//			Integer result = restTemplate.getForObject(url, Integer.class);
-//			// if (result == null) {
-//			//// throw new AAInnerServerError("Failed to validate promotion.");
-//			// } else {
-//			// pricing.setDiscountedPrice(0d);
-//			// pricing.setPromotionId(promotionId);
-//			// return pricing;
-//			// }
-//			if (result != null) {
-//				pricing.setDiscountedPrice(0d);
-//				pricing.setPromotionId(promotionId);
-//				return pricing;
-//			}
-//		}
-//
-//		if (couponId > 0) {
-//			url = promUrlPrefix + "coupon/validatecoupon/" + String.valueOf(user.getId()) + "/"
-//					+ String.valueOf(couponId);
-//			Coupon coupon = restTemplate.getForObject(url, Coupon.class);
-//			if (coupon != null) {
-//				pricing.setCouponId(couponId);
-//			} else {
-//				throw new AAInnerServerError("Failed to validate coupon.");
-//			}
-//
-//			if (0 == coupon.getCouponType()) {
-//				// free~
-//				pricing.setDiscountedPrice(0d);
-//
-//				return pricing;
-//			} else if (1 == coupon.getCouponType()) {
-//				double discounted = originPrice - coupon.getValue();
-//				if (discounted < 0) {
-//					throw new AAInnerServerError("Invalid dicounted price.");
-//				}
-//				pricing.setDiscountedPrice(discounted);
-//				return pricing;
-//			} else if (2 == coupon.getCouponType()) {
-//				double discounted = originPrice * ((100 - coupon.getValue()) / 100);
-//
-//				if (discounted < 0) {
-//					throw new AAInnerServerError("Invalid dicounted price.");
-//				}
-//				pricing.setDiscountedPrice(discounted);
-//			}
-//
-//		}
-//
-//		return pricing;
-//	}
+	// @Override
+	// public Pricing pricing(String validId, int orderId, int couponId, int
+	// promotionId) {
+	// Pricing pricing = new Pricing();
+	//
+	// // get user id by valid id
+	// User user = getUserId(validId);
+	// if (user == null) {
+	// throw new AAInnerServerError(String.format("User not found by valid id
+	// [%s]", validId));
+	// }
+	//
+	// String url = null;
+	// // get origin price by order
+	// url = omsUrlPrefix + "order/detail/" + String.valueOf(orderId);
+	// Order order = restTemplate.getForObject(url, Order.class);
+	// pricing.setBookedTime(order.getBookTime() == null ? null :
+	// EntityMapper.formatTimestamp(order.getBookTime()));
+	// url = opsUrlPrefix + "wasshcarservice/service/" +
+	// String.valueOf(order.getServiceId());
+	// WashCarService washCarService = restTemplate.getForObject(url,
+	// WashCarService.class);
+	// pricing.setServiceName(washCarService.getName());
+	// pricing.setOrderId(order.getId());
+	//// pricing.setServiceId(order.getServiceId());
+	// pricing.setUserId(order.getUserId());
+	//
+	// double originPrice = order.getPrice();
+	// pricing.setOriginalPrice(order.getPrice());
+	// pricing.setDiscountedPrice(originPrice);
+	// if (originPrice <= 0) {
+	// throw new AAInnerServerError(String.format("Invalid origin price [%d]",
+	// originPrice));
+	// }
+	//
+	// if (promotionId > 0) {
+	// // check the promotion id matches the service
+	// // check promotion still available
+	// // check promotion remaining counts available
+	// url = promUrlPrefix + "promotion/validpromotion/" +
+	// String.valueOf(user.getId()) + "/"
+	// + String.valueOf(order.getServiceId()) + "/" +
+	// String.valueOf(promotionId);
+	// Integer result = restTemplate.getForObject(url, Integer.class);
+	// // if (result == null) {
+	// //// throw new AAInnerServerError("Failed to validate promotion.");
+	// // } else {
+	// // pricing.setDiscountedPrice(0d);
+	// // pricing.setPromotionId(promotionId);
+	// // return pricing;
+	// // }
+	// if (result != null) {
+	// pricing.setDiscountedPrice(0d);
+	// pricing.setPromotionId(promotionId);
+	// return pricing;
+	// }
+	// }
+	//
+	// if (couponId > 0) {
+	// url = promUrlPrefix + "coupon/validatecoupon/" +
+	// String.valueOf(user.getId()) + "/"
+	// + String.valueOf(couponId);
+	// Coupon coupon = restTemplate.getForObject(url, Coupon.class);
+	// if (coupon != null) {
+	// pricing.setCouponId(couponId);
+	// } else {
+	// throw new AAInnerServerError("Failed to validate coupon.");
+	// }
+	//
+	// if (0 == coupon.getCouponType()) {
+	// // free~
+	// pricing.setDiscountedPrice(0d);
+	//
+	// return pricing;
+	// } else if (1 == coupon.getCouponType()) {
+	// double discounted = originPrice - coupon.getValue();
+	// if (discounted < 0) {
+	// throw new AAInnerServerError("Invalid dicounted price.");
+	// }
+	// pricing.setDiscountedPrice(discounted);
+	// return pricing;
+	// } else if (2 == coupon.getCouponType()) {
+	// double discounted = originPrice * ((100 - coupon.getValue()) / 100);
+	//
+	// if (discounted < 0) {
+	// throw new AAInnerServerError("Invalid dicounted price.");
+	// }
+	// pricing.setDiscountedPrice(discounted);
+	// }
+	//
+	// }
+	//
+	// return pricing;
+	// }
 
 	@Override
 	public synchronized WechatPayResponseModel pay(Pricing pricing) {
 		// everything happens here needs to be controlled by distribution
 		// transaction
-		if (pricing.getDiscountedPrice() == 0) {
+		System.out.println(pricing.getPaymentType());
+		if (pricing.getPaymentType() == 50) {
+			// NO FEE order
+			WechatPayResponseModel offLine = new WechatPayResponseModel();
+			offLine.setResult_code("SUCCESS");
+			offLine.setReturn_msg("OK");
+			offLine.setAppid(WechatConfig.getAppid());
+			offLine.setMch_id(WechatConfig.getMchid());
+			offLine.setReturn_code("SUCCESS");
+			offLine.setPrepay_id("prepay_id=NOFEE_" + String.valueOf(System.currentTimeMillis()));
+			offLine.setTrade_type("NOFEE");
+			offLine.setTimeStamp(System.currentTimeMillis() / 1000 + "");
+
+			updateOrder(pricing, 20);
+			recordNoFeeOrderTransaction(offLine, pricing);
+			recordPointTransaction(0d, pricing.getUserId(), pricing.getOrderId());
+			if (pricing.getPromotionId() != 0) {
+				// Original price will be counted as points since promotion
+				// services were purchased by user
+				recordPoints(pricing.getUserId(), pricing.getOriginalPrice());
+				String[] ids = ServiceUtil.getServiceIDs(pricing.getServiceId());
+				int length = ids.length;
+				for (int index = 0; index < length; index++) {
+					recordServiceTransaction(Integer.valueOf(ids[index]), pricing.getUserId(), pricing.getOrderId());
+					consumeService(pricing.getUserId(), Integer.valueOf(ids[index]), pricing.getPromotionId());
+				}
+			}
+
+			if (pricing.getCouponId() != 0) {
+				// No points will be counted when a No Fee coupon is used
+				recordCouponTransaction(pricing.getCouponId(), pricing.getUserId(), pricing.getOrderId());
+				consumeCoupon(pricing.getUserId(), pricing.getCouponId());
+			}
+			return offLine;
+		} else if (pricing.getDiscountedPrice() == 0) {
 			// NO FEE order
 			WechatPayResponseModel noFee = new WechatPayResponseModel();
 			noFee.setResult_code("SUCCESS");
@@ -593,25 +676,27 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		HttpEntity<PointTransaction> entity = new HttpEntity<PointTransaction>(pointTransaction, headers);
 		restTemplate.postForObject(url, entity, Integer.class);
 	}
-	
+
 	private void recordServicesTransaction(String servicesIds, int userId, int orderId) {
-//		String url = omsUrlPrefix + "transaction/recordServiceTransaction";
-//		ServiceTransaction serviceTransaction = new ServiceTransaction();
-//		serviceTransaction.setOrderId(orderId);
-//		serviceTransaction.setServiceId(serviceId);
-//		serviceTransaction.setUserId(userId);
-//
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//		HttpEntity<ServiceTransaction> entity = new HttpEntity<ServiceTransaction>(serviceTransaction, headers);
-//		restTemplate.postForObject(url, entity, Integer.class);
-		
+		// String url = omsUrlPrefix + "transaction/recordServiceTransaction";
+		// ServiceTransaction serviceTransaction = new ServiceTransaction();
+		// serviceTransaction.setOrderId(orderId);
+		// serviceTransaction.setServiceId(serviceId);
+		// serviceTransaction.setUserId(userId);
+		//
+		// HttpHeaders headers = new HttpHeaders();
+		// headers.setContentType(MediaType.APPLICATION_JSON);
+		//
+		// HttpEntity<ServiceTransaction> entity = new
+		// HttpEntity<ServiceTransaction>(serviceTransaction, headers);
+		// restTemplate.postForObject(url, entity, Integer.class);
+
 		String[] ids = ServiceUtil.getServiceIDs(servicesIds);
 		int length = ids.length;
 		for (int index = 0; index < length; index++) {
 			recordServiceTransaction(Integer.valueOf(ids[index]), userId, orderId);
-//			consumeService(userId, Integer.valueOf(ids[index]), order.getPromotionId());
+			// consumeService(userId, Integer.valueOf(ids[index]),
+			// order.getPromotionId());
 		}
 	}
 
@@ -742,6 +827,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		orderToUpdate.setServiceId(pricing.getServiceId());
 		orderToUpdate.setStatusCode(status);
 		orderToUpdate.setPrice(pricing.getOriginalPrice());
+		orderToUpdate.setPaymentType(pricing.getPaymentType());
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -779,18 +865,19 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		if (codeResponse.getStatusCodeValue() != 1) {
 			// Log error
 		}
-//		String url = omsUrlPrefix + "order/updateorder";
-//		UpdateOrder orderToUpdate = new UpdateOrder();
-//		orderToUpdate.setStatusCode(status);
-//		orderToUpdate.setId(orderId);
-//		orderToUpdate.setPrice(null);
-//		orderToUpdate.setOrderNumber(null);
-//
-//		HttpHeaders headers = new HttpHeaders();
-//		headers.setContentType(MediaType.APPLICATION_JSON);
-//
-//		HttpEntity<UpdateOrder> entity = new HttpEntity<UpdateOrder>(orderToUpdate, headers);
-//		restTemplate.put(url, entity);
+		// String url = omsUrlPrefix + "order/updateorder";
+		// UpdateOrder orderToUpdate = new UpdateOrder();
+		// orderToUpdate.setStatusCode(status);
+		// orderToUpdate.setId(orderId);
+		// orderToUpdate.setPrice(null);
+		// orderToUpdate.setOrderNumber(null);
+		//
+		// HttpHeaders headers = new HttpHeaders();
+		// headers.setContentType(MediaType.APPLICATION_JSON);
+		//
+		// HttpEntity<UpdateOrder> entity = new
+		// HttpEntity<UpdateOrder>(orderToUpdate, headers);
+		// restTemplate.put(url, entity);
 	}
 
 	/**
@@ -821,12 +908,15 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		// consumedcount + 1
 		if (order.getPromotionId() > 0) {
 			// usually should not happen for FEE order, just in case.
-//			recordServicesTransaction(order.getServiceId(), order.getUserId(), orderId);
-//			consumeServices(order.getUserId(), order.getServiceId(), order.getPromotionId());
+			// recordServicesTransaction(order.getServiceId(),
+			// order.getUserId(), orderId);
+			// consumeServices(order.getUserId(), order.getServiceId(),
+			// order.getPromotionId());
 			String[] ids = ServiceUtil.getServiceIDs(order.getServiceId());
 			int length = ids.length;
 			for (int index = 0; index < length; index++) {
-//				recordServiceTransaction(Integer.valueOf(ids[index]), order.getUserId(), orderId);
+				// recordServiceTransaction(Integer.valueOf(ids[index]),
+				// order.getUserId(), orderId);
 				consumeService(order.getUserId(), Integer.valueOf(ids[index]), order.getPromotionId());
 			}
 		}
@@ -899,8 +989,8 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 	}
 
 	@Override
-	public Pricing pricing(String validId, String serviceIds, int couponId, int promotionId, double originPrice, int vehicleTypeId,
-			int vehicleCategoryId) {
+	public Pricing pricing(String validId, String serviceIds, int couponId, int promotionId, double originPrice,
+			int vehicleTypeId, int vehicleCategoryId) {
 		Pricing pricing = new Pricing();
 
 		// get user id by valid id
@@ -916,7 +1006,7 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		if (originPrice <= 0) {
 			throw new AAInnerServerError(String.format("Invalid origin price [%d]", originPrice));
 		}
-		
+
 		pricing.setServiceName(getServicesName(serviceIds));
 		pricing.setServiceId(serviceIds);
 
@@ -927,13 +1017,15 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			pricing.setCouponId(couponId);
 			pricingByCoupon(user.getId(), couponId, pricing, originPrice);
 		} else {
-//			throw new AAInnerServerError(String.format("Cannot use promotion id and coupon id ", originPrice));
+			// throw new AAInnerServerError(String.format("Cannot use promotion
+			// id and coupon id ", originPrice));
 		}
 
 		return pricing;
 	}
-	
-	private void pricingByPromotion(String serviceIds, int promotionId, int userId, Pricing pricing, int vehicleTypeId, int vehicleCategoryId) {
+
+	private void pricingByPromotion(String serviceIds, int promotionId, int userId, Pricing pricing, int vehicleTypeId,
+			int vehicleCategoryId) {
 		String url = null;
 
 		// check the promotion id matches the service
@@ -943,12 +1035,12 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 		String[] ids = ServiceUtil.getServiceIDs(serviceIds);
 		int length = ids.length;
 		for (int index = 0; index < length; index++) {
-			url = promUrlPrefix + "promotion/validpromotion/" + String.valueOf(userId) + "/"
-					+ ids[index] + "/" + String.valueOf(promotionId);
-			
+			url = promUrlPrefix + "promotion/validpromotion/" + String.valueOf(userId) + "/" + ids[index] + "/"
+					+ String.valueOf(promotionId);
+
 			System.out.println(url);
 			Integer result = restTemplate.getForObject(url, Integer.class);
-			
+
 			if (result != null) {
 				double price = getPrice(vehicleTypeId, vehicleCategoryId, Integer.valueOf(ids[index]));
 				double tempPrice = pricing.getDiscountedPrice() - price;
@@ -958,16 +1050,15 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			}
 		}
 	}
-	
+
 	private double getPrice(int typeId, int categoryId, int serviceId) {
 		String url = opsUrlPrefix + "pricing/price/" + String.valueOf(typeId) + "/" + String.valueOf(categoryId) + "/"
 				+ String.valueOf(serviceId);
 		return restTemplate.getForObject(url, double.class);
 	}
-	
+
 	private void pricingByCoupon(int userId, int couponId, Pricing pricing, double originPrice) {
-		String url = promUrlPrefix + "coupon/validatecoupon/" + String.valueOf(userId) + "/"
-				+ String.valueOf(couponId);
+		String url = promUrlPrefix + "coupon/validatecoupon/" + String.valueOf(userId) + "/" + String.valueOf(couponId);
 		Coupon coupon = restTemplate.getForObject(url, Coupon.class);
 		if (coupon != null) {
 			pricing.setCouponId(couponId);
@@ -994,7 +1085,5 @@ public class OrderPageServiceImpl extends BaseService implements OrderPageServic
 			pricing.setDiscountedPrice(discounted);
 		}
 	}
-	
-	
 
 }

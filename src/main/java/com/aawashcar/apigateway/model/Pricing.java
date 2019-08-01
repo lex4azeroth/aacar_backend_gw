@@ -11,6 +11,7 @@ public class Pricing {
 	private int orderId;
 	private int userId;
 	private String validId;
+	private int paymentType;
 	
 	public int getCouponId() {
 		return couponId;
@@ -72,5 +73,10 @@ public class Pricing {
 	public void setOriginalPrice(double originalPrice) {
 		this.originalPrice = originalPrice;
 	}
-
+	public int getPaymentType() {
+		return paymentType;
+	}
+	public void setPaymentType(int paymentType) {
+		this.paymentType = paymentType;
+	}
 }

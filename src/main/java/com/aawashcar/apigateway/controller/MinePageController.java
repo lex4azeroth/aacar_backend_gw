@@ -38,7 +38,10 @@ public class MinePageController {
 		Map<Integer, String> serviceNames = 
 				capModels.stream().collect(Collectors.toMap(CapabilityModel::getId, CapabilityModel::getName));
 		
-		List<MyPromotionModel> models = service.listMyPromotionModels(openId, serviceNames);
+		Map<Integer, Integer> serviceCategory = 
+				capModels.stream().collect(Collectors.toMap(CapabilityModel::getId, CapabilityModel::getCategoryId));
+		
+		List<MyPromotionModel> models = service.listMyPromotionModels(openId, serviceNames, serviceCategory);
 		return models;
 	}
 

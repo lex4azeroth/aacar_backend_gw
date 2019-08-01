@@ -18,7 +18,7 @@ import com.aawashcar.apigateway.util.EntityMapper;
 public class MinePageServiceImpl extends BaseService implements MinePageService {
 
 	@Override
-	public List<MyPromotionModel> listMyPromotionModels(String validId, Map<Integer, String> serviceNames) {
+	public List<MyPromotionModel> listMyPromotionModels(String validId, Map<Integer, String> serviceNames, Map<Integer, Integer> serviceCategory) {
 		int userId = getUserIdByOpenId(validId);
 		if (userId == 0) {
 			return null;
@@ -30,7 +30,7 @@ public class MinePageServiceImpl extends BaseService implements MinePageService 
 				PromotionWithServices[].class);
 		PromotionWithServices[] promotionsWithServices = promotionResponseEntity.getBody();
 		
-		return EntityMapper.convertPromotionsWithServicesToMyModel(promotionsWithServices, serviceNames);
+		return EntityMapper.convertPromotionsWithServicesToMyModel(promotionsWithServices, serviceNames, serviceCategory);
 	}
 
 	@Override

@@ -124,6 +124,7 @@ public class MainPageInfoServiceImpl extends BaseService implements MainPageInfo
 			// district, province, resiQuarter);
 
 			mainPageInfo = EntityMapper.buildDefaultMainPageInfo(vehicleCategories, vehicleTypes, new LocationModel());
+			mainPageInfo.setLatestOrder(new LatestOrder());
 		}
 
 		return mainPageInfo;

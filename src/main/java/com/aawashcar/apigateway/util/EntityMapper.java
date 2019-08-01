@@ -130,7 +130,7 @@ public class EntityMapper {
 	}
 	
 	public static List<MyPromotionModel> convertPromotionsWithServicesToMyModel(PromotionWithServices[] promotionsWithServices, 
-			Map<Integer, String> serviceNames) {
+			Map<Integer, String> serviceNames, Map<Integer, Integer> serviceCategory) {
 		List<MyPromotionModel> myPromotions = new ArrayList<>();
 		int size = promotionsWithServices.length;
 		for (int index = 0; index < size; index++) {
@@ -146,6 +146,8 @@ public class EntityMapper {
 			model.setDuration(promotionWithServices.getDuration());
 			model.setId(promotionWithServices.getId());
 			model.setPrice(promotionWithServices.getPrice());
+			model.setServiceId(promotionWithServices.getServiceId());
+			model.setCategoryId(serviceCategory.get(promotionWithServices.getServiceId()));
 			
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(promotionWithServices.getCreatedTime());
